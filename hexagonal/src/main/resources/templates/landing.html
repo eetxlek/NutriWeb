@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrición inteligente, decisiones saludables</title>
+    <!-- Bootstrap CSS NECESARIO DEBE IR EN TODAS LAS PAGINAS CON NAV Y TAMBIEN LO DEL FINAL DEL BODY-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome (si usás íconos como el `fa-leaf`) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6db33f;
+            --secondary-color: #343a40;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .navbar {
+            background-color: var(--secondary-color);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #5a9e34;
+            border-color: #5a9e34;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--dark-color) 100%);
+            color: white;
+            padding: 5rem 0;
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card {
+            transition: transform 0.3s;
+            height: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .cta-section {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 4rem 0;
+        }
+        
+        footer {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .tech-logo {
+            height: 50px;
+            margin: 15px;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        
+        .tech-logo:hover {
+            opacity: 1;
+        }
+     
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-leaf me-2"></i>Nutrición inteligente, decisiones saludables
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Como usar</a>
+                    </li>
+                   
+                    <li class="nav-item">
+                        <a class="nav-link" href="#pricing">Precios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contacto</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a class="nav-link" th:href="@{/perfil}">Perfil</a>
+                    </li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+                        <a class="nav-link" th:href="@{/productos}">Productos</a>
+                    </li>
+        			<li class="nav-item" sec:authorize="isAuthenticated()">
+            			<a class="nav-link" th:href="@{/despensa}">Despensa</a>
+        			</li>
+                    <li class="nav-item" sec:authorize="isAuthenticated()">
+            			<a class="nav-link" th:href="@{/consumo}">Consumo</a>
+        			</li>
+                </ul>
+
+                <div sec:authorize="isAnonymous()">
+        			<a href="#cta" th:href="@{/login}" class="btn btn-primary ms-lg-3">
+            			<i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; Entrar
+        			</a>
+    			</div>
+   				 <div sec:authorize="isAuthenticated()">
+        			<form th:action="@{/logout}" method="post">
+			            <button type="submit" class="btn btn-outline-danger ms-lg-3">Salir</button>
+			        </form>
+    			</div>               
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-4">Nutrición inteligente, decide y avanza</h1>
+                    <p class="lead mb-4">Estas herramientas ayudan a prestar atención a tu cuerpo, reducir el consumo ineficiente y mejorar tu rendimiento.</p>
+                    <div class="d-flex gap-3">
+                        <a href="#cta" th:href="@{/login}" class="btn btn-primary btn-lg">Veamos</a>
+                        <a href="#features" class="btn btn-outline-light btn-lg">Unete a la conversación</a>
+                    </div>
+                </div>
+                 <div class="col-lg-6 mt-5 mt-lg-0">
+                    <img src="portada.jpg" alt="Nutricion inteligente" class="img-fluid rounded shadow">
+            	</div>
+            </div>          
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section id="features" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Opciones de uso</h2>
+                <p class="lead text-muted">Todo lo que necesitas para desarrollar un consumo consciente y robusto</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card feature-card shadow-sm p-4">
+                        <div class="text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <h4>Uso ágil</h4>
+                            <p>Plantillas preconfigurada correspondiente a un día previo.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card feature-card shadow-sm p-4">
+                        <div class="text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <h4>Algo más</h4>
+                            <p>Consumo personalizado desde cero.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card feature-card shadow-sm p-4">
+                        <div class="text-center">
+                            <div class="feature-icon">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <h4>Historico semanal</h4>
+                            <p>Interpretacion con insights o puntos fuertes.</p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    
+<!-- Agrega esta sección después del hero o antes del footer -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-2 text-center mb-4 mb-md-0">
+                <img src="https://static.openfoodfacts.org/images/logos/off-logo-horizontal-light.png" alt="OpenFoodFacts" style="max-height: 80px;">
+            </div>
+            <div class="col-md-10">
+                <h3>Datos alimenticios proporcionados por OpenFoodFacts</h3>
+                <p>Esta aplicación utiliza la API de OpenFoodFacts, una base de datos abierta y colaborativa de información nutricional. Agradecemos a esta increíble comunidad por hacer posible acceder a datos alimenticios de manera libre y transparente.</p>
+                <a href="https://world.openfoodfacts.org/" target="_blank" class="btn btn-outline-primary">Visitar OpenFoodFacts</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- Testimonials Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Lo que dicen nuestros usuarios</h2>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100 p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <img th:src="@{/images/ella.png}" alt="Cliente" class="rounded-circle me-3" style="width: 50px; height: 50px;">
+                            <div>
+                                <h5 class="mb-0">Carlos Rodríguez</h5>
+                               
+                            </div>
+                        </div>
+                        <p class="mb-0">"SpringBoot Suite redujo nuestro tiempo de desarrollo en un 60%. La generación automática de código es increíblemente precisa y nos permite enfocarnos en la lógica de negocio."</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100 p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <img th:src="@{/images/ella.png}" alt="Cliente" class="rounded-circle me-3" style="width: 50px; height: 50px;">
+                            <div>
+                                <h5 class="mb-0">Ana Martínez</h5>
+                              
+                            </div>
+                        </div>
+                        <p class="mb-0">"Como desarrolladora, aprecio lo bien estructurado que queda el código generado. Es fácil de entender y extender, lo que hace que la mantenibilidad sea excelente."</p>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100 p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <img th:src="@{/images/ella.png}" alt="Cliente" class="rounded-circle me-3" style="width: 50px; height: 50px;">
+                            <div>
+                                <h5 class="mb-0">David Fernández</h5>
+                             
+                            </div>
+                        </div>
+                        <p class="mb-0">"Pudimos lanzar nuestro MVP en tiempo récord gracias a SpringBoot Suite. La capacidad de iterar rápidamente nos dio una ventaja competitiva en el mercado."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+  <!-- Tech Stack Section Reemplazada por Redes Sociales -->
+<section class="py-5 bg-light">
+    <div class="container text-center">
+        <h4 class="mb-4"></h4>
+        <div class="d-flex flex-wrap justify-content-center align-items-center gap-4">
+    
+            <a href="https://bsky.app/profile/tu_usuario" target="_blank" class="social-icon">
+                <i class="fas fa-cloud fa-3x text-primary"></i>
+                <span class="d-block mt-2">Bluesky</span>
+            </a>
+            <!-- Weibo -->
+            <a href="https://weibo.com/tu_cuenta" target="_blank" class="social-icon">
+                <i class="fab fa-weibo fa-3x text-primary"></i>
+                <span class="d-block mt-2">Weibo</span>
+            </a>
+            <a href="https://linkedin.com/company/tu_empresa" target="_blank" class="social-icon">
+                <i class="fab fa-linkedin fa-3x text-primary"></i>
+                <span class="d-block mt-2">LinkedIn</span>
+            </a>
+            <a href="https://github.com/tu_organizacion" target="_blank" class="social-icon">
+                <i class="fab fa-github fa-3x text-primary"></i>
+                <span class="d-block mt-2">GitHub</span>
+            </a>
+            <a href="https://youtube.com/tu_canal" target="_blank" class="social-icon">
+                <i class="fab fa-youtube fa-3x text-primary"></i>
+                <span class="d-block mt-2">YouTube</span>
+            </a>
+            <a href="https://instagram.com/tu_cuenta" target="_blank" class="social-icon">
+                <i class="fab fa-instagram fa-3x text-primary"></i>
+                <span class="d-block mt-2">Instagram</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Planes y Precios</h2>
+                <p class="lead text-muted">Elige el plan que mejor se adapte a tus necesidades</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header bg-light py-3">
+                            <h4 class="my-0 fw-normal text-center">Básico</h4>
+                        </div>
+                        <div class="card-body">
+                            <h2 class="card-title pricing-card-title text-center">Gratis<small class="text-muted fw-light"></small></h2>
+                            <ul class="list-unstyled mt-3 mb-4">
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Inventario</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Consulta</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Soporte por correo</li>
+                            </ul>
+                            <button type="button" class="w-100 btn btn-lg btn-outline-primary">Empezar</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-lg">
+                        <div class="card-header bg-primary text-white py-3">
+                            <h4 class="my-0 fw-normal text-center">Pro</h4>
+                        </div>
+                        <div class="card-body">
+                            <h2 class="card-title pricing-card-title text-center">49€<small class="text-muted fw-light">/año</small></h2>
+                            <ul class="list-unstyled mt-3 mb-4">
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Inventario</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Consulta completa</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Despensa</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Soporte por correo</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Seguridad </li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Insights</li>
+                            </ul>
+                            <button type="button" class="w-100 btn btn-lg btn-primary">Recomendado</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header bg-light py-3">
+                            <h4 class="my-0 fw-normal text-center">Familiar</h4>
+                        </div>
+                        <div class="card-body">
+                            <h2 class="card-title pricing-card-title text-center">99€<small class="text-muted fw-light">/año</small></h2>
+                            <ul class="list-unstyled mt-3 mb-4">
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Inventario</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Consulta completa</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Despensa</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Soporte por correo</li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Seguridad </li>
+                                <li class="mb-2"><i class="fas fa-check text-primary me-2"></i> Insights</li>
+                            </ul>
+                            <button type="button" class="w-100 btn btn-lg btn-outline-primary">Juntos</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- CTA Section -->
+    <section id="cta" class="cta-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h2 class="fw-bold mb-4">¿Listo para impulsarte?</h2>
+                    <p class="lead mb-5">Regístrate y prueba tu cuenta gratuita.</p>
+                    <form class="row g-3 justify-content-center">
+                        <div class="col-md-8">
+                            <input type="email" class="form-control form-control-lg" placeholder="Tu correo electrónico">
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-dark btn-lg w-100">Vamos allá</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5">
+                    <h2 class="fw-bold mb-4">Contáctanos</h2>
+                    <p class="mb-4">¿Tienes preguntas?</p>
+                    <p class="mb-4">Nuestro equipo está aquí para ayudarte.</p>
+                    <div class="d-flex align-items-start mb-3">
+                        <i class="fas fa-envelope mt-1 me-3 text-primary"></i>
+                        <div>
+                            <h5 class="mb-1">Escríbemos</h5>
+                            <p class="mb-0">soporte@nutricioninteligente.com</p>
+                        </div>
+                    </div>                  
+                   
+                </div>
+                
+                <div class="col-lg-7 mt-5 mt-lg-0">
+                    <form>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="name" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Correo Electrónico</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                            <div class="col-12">
+                                <label for="subject" class="form-label">Asunto</label>
+                                <input type="text" class="form-control" id="subject" required>
+                            </div>
+                            <div class="col-12">
+                                <label for="message" class="form-label">Mensaje</label>
+                                <textarea class="form-control" id="message" rows="5" required></textarea>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary">Enviar Mensaje</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 mb-4 mb-lg-0">
+                    <h5 class="text-primary mb-4">Nutricion inteligente</h5>
+                    <p>La solución que te ahorra tiempo y esfuerzo.</p>
+                    <div class="d-flex gap-3 mt-4">
+                        <a href="#" class="text-white"><i class="fab fa-linkedin fa-lg"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-github fa-lg"></i></a>
+                        <a href="#" class="text-white"><i class="fab fa-instagram fa-lg"></i></a>
+                         <a href="#" class="text-white"><i class="fab fa-discord fa-lg"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="mb-4">Enlaces Rápidos</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#features" class="text-white text-decoration-none">Características</a></li>
+                        <li class="mb-2"><a href="#how-it-works" class="text-white text-decoration-none">Cómo funciona</a></li>
+                        <li class="mb-2"><a href="#pricing" class="text-white text-decoration-none">Precios</a></li>
+                        <li class="mb-2"><a href="#contact" class="text-white text-decoration-none">Contacto</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Cuéntanos</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="mb-4">Recursos</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none">Documentación</a></li>
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none">Tutoriales</a></li>
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none">API Reference</a></li>
+                        <li class="mb-2"><a href="#" class="text-white text-decoration-none">Community</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Status</a></li>
+                    </ul>
+                </div>
+                
+               
+            </div>
+            
+            <hr class="my-4 bg-secondary">
+            
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0">&copy; 2025 Nutrición inteligente, decisiones saludables. Todos los derechos reservados.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="#" class="text-white text-decoration-none me-3">Términos de Servicio</a>
+                    <a href="#" class="text-white text-decoration-none">Política de Privacidad</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Bootstrap JS + Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

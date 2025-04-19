@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrición inteligente, decisiones saludables</title>
+
+</head>
+<body>
+
+    <h2>Registrar Consumo</h2>
+
+    <form action="http://localhost:8080/apinutricion/api/consumo" method="POST">
+
+        <!-- Selección de usuario -->
+        <label for="usuario">Usuario:</label>
+        <select id="usuario" name="id_usuario" required>
+            <!-- Aquí se deben cargar los usuarios desde la base de datos -->
+            <option value="1">Usuario 1</option>
+            <option value="2">Usuario 2</option>
+            <option value="3">Usuario 3</option>
+        </select>
+        <br><br>
+
+        <!-- Selección de producto -->
+        <label for="producto">Producto:</label>
+        <select id="producto" name="nombre_producto" required>
+            <!-- Aquí se deben cargar los productos desde la base de datos -->
+            <option value="1">Producto A</option>
+            <option value="2">Producto B</option>
+            <option value="3">Producto C</option>
+        </select>
+        <br><br>
+
+        <!-- Campo de cantidad -->
+        <label for="cantidad">Cantidad:</label>
+        <input type="number" id="cantidad" name="cantidad" min="1" required>
+        <br><br>
+
+        <!-- Campo de fecha de consumo -->
+        <label for="fecha_consumo">Fecha de Consumo:</label>
+        <input type="date" id="fecha_consumo" name="fecha_consumo" required>
+        <br><br>
+
+        <button type="submit">Registrar Consumo</button>
+        
+    </form>
+
+</body>
+</html>

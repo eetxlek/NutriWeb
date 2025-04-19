@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Despensa de Productos</title>
+    <style>
+            #update-product-form {
+        background-color: #f8f9fa; /* Fondo claro */
+        border-radius: 8px; /* Bordes redondeados */
+        padding: 30px; /* Espaciado interior */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+        margin-bottom: 40px; /* Espacio inferior */
+    }
+
+    /* Títulos dentro del formulario */
+    #update-product-form h1 {
+        font-size: 1.8rem;
+        margin-bottom: 20px; /* Espacio debajo del título */
+        text-align: center;
+        color: var(--primary-color);
+    }
+
+    /* Estilos de los campos de formulario */
+    #update-product-form .form-control {
+        border-radius: 5px; /* Bordes redondeados */
+        border: 1px solid #ced4da; /* Borde gris claro */
+        padding: 15px; /* Espaciado interior */
+        margin-bottom: 15px; /* Espacio debajo de cada campo */
+    }
+
+    /* Estilo de los botones */
+    #update-product-form button[type="submit"] {
+        background-color: var(--primary-color); /* Color primario */
+        color: black; /* Texto blanco */
+        font-size: 1.1rem; /* Fuente más grande */
+        padding: 12px 20px; /* Relleno del botón */
+        border: none; /* Eliminar borde */
+        border-radius: 5px; /* Bordes redondeados */
+        width: 100%; /* Hacer el botón de ancho completo */
+        cursor: pointer;
+    }
+
+    #update-product-form button[type="submit"]:hover {
+        background-color: #5a9e34; /* Cambio de color en hover */
+    }
+
+    /* Estilo de las etiquetas */
+    #update-product-form .form-label {
+        font-weight: bold;
+        margin-bottom: 10px; /* Espacio debajo de la etiqueta */
+    }
+    
+    /* Estilo para el contenedor del formulario */
+    .container {
+        max-width: 600px;
+        margin: 0 auto; /* Centrar el formulario */
+        padding: 20px;
+    }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Formulario PUT para actualizar un producto en la despensa -->
+        <h1>Actualizar Producto en la Despensa</h1>
+        <form id="update-product-form" method="POST" action="https://localhost:8080/apinutricion/api/despensa" class="mb-4">
+            <!-- Asegúrate de que este formulario esté vinculado a la lógica del backend para manejar PUT -->
+            <input type="hidden" name="_method" value="PUT"> <!-- Para simular un PUT -->
+
+            <div class="mb-3">
+                <label for="product-name" class="form-label">Nombre del Producto</label>
+                <input type="text" class="form-control" id="product-name" name="nombreProducto" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="product-quantity" class="form-label">Cantidad</label>
+                <input type="number" class="form-control" id="product-quantity" name="cantidad" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="purchase-date" class="form-label">Fecha de Compra</label>
+                <input type="date" class="form-control" id="purchase-date" name="fechaCompra" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Actualizar Producto</button>
+        </form>
+    </div>
+    <div class="container">
+        <h1>Lista de Productos en la Despensa</h1>
+        
+        <table id="despensa-table">
+            <thead>
+                <tr>
+                    <th>Nombre Producto</th>
+                    <th>Cantidad</th>
+                    <th>Fecha de Compra</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Los productos se cargarán aquí -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Verificar autenticación
+            if (!auth.estaAutenticado()) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            try {
+                // Usar la función con autenticación
+                const response = await auth.fetchConAutenticacion('/api/productos');
+                
+                if (response.ok) {
+                    const productos = await response.json();
+                    const container = document.getElementById('productos-container');
+                    
+                    productos.forEach(producto => {
+                        const div = document.createElement('div');
+                        div.textContent = `${producto.nombre} - $${producto.precio}`;
+                        container.appendChild(div);
+                    });
+                }
+            } catch (error) {
+                console.error('Error al cargar productos:', error);
+            }
+            
+            // Botón de logout
+            document.getElementById('logout').addEventListener('click', function() {
+                auth.cerrarSesion();
+            });
+        });
+    </script>
+ 
+    <!-- <script>
+        // URL del API backend que devuelve la lista de productos en la despensa
+        const apiUrl = 'https://localhost:8080/apinutricion/api/despensa'; // Reemplaza con tu URL de API real
+
+        // Función para cargar los productos desde el API
+        async function loadDespensa() {
+            try {
+                // Realizamos una solicitud GET al API para obtener los productos
+                const response = await fetch(apiUrl);
+
+                // Verificamos que la respuesta sea exitosa
+                if (!response.ok) {
+                    throw new Error('No se pudo cargar los productos de la despensa');
+                }
+
+                // Convertimos la respuesta en formato JSON
+                const productos = await response.json();
+
+                // Llamamos a la función para mostrar los productos en la tabla
+                displayProductos(productos);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Hubo un error al cargar los productos de la despensa');
+            }
+        }
+
+        // Función para mostrar los productos en la tabla HTML
+        function displayProductos(productos) {
+            const tableBody = document.getElementById("despensa-table").getElementsByTagName("tbody")[0];
+            tableBody.innerHTML = ""; // Limpiar tabla previa
+
+            // Iteramos sobre los productos y los mostramos en la tabla
+            productos.forEach(producto => {
+                const row = document.createElement("tr");
+
+                // Crear las celdas de la tabla para cada producto
+                const cellNombre = document.createElement("td");
+                cellNombre.textContent = producto.nombre_producto || "Producto sin nombre";
+
+                const cellCantidad = document.createElement("td");
+                cellCantidad.textContent = producto.cantidad || "No disponible";
+
+                const cellFechaCompra = document.createElement("td");
+                cellFechaCompra.textContent = producto.fecha_compra || "No disponible";
+
+                // Añadimos las celdas a la fila
+                row.appendChild(cellNombre);
+                row.appendChild(cellCantidad);
+                row.appendChild(cellFechaCompra);
+
+                // Añadimos la fila a la tabla
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Cargar los productos al cargar la página
+        window.onload = loadDespensa;
+    </script> -->
+</body>
+</html>

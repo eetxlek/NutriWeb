@@ -1,18 +1,12 @@
 package nutricion.hexagonal.infra.seguridad;
 
 import java.security.Key;
-import java.util.Date;
-
 import org.springframework.stereotype.Component;
-
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import nutricion.hexagonal.config.JwtProperties;
-import nutricion.hexagonal.dominio.clases.Usuario;
-import nutricion.hexagonal.dominio.interfaces.Auth;
 import nutricion.hexagonal.dominio.interfaces.Token;
-import nutricion.hexagonal.dominio.logica.TokenService;
 
 @Component
 public class JwtTokenAdapter implements Token {

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil de Salud</title>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+    
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 400px;
+        }
+    
+        .close-btn {
+            background-color: #e74c3c;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    
+        .close-btn:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="profile-container">
+        <div class="profile-header">
+            <img src="https://via.placeholder.com/120" alt="Foto de perfil" class="profile-pic" id="profile-picture">
+            <h1 th:text="${usuario.nombre}">Nombre del Usuario</h1>
+            <p th:text="'Cuenta ' + ${usuario.tipoUsuario}">Cuenta Básica</p>
+        </div>
+
+        <div class="profile-section">
+            <h2>Información Personal</h2>
+            <div class="profile-row">
+                <div class="profile-label">Correo electrónico:</div>
+                <div class="profile-value" th:text="${usuario.correoElectronico}">usuario@ejemplo.com</div>
+            </div>
+            <div class="profile-row">
+                <div class="profile-label">Edad:</div>
+                <div class="profile-value" th:text="${usuario.edad + ' años'}">30 años</div>
+            </div>
+        </div>
+
+        <div class="profile-section">
+            <h2>Medidas Corporales</h2>
+            <div class="profile-row">
+                <div class="profile-label">Peso:</div>
+                <div class="profile-value" th:text="${usuario.peso + ' kg'}">70 kg</div>
+            </div>
+            <div class="profile-row">
+                <div class="profile-label">Altura:</div>
+                <div class="profile-value" th:text="${usuario.altura + ' m'}">1.75 m</div>
+            </div>
+        </div>
+
+        <div class="profile-section">
+            <h2>Preferencias de Salud</h2>
+            <div class="profile-row">
+                <div class="profile-label">Nivel de actividad:</div>
+                <div class="profile-value" th:text="${usuario.nivelActividad}">Moderada</div>
+            </div>
+            <div class="profile-row">
+                <div class="profile-label">Meta de salud:</div>
+                <div class="profile-value" th:text="${usuario.metaSalud}">Perder peso</div>
+            </div>
+            <div class="profile-row">
+                <div class="profile-label">Tipo de dieta:</div>
+                <div class="profile-value" th:text="${usuario.tipoDieta}">Omnívora</div>
+            </div>
+        </div>
+
+        <button class="edit-btn" onclick="editProfile()">Editar Perfil</button>
+    </div>
+    <script src="/auth.js"></script>  
+    <script>
+        function editProfile() {
+            window.location.href = "/editar-perfil"; // Redirige a la página de edición
+        }
+    </script>
+</body>
+
+</html>

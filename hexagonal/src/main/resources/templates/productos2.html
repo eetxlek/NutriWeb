@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Productos - OpenFoodFacts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .product-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .product-item {
+            width: 200px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .product-item img {
+            max-width: 100%;
+            max-height: 150px;
+            object-fit: contain;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            padding: 5px;
+            font-size: 16px;
+            width: 300px;
+        }
+
+        button {
+            padding: 5px 15px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- Formulario para enviar los datos del producto -->
+    <div id="product-form">
+        <h3>Formulario del Producto</h3>
+          <!--   <form action="http://localhost:8080/apinutricion/api/consumo" method="POST"></form> sin necesidad de fetch??? in dont think so-->
+        <form id="form-product" onsubmit="submitProduct(event)">
+            <label for="product-name">Nombre:</label>
+            <input type="text" id="product-name" readonly><br><br>
+
+            <label for="product-fat">Grasas (g):</label>
+            <input type="text" id="product-fat" readonly><br><br>
+
+            <label for="product-carbs">Carbohidratos (g):</label>
+            <input type="text" id="product-carbs" readonly><br><br>
+
+            <label for="product-protein">Proteínas (g):</label>
+            <input type="text" id="product-protein" readonly><br><br>
+
+            <label for="product-quantity">Cantidad:</label>
+            <input type="number" id="product-quantity" value="1"><br><br>
+
+            <label for="purchase-date">Fecha de compra:</label>
+            <input type="date" id="purchase-date"><br><br>
+
+            <button type="submit">Enviar</button>
+        </form>
+    </div>
+    <div class="search-box">
+        <input type="text" id="search-input" placeholder="Buscar por nombre de producto...">
+        <button onclick="searchProducts()">Buscar</button>
+    </div>
+    <div id="product-list" class="product-list">
+        <!-- Aquí se cargarán los productos dinámicamente -->
+    </div>
+
+    <script>
+        // Función para realizar la llamada a la API y actualizar la lista de productos
+        async function searchProducts() {
+            const searchTerm = document.getElementById("search-input").value;
+            if (!searchTerm) {
+                alert("Por favor ingresa un nombre de producto para buscar.");
+                return;
+            }
+
+            const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(searchTerm)}&action=process&json=true&page_size=10&fields=product_name,brands,image_url,fat_100g,carbohydrates_100g,proteins_100g,sugars_100g,fiber_100g`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.count > 0) {
+                    const uniqueProducts = filterUniqueProducts(data.products);
+                    updateProductList(uniqueProducts);
+                } else {
+                    alert("No se encontraron productos.");
+                }
+            } catch (error) {
+                console.error("Error al obtener productos:", error);
+                alert("Hubo un error al buscar los productos.");
+            }
+        }
+
+        function filterUniqueProducts(products) {
+            const seen = new Set();
+            return products.filter(product => {
+                const productName = product.product_name;
+                if (seen.has(productName)) {
+                    return false;
+                }
+                const fat = product.fat_100g || "No disponible";
+                const carbs = product.carbohydrates_100g || "No disponible";
+                const proteins = product.proteins_100g || "No disponible";
+                const sugars = product.sugars_100g || "No disponible";
+                const fiber = product.fiber_100g || "No disponible";
+                if (fat === "No disponible" || carbs === "No disponible" || proteins === "No disponible" || sugars === "No disponible" || fiber === "No disponible") {
+                    return false;
+                }
+                seen.add(productName);
+                return true;
+            });
+        }
+
+        function updateProductList(products) {
+            const productListDiv = document.getElementById("product-list");
+            productListDiv.innerHTML = "";
+
+            products.forEach(product => {
+                const productItem = document.createElement("div");
+                productItem.classList.add("product-item");
+
+                const productName = product.product_name || "Producto sin nombre";
+                const brand = product.brands || "Marca no disponible";
+                const fat = product.fat_100g || "No disponible";
+                const carbs = product.carbohydrates_100g || "No disponible";
+                const proteins = product.proteins_100g || "No disponible";
+                const sugars = product.sugars_100g || "No disponible";
+                const fiber = product.fiber_100g || "No disponible";
+                const productImage = product.image_url || "https://via.placeholder.com/150";
+                //el objeto json no se reconstruye completamenta al pasar a string y despues.
+                productItem.innerHTML = `
+                    <h3>${productName}</h3>
+                    <p><strong>Marca:</strong> ${brand}</p> 
+                    <img src="${productImage}" alt="Imagen del producto" />
+                    <p><strong>Grasas:</strong> ${fat}g</p>
+                    <p><strong>Carbohidratos:</strong> ${carbs}g</p>
+                    <p><strong>Proteínas:</strong> ${proteins}g</p>
+                    <p><strong>Azúcares:</strong> ${sugars}g</p>
+                    <p><strong>Fibra:</strong> ${fiber}g</p>
+                    <button class="select-product-btn">Seleccionar Producto</button>
+                `;
+                // Añadir event listener después de crear el elemento
+                const selectBtn = productItem.querySelector('.select-product-btn');
+                selectBtn.addEventListener('click', () => {
+                    selectProduct(product); // Pasamos el objeto product directamente
+                });
+                productListDiv.appendChild(productItem);
+            });
+        }
+
+        // Función para seleccionar un producto y cargarlo en el formulario
+        function selectProduct(product) {
+            document.getElementById("product-name").value = product.product_name || "";
+            document.getElementById("product-fat").value = product.fat_100g || "";
+            document.getElementById("product-carbs").value = product.carbohydrates_100g || "";
+            document.getElementById("product-protein").value = product.proteins_100g || "";
+
+            // Establecer cantidad por defecto a 1
+            document.getElementById("product-quantity").value = "1";
+
+            const today = new Date();
+            const formattedDate = today.toISOString().substr(0, 10);
+            document.getElementById("purchase-date").value = formattedDate;
+        }
+
+        // Función para hacer el POST con los datos del producto
+        async function submitProduct(event) {
+            event.preventDefault();  // Prevenir el envío por defecto del formulario
+
+            const productData = {
+                name: document.getElementById("product-name").value,
+                fat: document.getElementById("product-fat").value,
+                carbs: document.getElementById("product-carbs").value,
+                protein: document.getElementById("product-protein").value,
+                quantity: document.getElementById("product-quantity").value,
+                purchaseDate: document.getElementById("purchase-date").value
+            };
+
+            try {
+                const response = await fetch('https://localhost:8080/apinutricion/api/despensa', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(productData),
+                });
+
+                if (response.ok) {
+                    alert("Producto enviado correctamente.");
+                } else {
+                    alert("Error al enviar el producto.");
+                }
+            } catch (error) {
+                console.error("Error al enviar los datos:", error);
+                alert("Hubo un error al enviar los datos.");
+            }
+        }
+    </script>
+</body>
+
+</html>

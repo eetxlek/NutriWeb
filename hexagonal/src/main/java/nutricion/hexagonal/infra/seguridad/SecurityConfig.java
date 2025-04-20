@@ -15,7 +15,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(
+    SecurityFilterChain securityFilterChain(
         HttpSecurity http,
         JwtAuthenticationFilter jwtFilter
     ) throws Exception {
@@ -26,8 +26,7 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // ¡Importante para JWT porque JWT es stateless por diseño. Sino spring sec intenta crear sesion de forma innecesaria
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers( "/api/auth/**").permitAll()  // Permite registro/login
-                .requestMatchers("/admin/**").hasRole("ADMIN")  // Rutas de admin protegidas
+                .requestMatchers( "/","/login","/landing", "/api/auth/**").permitAll()  // Permite registro/login
                 .anyRequest().authenticated()  // El resto requieren autenticación
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);  // Filtro JWT

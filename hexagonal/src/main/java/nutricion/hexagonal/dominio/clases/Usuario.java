@@ -1,7 +1,6 @@
 package nutricion.hexagonal.dominio.clases;
 
 
-import java.util.List;
 
 
 //SIMPLE MODELO 

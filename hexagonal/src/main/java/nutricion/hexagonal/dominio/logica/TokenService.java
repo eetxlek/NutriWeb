@@ -1,7 +1,7 @@
 package nutricion.hexagonal.dominio.logica;
 
 import java.security.Key;
-import java.security.SignatureException;
+import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
@@ -20,12 +20,19 @@ public class TokenService implements Token {
     public TokenService(JwtProperties jwtProperties) {
         this.jwtProperties = jwtProperties;
     }
-
+    //genera token usano clave secreta. jwt.jwt-secret=mi-super-clave es la clave de tu servidor apra firmar token JWT. Tambien para validarlo, que no ha sido alterado
     @Override
     public String generarToken(String userId) {
+        //uso de jwt.expiration-ms=86400000 = 24h agrega expiracion al token
+        long expirationMs = jwtProperties.getExpirationMs();
+        Date now = new Date();
+        Date expirationDate = new Date(now.getTime() + expirationMs);
+
         return Jwts.builder()
                 .setSubject(userId)
-                .signWith(getSigningKey(),SignatureAlgorithm.HS512)
+                .setIssuedAt(now)
+                .setExpiration(expirationDate)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
 

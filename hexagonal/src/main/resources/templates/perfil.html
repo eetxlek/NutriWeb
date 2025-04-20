@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
@@ -41,6 +41,7 @@
 </head>
 
 <body>
+    <div th:replace="nav :: navbar"></div>
     <div class="profile-container">
         <div class="profile-header">
             <img src="https://via.placeholder.com/120" alt="Foto de perfil" class="profile-pic" id="profile-picture">

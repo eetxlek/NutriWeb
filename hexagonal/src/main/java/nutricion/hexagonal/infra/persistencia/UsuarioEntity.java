@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 
 import jakarta.persistence.Table;
 
+
 // infraestructura/persistencia/UsuarioEntity.java
 //TABLA DONDE ALMACENA
 @Entity
@@ -40,18 +41,18 @@ public class UsuarioEntity {
     @Column(name = "altura")
     private float altura;
 
-    @Enumerated(EnumType.STRING)
+  
     @Column(name = "nivel_actividad")
     private String nivelActividad;
 
     @Column(name = "meta_salud")
     private String metaSalud;
 
-    @Enumerated(EnumType.STRING)
+
     @Column(name = "tipo_dieta")
     private String tipoDieta;
 
-    @Enumerated(EnumType.STRING)
+   
     @Column(name = "tipo_usuario")
     private String tipoUsuario;
 
@@ -100,6 +101,7 @@ public class UsuarioEntity {
     public String getCorreoElectronico() {
         return correoElectronico;
     }
+
 
     public void setCorreoElectronico(String correoElectronico) {
         this.correoElectronico = correoElectronico;

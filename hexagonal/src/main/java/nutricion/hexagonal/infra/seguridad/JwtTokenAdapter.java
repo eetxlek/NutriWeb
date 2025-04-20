@@ -8,6 +8,8 @@ import io.jsonwebtoken.security.Keys;
 import nutricion.hexagonal.config.JwtProperties;
 import nutricion.hexagonal.dominio.interfaces.Token;
 
+//genera y valida el token y extrae id del token. El token solo contiene el iduser
+
 @Component
 public class JwtTokenAdapter implements Token {
 

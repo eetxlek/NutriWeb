@@ -10,7 +10,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
+@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider tokenProvider;  // Tu clase para manejar JWT
@@ -22,6 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) 
             throws IOException, ServletException {
+              System.out.println("JwtAuthenticationFilter activo");
         String token = obtenerTokenDeRequest(request);
         
         if (token != null && tokenProvider.validateToken(token)) {
@@ -31,6 +34,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         
         chain.doFilter(request, response);
     }
+    //antes de que spring llame al filtro, llama aqui y si da true, filtro JWT no se ejecuta
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getServletPath();
+        return path.equals("/") || path.equals("/login") || path.startsWith("/api/auth");
+    }
 
     private String obtenerTokenDeRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
@@ -39,6 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         return null;
     }
+    
 
    
 }

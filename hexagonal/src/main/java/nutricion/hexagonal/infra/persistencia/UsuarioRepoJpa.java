@@ -24,7 +24,7 @@ public class UsuarioRepoJpa implements UsuarioRepo {   //convierte UsuarioJPA en
 
     @Override
     public Optional<Usuario> buscarPorEmail(String email) {
-        return jpaRepo.findByEmail(email)
+        return jpaRepo.findByCorreoElectronico(email)
             .map(this::toDomain);
     }
 

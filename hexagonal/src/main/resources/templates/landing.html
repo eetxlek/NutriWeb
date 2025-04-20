@@ -86,53 +86,7 @@
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="fas fa-leaf me-2"></i>Nutrición inteligente, decisiones saludables
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#features">Como usar</a>
-                    </li>
-                   
-                    <li class="nav-item">
-                        <a class="nav-link" href="#pricing">Precios</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contact">Contacto</a>
-                    </li>
-                    <li class="nav-item" sec:authorize="isAuthenticated()">
-                        <a class="nav-link" th:href="@{/perfil}">Perfil</a>
-                    </li>
-                    <li class="nav-item" sec:authorize="isAuthenticated()">
-                        <a class="nav-link" th:href="@{/productos}">Productos</a>
-                    </li>
-        			<li class="nav-item" sec:authorize="isAuthenticated()">
-            			<a class="nav-link" th:href="@{/despensa}">Despensa</a>
-        			</li>
-                    <li class="nav-item" sec:authorize="isAuthenticated()">
-            			<a class="nav-link" th:href="@{/consumo}">Consumo</a>
-        			</li>
-                </ul>
-
-                <div sec:authorize="isAnonymous()">
-        			<a href="#cta" th:href="@{/login}" class="btn btn-primary ms-lg-3">
-            			<i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; Entrar
-        			</a>
-    			</div>
-   				 <div sec:authorize="isAuthenticated()">
-        			<form th:action="@{/logout}" method="post">
-			            <button type="submit" class="btn btn-outline-danger ms-lg-3">Salir</button>
-			        </form>
-    			</div>               
-            </div>
-        </div>
-    </nav>
+    <div th:replace="nav :: navbar"></div>
 
     <!-- Hero Section -->
     <section class="hero-section">

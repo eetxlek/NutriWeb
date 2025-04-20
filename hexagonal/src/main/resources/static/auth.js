@@ -3,6 +3,7 @@
 //este script no envia el formulario, gestiona el token y fetch autenticado.
 const auth = {
     guardarToken(token) {
+      //localstorage no protege de ataques XSS inyeccsion de script, el token es robable. más seguridad seria HttpOnly coockie pero cambia el flujo bastante.
       localStorage.setItem('authToken', token);
       // Decodificar y guardar exp (si necesitas)
       const tokenData = JSON.parse(atob(token.split('.')[1]));

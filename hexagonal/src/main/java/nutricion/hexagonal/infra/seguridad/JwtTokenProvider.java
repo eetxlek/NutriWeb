@@ -17,6 +17,9 @@ public class JwtTokenProvider {
     public JwtTokenProvider(TokenService tokenService) {
         this.tokenService = tokenService;
     }
+    public String generarToken(String userId) {
+        return tokenService.generarToken(userId); // Este método debe existir en TokenService
+    }
 
     public boolean validateToken(String token) {
         return tokenService.validarToken(token);

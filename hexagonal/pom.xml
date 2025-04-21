@@ -84,6 +84,11 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional> <!-- Para que no se incluya en producción -->
 		</dependency>
+		<dependency><!-- validaciones de anotaciones jakarta -->
+			<groupId>jakarta.validation</groupId>
+			<artifactId>jakarta.validation-api</artifactId>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<plugins>

@@ -20,20 +20,32 @@ public class TokenService implements Token {
     public TokenService(JwtProperties jwtProperties) {
         this.jwtProperties = jwtProperties;
     }
-    //genera token usano clave secreta. jwt.jwt-secret=mi-super-clave es la clave de tu servidor apra firmar token JWT. Tambien para validarlo, que no ha sido alterado
+
+    // genera token usano clave secreta. jwt.jwt-secret=mi-super-clave es la clave
+    // de tu servidor apra firmar token JWT. Tambien para validarlo, que no ha sido
+    // alterado
     @Override
     public String generarToken(String userId) {
-        //uso de jwt.expiration-ms=86400000 = 24h agrega expiracion al token
-        long expirationMs = jwtProperties.getExpirationMs();
-        Date now = new Date();
-        Date expirationDate = new Date(now.getTime() + expirationMs);
+        // uso de jwt.expiration-ms=86400000 = 24h agrega expiracion al token
+        try {
+            long expirationMs = jwtProperties.getExpirationMs();
+            Date now = new Date();
+            Date expirationDate = new Date(now.getTime() + expirationMs);
 
-        return Jwts.builder()
-                .setSubject(userId)
-                .setIssuedAt(now)
-                .setExpiration(expirationDate)
-                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
-                .compact();
+            Key signingKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);  // Esto asegura que la clave tenga 512 bits
+
+            return Jwts.builder()
+                    .setSubject(userId)
+                    .setIssuedAt(now)
+                    .setExpiration(expirationDate)
+                    .signWith(signingKey, SignatureAlgorithm.HS512)
+                    .compact();
+        }
+         catch (Exception e) {
+            e.printStackTrace(); // Esto ayudará a ver la excepción completa en los logs
+            throw new RuntimeException("Error al generar el token", e);
+        }
+
     }
 
     @Override
@@ -41,7 +53,7 @@ public class TokenService implements Token {
         try {
             // Parseamos el token para verificar la firma y la validez
             Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
+                    .setSigningKey(Keys.secretKeyFor(SignatureAlgorithm.HS512))
                     .build()
                     .parseClaimsJws(token); // Si el token no es válido, se lanzará una excepción
 
@@ -59,7 +71,7 @@ public class TokenService implements Token {
     @Override
     public String extraerUserId(String token) {
         Claims claims = Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
+                .setSigningKey(Keys.secretKeyFor(SignatureAlgorithm.HS512))
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
@@ -68,6 +80,7 @@ public class TokenService implements Token {
 
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(jwtProperties.getJwtSecret().getBytes());
+        //return Keys.secretKeyFor(SignatureAlgorithm.HS512);    //clave secreta con la longitud adecuada para el algoritmo HS512
     }
 }
 

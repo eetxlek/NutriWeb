@@ -1,10 +1,10 @@
-package nutricion.hexagonal;
+package nutricion.hexagonal.infra.seguridad.adaptadores.entrada.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 
-class LoginRequestDTO {
+public class LoginRequestDTO {
     //clase para recibir los datos del login
 
     // @NotBlank

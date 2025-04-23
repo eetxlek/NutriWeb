@@ -1,4 +1,4 @@
-package nutricion.hexagonal.infra.seguridad;
+package nutricion.hexagonal.infra.seguridad.adaptadores.salida;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;

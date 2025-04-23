@@ -1,6 +1,5 @@
-package nutricion.hexagonal;
+package nutricion.hexagonal.infra.seguridad.adaptadores.entrada;
 
-import javax.naming.AuthenticationException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,8 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import nutricion.hexagonal.infra.seguridad.JwtTokenProvider;
+import nutricion.hexagonal.infra.seguridad.adaptadores.entrada.dto.JwtResponseDTO;
+import nutricion.hexagonal.infra.seguridad.adaptadores.entrada.dto.LoginRequestDTO;
+import nutricion.hexagonal.infra.seguridad.token.JwtTokenProvider;
 
+//clasico adaptador de entrada, recibe, delega y responde. Acoplado a authmanager de springsec y a jwttokenprovider (servicio de tokens)
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {

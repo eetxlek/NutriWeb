@@ -1,4 +1,4 @@
-package nutricion.hexagonal.infra.seguridad;
+package nutricion.hexagonal.infra.seguridad.adaptadores.salida;
 
 import java.util.Collection;
 import java.util.List;

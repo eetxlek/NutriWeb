@@ -1,4 +1,4 @@
-package nutricion.hexagonal.infra.seguridad;
+package nutricion.hexagonal.infra.seguridad.config;
 
 import java.io.IOException;
 

@@ -1,19 +1,23 @@
-package nutricion.hexagonal.dominio.logica;
+package nutricion.hexagonal.infra.seguridad.token;
 
 import java.security.Key;
 import java.util.Date;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import nutricion.hexagonal.config.JwtProperties;
 import nutricion.hexagonal.dominio.interfaces.Token;
+import nutricion.hexagonal.infra.config.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
-@Component
+//Tras authservice, este implementa la logica del token. // para seguir patron de servicio podria ser @service en vez de @component.
+//implementa interfaz token. Da felxibilidad para implementar otro tipo de token mas adelante.
+//genera token con clave secreta cono expiracion, valida token legitimidad, extrae id de token.
+//clase servicio manejo de token: crea valida extrae info de token JWT
+@Service
 public class TokenService implements Token {
     private final JwtProperties jwtProperties;
 
@@ -32,7 +36,10 @@ public class TokenService implements Token {
             Date now = new Date();
             Date expirationDate = new Date(now.getTime() + expirationMs);
 
-            Key signingKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);  // Esto asegura que la clave tenga 512 bits
+            Key signingKey = getSigningKey(); // ✅ Usa la misma clave secreta configurada // Asegurado en properties que la clave tenga 512 bits (largo enough)
+            // genera new cada vez que genera/valida token, no correcto para validar ya existentes. cada token se firma con clave secreta unica. Tu necesitas usar 1 clave misma?
+            //si no usas una misma clave, crea clave aleatoria cada vez que no podrá ser validado porque la clave con la que se creo ya no existe. 
+            //validarToken() y extraerUserId() fallarían siempre que intenten validar una clave distinta.
 
             return Jwts.builder()
                     .setSubject(userId)
@@ -45,7 +52,6 @@ public class TokenService implements Token {
             e.printStackTrace(); // Esto ayudará a ver la excepción completa en los logs
             throw new RuntimeException("Error al generar el token", e);
         }
-
     }
 
     @Override
@@ -53,7 +59,7 @@ public class TokenService implements Token {
         try {
             // Parseamos el token para verificar la firma y la validez
             Jwts.parserBuilder()
-                    .setSigningKey(Keys.secretKeyFor(SignatureAlgorithm.HS512))
+                    .setSigningKey(getSigningKey()) //  Usamos la clave fija configurada
                     .build()
                     .parseClaimsJws(token); // Si el token no es válido, se lanzará una excepción
 
@@ -71,16 +77,17 @@ public class TokenService implements Token {
     @Override
     public String extraerUserId(String token) {
         Claims claims = Jwts.parserBuilder()
-                .setSigningKey(Keys.secretKeyFor(SignatureAlgorithm.HS512))
+                .setSigningKey(getSigningKey()) // Usamos la clave fija configurada
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
         return claims.getSubject(); // Devuelve el userId del token
     }
 
+    // Eliminar getSigningKey() estaría mal porque rompe la lógica JWT.
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(jwtProperties.getJwtSecret().getBytes());
-        //return Keys.secretKeyFor(SignatureAlgorithm.HS512);    //clave secreta con la longitud adecuada para el algoritmo HS512
+        //return Keys.secretKeyFor(SignatureAlgorithm.HS512);    //clave secreta con la longitud adecuada para el algoritmo HS512 // crearia clave new cada vez, no seria validable.
     }
 }
 

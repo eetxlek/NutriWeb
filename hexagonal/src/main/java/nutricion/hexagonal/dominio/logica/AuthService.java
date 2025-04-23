@@ -5,7 +5,12 @@ import org.springframework.stereotype.Service;
 import nutricion.hexagonal.dominio.clases.Usuario;
 import nutricion.hexagonal.dominio.interfaces.PasswordEncrypter;
 import nutricion.hexagonal.dominio.interfaces.UsuarioRepo;
+import nutricion.hexagonal.infra.seguridad.token.TokenService;
 
+//verifica credencial- > delega generacion de token a TokenService
+//servicio de autenticacion que orquesta proceso de log in. no se encarga del toekn en si y la seguridad.
+//servicio que ve si user existe y la contraseña es válida, valida que es quien dice ser y ello da paso a generar un token.
+//es cparte de la capa de logica de negocio // depende de interfaz, es buena practica para dar flexibilidad a las pruebas de implementaciones diferentes.
 @Service
 public class AuthService {
     private final TokenService tokenService; // <- Depende de la interfaz

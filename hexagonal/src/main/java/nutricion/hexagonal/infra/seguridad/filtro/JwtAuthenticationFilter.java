@@ -1,4 +1,4 @@
-package nutricion.hexagonal.infra.seguridad;
+package nutricion.hexagonal.infra.seguridad.filtro;
 
 import java.io.IOException;
 
@@ -8,6 +8,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import nutricion.hexagonal.infra.seguridad.token.JwtTokenProvider;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;

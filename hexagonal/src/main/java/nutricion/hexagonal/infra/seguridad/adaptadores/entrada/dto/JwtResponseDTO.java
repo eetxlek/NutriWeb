@@ -1,4 +1,4 @@
-package nutricion.hexagonal;
+package nutricion.hexagonal.infra.seguridad.adaptadores.entrada.dto;
 
 public class JwtResponseDTO {
     //modelo de respuesta de la auth

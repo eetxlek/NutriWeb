@@ -1,8 +1,10 @@
-package nutricion.hexagonal;
+package nutricion.hexagonal.infra.seguridad.adaptadores.entrada;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+//distinto al otro controller que devueve json, este devuelve vistas thymeleaf, (o jps, oosea respuestas html para navegador
+//no devuelve datos sino vistas.
 @Controller
 public class Controlador {
 

@@ -1,4 +1,4 @@
-package nutricion.hexagonal;
+package nutricion.hexagonal.infra.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
+//es infra tecnica, no logica de negocio asi que infra.
 @Configuration
 public class AuthConfig { // usuario en memomria para pruebas con Authmanager
     @Bean

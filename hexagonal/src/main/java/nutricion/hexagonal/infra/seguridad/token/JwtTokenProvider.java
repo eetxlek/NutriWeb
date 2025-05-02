@@ -18,18 +18,23 @@ public class JwtTokenProvider {
     public JwtTokenProvider(TokenService tokenService) {
         this.tokenService = tokenService;
     }
-    public String generarToken(String userId) {
-        return tokenService.generarToken(userId); //  Da id
+    public String generarToken(String email) {
+        return tokenService.generarToken(email); //  Da id
     }
 
     public boolean validateToken(String token) {  //da booleano tras verificar token fon la firma.
         return tokenService.validarToken(token);
     }
 
-    public Authentication getAuthentication(String token) {
-        String userId = tokenService.extraerUserId(token);
+    public Authentication getAuthentication(String token) {  // saca id del token y devuelve authtoken con email del usuario como principal
+        String email = tokenService.extraerEmail(token);
         // Aquí podrías obtener más datos del usuario (roles, etc.)
-        return new UsernamePasswordAuthenticationToken(userId, null, List.of());
+        return new UsernamePasswordAuthenticationToken(email, null, List.of()); //debeeria ser email en vez de id?
     }
+    public TokenService getTokenService() {
+        return tokenService;
+    }
+
+    
 }
 

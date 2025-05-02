@@ -1,38 +1,30 @@
 package nutricion.hexagonal.infra.seguridad.adaptadores.entrada.dto;
 
 public class JwtResponseDTO {
-    //modelo de respuesta de la auth
-    private String accessToken;
-    private String tokenType = "Bearer";
-    private String username;
+    // modelo de respuesta de la auth
+    private String token;
 
-    public JwtResponseDTO(String accessToken, String username) {
-        this.accessToken = accessToken;
-        this.username = username;
+    private String email;
+
+    public JwtResponseDTO(String token, String email) {
+        this.token = token;
+        this.email = email;
     }
 
-    public String getAccessToken() {
-        return accessToken;
+    public String getToken() {
+        return token;
     }
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
+    public void setToken(String token) {
+        this.token = token;
     }
 
-    public String getTokenType() {
-        return tokenType;
+    public String getEmail() {
+        return email;
     }
 
-    public void setTokenType(String tokenType) {
-        this.tokenType = tokenType;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
 }

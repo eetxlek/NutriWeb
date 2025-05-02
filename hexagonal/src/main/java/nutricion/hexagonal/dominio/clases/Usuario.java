@@ -18,6 +18,20 @@ public class Usuario {
     private String tipoUsuario; // Correspondiente a `tipo_usuario` (ENUM)
 
 
+    public Usuario(int idUsuario, String nombre, String correoElectronico, String contraseña, int edad, float peso,
+            float altura, String nivelActividad, String metaSalud, String tipoDieta, String tipoUsuario) {
+        this.idUsuario = idUsuario;
+        this.nombre = nombre;
+        this.correoElectronico = correoElectronico;
+        this.contraseña = contraseña;
+        this.edad = edad;
+        this.peso = peso;
+        this.altura = altura;
+        this.nivelActividad = nivelActividad;
+        this.metaSalud = metaSalud;
+        this.tipoDieta = tipoDieta;
+        this.tipoUsuario = tipoUsuario;
+    }
     public Usuario(int idUsuario, String correoElectronico, String contraseña, String tipoUsuario) {
         this.idUsuario = idUsuario;
         this.correoElectronico = correoElectronico;

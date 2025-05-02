@@ -50,4 +50,5 @@ public class AuthConfig { // usuario en memomria para pruebas con Authmanager
     // no soportada.");
     // };
     // }
+    
 }

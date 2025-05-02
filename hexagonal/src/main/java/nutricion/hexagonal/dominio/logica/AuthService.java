@@ -23,7 +23,7 @@ public class AuthService {
         this.passwordEncrypter = passwordEncrypter;
     }
 
-    public String login(String email, String password) {
+    public String login(String email, String password) {   //LO MAS IMPORTANTE DE ESTA CLASE. AQUI REPO SE USA PARA AUTENTICAR  // FOCO EN EMISION DE TOKEN
         Usuario usuario = usuarioRepository.buscarPorEmail(email)
             .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
@@ -31,7 +31,7 @@ public class AuthService {
             throw new RuntimeException("Credenciales inválidas");
         }
 
-        return tokenService.generarToken(String.valueOf(usuario.getIdUsuario()));
+        return tokenService.generarToken(String.valueOf(usuario.getCorreoElectronico()));
     }
 
 }

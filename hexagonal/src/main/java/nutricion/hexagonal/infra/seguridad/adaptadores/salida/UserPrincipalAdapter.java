@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import nutricion.hexagonal.dominio.clases.Usuario;
 
-// infraestructura/seguridad/UserPrincipalAdapter.java
+// implementa la interfaz UserDetails y adapta usuario para spring sec. Para Usuario dominio a algo que sprong sec entiende: UserDetails.
 public class UserPrincipalAdapter implements UserDetails {
     private final Usuario usuario;
 
@@ -26,7 +26,7 @@ public class UserPrincipalAdapter implements UserDetails {
     }
 
     @Override
-    public String getPassword() {
+    public String getPassword() {  //da password encriptado, lo hace spring sec para comparar con rawPAssword que se pasa en login
         return usuario.getContraseña(); 
     }
 

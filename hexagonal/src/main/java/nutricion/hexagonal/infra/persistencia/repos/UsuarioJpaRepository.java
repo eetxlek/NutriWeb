@@ -1,8 +1,10 @@
-package nutricion.hexagonal.infra.persistencia;
+package nutricion.hexagonal.infra.persistencia.repos;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import nutricion.hexagonal.infra.persistencia.entidades.UsuarioEntity;
 
 
 //consulta por email con Data JPA

@@ -1,84 +1,213 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Productos - OpenFoodFacts</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome (si usás íconos como el `fa-leaf`) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #6db33f;
+            --secondary-color: #343a40;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+        }
+
+        .navbar {
+            background-color: var(--secondary-color);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #5a9e34;
+            border-color: #5a9e34;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* 🔍 Search box más grande */
+        .search-box {
+            margin: 2rem auto;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .search-box input[type="text"] {
+            padding: 0.75rem;
+            font-size: 1.25rem;
+            flex-grow: 1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .search-box button {
+            padding: 0.75rem 2rem;
+            font-size: 1.25rem;
+            background-color: var(--primary-color);
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-box button:hover {
+            background-color: #5a9e34;
         }
 
         .product-list {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
+            justify-content: center;
+            /* o space-between o flex-start */
+            padding: 1rem;
         }
 
         .product-item {
-            width: 200px;
+            flex: 1 1 200px;
+            /* Mínimo 200px, crece si hay espacio */
+            max-width: 250px;
+            background-color: white;
             padding: 15px;
             border: 1px solid #ddd;
             border-radius: 10px;
-            text-align: center;
+            text-align: left;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .product-item h3 {
+            height: 2.6em;
+            /* Aproximadamente 2 líneas */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            text-overflow: ellipsis;
+            line-clamp: 2;
+            /* soporte futuro */
+            overflow: hidden;
+            text-align: left;
+            margin: 10px 0;
+            font-size: 1rem;
+            font-weight: 600;
         }
 
         .product-item img {
             max-width: 100%;
-            max-height: 150px;
-            object-fit: contain;
+            max-height: 100px;
+            /* antes tenías 150px */
+            object-fit: cover;
+            object-position: center;
+            margin-bottom: 10px;
         }
 
-        .search-box {
-            margin-bottom: 20px;
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: 1000;
+            /* o bold */
+            color: var(--primary-color);
+            /* o cualquier otro estilo deseado */
+            text-transform: uppercase;
+        }
+
+        .product-meta {
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            color: var(--dark-color);
+        }
+
+        .product-nutrients {
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid #ccc;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+
+
+        /* 📝 Formulario más pequeño y compacto */
+        #product-form {
+            max-width: 400px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #product-form h3 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 0.75rem;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 0.2rem;
+            font-weight: bold;
+        }
+
+        form input[type="text"],
+        form input[type="number"],
+        form input[type="date"] {
+            width: 100%;
+            padding: 0.35rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .button-row {
             display: flex;
-            justify-content: center;
-            gap: 10px;
+            justify-content: space-between;
+            margin-top: 1rem;
         }
 
-        input[type="text"] {
-            padding: 5px;
-            font-size: 16px;
-            width: 300px;
-        }
-
-        button {
-            padding: 5px 15px;
-            font-size: 16px;
+        .button-row button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            font-size: 1rem;
+            border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 48%;
+            /* Opcional, para que ambos botones ocupen el mismo ancho */
+        }
+
+        .button-row button:hover {
+            background-color: #5a9e34;
         }
     </style>
 
+    <script type="module" src="/auth.js" defer></script>
 </head>
 
 <body>
-    <!-- Formulario para enviar los datos del producto -->
-    <div id="product-form">
-        <h3>Formulario del Producto</h3>
-          <!--   <form action="http://localhost:8080/apinutricion/api/consumo" method="POST"></form> sin necesidad de fetch??? in dont think so-->
-        <form id="form-product" onsubmit="submitProduct(event)">
-            <label for="product-name">Nombre:</label>
-            <input type="text" id="product-name" readonly><br><br>
+    <!-- ESTATICO Y PUBLICO // DEBE HABER UNA PARTE O OTRA VISTA PRIVADA QUE TENGA EL FORMULACIO PARA VOLVER EL PRODUCTO Y AÑADIR A DESPENSA O CONSUMO -->
+    <div id="navbar-container" th:replace="~{nav :: navbar}"></div>
 
-            <label for="product-fat">Grasas (g):</label>
-            <input type="text" id="product-fat" readonly><br><br>
-
-            <label for="product-carbs">Carbohidratos (g):</label>
-            <input type="text" id="product-carbs" readonly><br><br>
-
-            <label for="product-protein">Proteínas (g):</label>
-            <input type="text" id="product-protein" readonly><br><br>
-
-            <label for="product-quantity">Cantidad:</label>
-            <input type="number" id="product-quantity" value="1"><br><br>
-
-            <label for="purchase-date">Fecha de compra:</label>
-            <input type="date" id="purchase-date"><br><br>
-
-            <button type="submit">Enviar</button>
-        </form>
-    </div>
     <div class="search-box">
         <input type="text" id="search-input" placeholder="Buscar por nombre de producto...">
         <button onclick="searchProducts()">Buscar</button>
@@ -86,31 +215,108 @@
     <div id="product-list" class="product-list">
         <!-- Aquí se cargarán los productos dinámicamente -->
     </div>
+    <!-- Formulario para enviar los datos del producto -->
+    <div id="product-form">
+        <h3>Formulario del Producto</h3>
+        <!--   <form action="http://localhost:8080/apinutricion/api/consumo" method="POST"></form> sin necesidad de fetch??? in dont think so-->
+        <form id="form-product" onsubmit="submitProduct(event)">
+            <label for="product-name">Nombre:</label>
+            <input type="text" id="product-name" readonly>
+
+            <label for="product-fat">Grasas (g):</label>
+            <input type="text" id="product-fat" readonly>
+
+            <label for="product-carbs">Carbohidratos (g):</label>
+            <input type="text" id="product-carbs" readonly>
+            <label for="product-protein">Proteínas (g):</label>
+            <input type="text" id="product-protein" readonly>
+
+            <label for="product-quantity">Cantidad:</label>
+            <input type="number" id="product-quantity" value="1">
+
+            <label for="purchase-date">Fecha de compra:</label>
+            <input type="date" id="purchase-date">
+
+            <div class="button-row">
+                <button type="submit" name="action" value="despensa">Despensa</button>
+                <button type="submit" name="action" value="consumo">Consumo</button>
+            </div>
+        </form>
+    </div>
+    <footer>
+        <p>&copy; 2025 Nutrición inteligente, decisiones saludables. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         // Función para realizar la llamada a la API y actualizar la lista de productos
+        const cache = new Map();
+
+        // Intenta cargar datos previamente guardados en localStorage al iniciar
+        function loadCacheFromLocalStorage() {
+            const stored = localStorage.getItem('productCache');
+            if (stored) {
+                try {
+                    const parsed = JSON.parse(stored);
+                    for (const key in parsed) {
+                        cache.set(key, parsed[key]);
+                    }
+                } catch (e) {
+                    console.warn("Error al cargar caché desde localStorage:", e);
+                }
+            }
+        }
+        // Guarda el contenido actual del cache Map en localStorage
+        function saveCacheToLocalStorage() {
+            const obj = Object.fromEntries(cache);
+            localStorage.setItem('productCache', JSON.stringify(obj));
+        }
+
+        async function fetchWithRetries(url, retries = 3, delay = 1000) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+                    return await response.json();
+                } catch (error) {
+                    if (i === retries - 1) throw error;
+                    console.warn(`Intento ${i + 1} fallido. Reintentando en ${delay} ms...`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2; // Exponential backoff
+                }
+            }
+        }
+
         async function searchProducts() {
             const searchTerm = document.getElementById("search-input").value;
             if (!searchTerm) {
                 alert("Por favor ingresa un nombre de producto para buscar.");
                 return;
             }
+            const normalizedTerm = searchTerm.toLowerCase();
+            if (cache.has(normalizedTerm)) {
+                console.log("Usando resultados en caché");
+                const cachedData = cache.get(normalizedTerm);
+                updateProductList(filterUniqueProducts(cachedData.products));
+                return;
+            }
 
-            const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(searchTerm)}&action=process&json=true&page_size=10&fields=product_name,brands,image_url,fat_100g,carbohydrates_100g,proteins_100g,sugars_100g,fiber_100g`;
+            const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(searchTerm)}&action=process&json=true&page_size=5&fields=product_name,brands,image_url,energy-kcal_100g,fat_100g,carbohydrates_100g,proteins_100g,sugars_100g,fiber_100g`;
 
             try {
-                const response = await fetch(url);
-                const data = await response.json();
-
+                const data = await fetchWithRetries(url);
                 if (data.count > 0) {
                     const uniqueProducts = filterUniqueProducts(data.products);
+                    cache.set(normalizedTerm, data); // Guardar en caché
+                    saveCacheToLocalStorage(); // Actualiza el almacenamiento
                     updateProductList(uniqueProducts);
                 } else {
                     alert("No se encontraron productos.");
                 }
             } catch (error) {
                 console.error("Error al obtener productos:", error);
-                alert("Hubo un error al buscar los productos.");
+                alert("Hubo un error al buscar los productos.  ${error.message}");
             }
         }
 
@@ -121,12 +327,13 @@
                 if (seen.has(productName)) {
                     return false;
                 }
+                const kcal = product.energy - kcal_100g || "No disponible";
                 const fat = product.fat_100g || "No disponible";
                 const carbs = product.carbohydrates_100g || "No disponible";
                 const proteins = product.proteins_100g || "No disponible";
                 const sugars = product.sugars_100g || "No disponible";
                 const fiber = product.fiber_100g || "No disponible";
-                if (fat === "No disponible" || carbs === "No disponible" || proteins === "No disponible" || sugars === "No disponible" || fiber === "No disponible") {
+                if (kcal == "No disponible" || fat === "No disponible" || carbs === "No disponible" || proteins === "No disponible" || sugars === "No disponible" || fiber === "No disponible") {
                     return false;
                 }
                 seen.add(productName);
@@ -144,6 +351,7 @@
 
                 const productName = product.product_name || "Producto sin nombre";
                 const brand = product.brands || "Marca no disponible";
+                const kcal = product.energy - kcal_100g || "Kcal no disponible";
                 const fat = product.fat_100g || "No disponible";
                 const carbs = product.carbohydrates_100g || "No disponible";
                 const proteins = product.proteins_100g || "No disponible";
@@ -152,18 +360,24 @@
                 const productImage = product.image_url || "https://via.placeholder.com/150";
                 //el objeto json no se reconstruye completamenta al pasar a string y despues.
                 productItem.innerHTML = `
-                    <h3>${productName}</h3>
-                    <p><strong>Marca:</strong> ${brand}</p> 
+                  <h3 class="product-name">${productName}</h3>
                     <img src="${productImage}" alt="Imagen del producto" />
+                    <div class="product-meta">
+                    <p><strong>Marca:</strong> ${brand}</p> 
+                    <p><strong>Kcal 100g:</strong> ${kcal}g</p>
+                    </div>
+                    <div class="product-nutrients">
                     <p><strong>Grasas:</strong> ${fat}g</p>
                     <p><strong>Carbohidratos:</strong> ${carbs}g</p>
                     <p><strong>Proteínas:</strong> ${proteins}g</p>
                     <p><strong>Azúcares:</strong> ${sugars}g</p>
                     <p><strong>Fibra:</strong> ${fiber}g</p>
-                    <button class="select-product-btn">Seleccionar Producto</button>
+                    </div>
+                    <button class="select-product-btn">Seleccionar</button>
                 `;
                 // Añadir event listener después de crear el elemento
                 const selectBtn = productItem.querySelector('.select-product-btn');
+                selectBtn.classList.add('btn', 'btn-primary', 'text-white');
                 selectBtn.addEventListener('click', () => {
                     selectProduct(product); // Pasamos el objeto product directamente
                 });
@@ -173,6 +387,7 @@
 
         // Función para seleccionar un producto y cargarlo en el formulario
         function selectProduct(product) {
+            document.getElementById("product-name").value = product.product_name || "";
             document.getElementById("product-name").value = product.product_name || "";
             document.getElementById("product-fat").value = product.fat_100g || "";
             document.getElementById("product-carbs").value = product.carbohydrates_100g || "";
@@ -200,7 +415,7 @@
             };
 
             try {
-                const response = await fetch('https://localhost:8080/apinutricion/api/despensa', {
+                const response = await fetch('https://localhost:8080/api/despensa', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -218,6 +433,9 @@
                 alert("Hubo un error al enviar los datos.");
             }
         }
+
+        // Cargar caché del almacenamiento local al inicio
+    loadCacheFromLocalStorage();
     </script>
 </body>
 

@@ -4,17 +4,18 @@
 
 console.log("auth.js cargado");
 
-const auth = {
+export const auth = {
   guardarToken(token) {
     if (!token) {
       console.error('El token es inválido o está vacío');
       return;
     }
-    // Verificar que el token tiene la estructura correcta
+    // Verificar token estructura correcta
     if (typeof token === 'string' && token.split('.').length === 3) {
-      localStorage.setItem('authToken', token);
+      localStorage.setItem('authToken', token);        // Almacenar el token en localStorage
       // Decodificar y guardar exp (si necesitas)
-      const tokenData = JSON.parse(atob(token.split('.')[1]));
+       const tokenData = JSON.parse(atob(token.split('.')[1])); // Decodificación del payload
+      // console.log(tokenData.toString());
       localStorage.setItem('tokenExpiracion', new Date(tokenData.exp * 1000));
     } else {
       console.error('El token tiene un formato incorrecto');
@@ -22,18 +23,22 @@ const auth = {
   },
 
   obtenerToken() {
+
+    //console.log("Token recuperado del localStorage:", token);
     return localStorage.getItem('authToken');
   },
   //corregio para que no tenga que guardar tokenexpiracion por separado
   estaAutenticado() {
     const token = this.obtenerToken();
-    if (!token) return false;
+    if (!token || token.split('.').length !== 3) return false;
 
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const expiracion = new Date(payload.exp * 1000);
+      const payload = JSON.parse(atob(token.split('.')[1]));  // Decodificar el token
+      const expiracion = new Date(payload.exp * 1000); // Verificar la expiración
+      console.log("Expiración del token:", expiracion);
       return expiracion > new Date();
     } catch (e) {
+      console.error("Error al decodificar el token:", e);
       return false;
     }
   },
@@ -45,17 +50,21 @@ const auth = {
   },
 
   fetchConAutenticacion: async function (url, opciones = {}) {
+
+    const token = this.obtenerToken();
+    console.log("Token que se va a enviar:", token);
+
     if (!this.estaAutenticado()) {
       this.cerrarSesion();
-      return;
+      return new Response(null, { status: 401 });
     }
 
-    const headers = {
-      ...opciones.headers,
-      'Authorization': `Bearer ${this.obtenerToken()}`
-    };
-
-    return fetch(url, { ...opciones, headers });
+    return fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${this.obtenerToken()}`
+      }
+    });
   }
 };
 

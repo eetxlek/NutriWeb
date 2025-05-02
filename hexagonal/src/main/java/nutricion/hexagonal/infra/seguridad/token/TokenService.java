@@ -10,7 +10,9 @@ import nutricion.hexagonal.infra.config.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 
 //Tras authservice, este implementa la logica del token. // para seguir patron de servicio podria ser @service en vez de @component.
@@ -29,26 +31,28 @@ public class TokenService implements Token {
     // de tu servidor apra firmar token JWT. Tambien para validarlo, que no ha sido
     // alterado
     @Override
-    public String generarToken(String userId) {
+    public String generarToken(String email) { // el controller pasa usuario tokenProvider.generarToken(usuario);
         // uso de jwt.expiration-ms=86400000 = 24h agrega expiracion al token
+        System.out.println("Generaando token");
         try {
             long expirationMs = jwtProperties.getExpirationMs();
             Date now = new Date();
             Date expirationDate = new Date(now.getTime() + expirationMs);
 
-            Key signingKey = getSigningKey(); // ✅ Usa la misma clave secreta configurada // Asegurado en properties que la clave tenga 512 bits (largo enough)
-            // genera new cada vez que genera/valida token, no correcto para validar ya existentes. cada token se firma con clave secreta unica. Tu necesitas usar 1 clave misma?
-            //si no usas una misma clave, crea clave aleatoria cada vez que no podrá ser validado porque la clave con la que se creo ya no existe. 
-            //validarToken() y extraerUserId() fallarían siempre que intenten validar una clave distinta.
-
+            Key signingKey = getSigningKey(); // ✅ Usa la misma clave secreta configurada
+            System.out.println("TOKEN GENERADO ES: "+Jwts.builder()
+                    .setSubject(email)
+                    .setIssuedAt(now)
+                    .setExpiration(expirationDate)
+                    .signWith(signingKey, SignatureAlgorithm.HS512)
+                    .compact().toString());
             return Jwts.builder()
-                    .setSubject(userId)
+                    .setSubject(email)
                     .setIssuedAt(now)
                     .setExpiration(expirationDate)
                     .signWith(signingKey, SignatureAlgorithm.HS512)
                     .compact();
-        }
-         catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace(); // Esto ayudará a ver la excepción completa en los logs
             throw new RuntimeException("Error al generar el token", e);
         }
@@ -56,38 +60,56 @@ public class TokenService implements Token {
 
     @Override
     public boolean validarToken(String token) {
+        System.out.println("Validando token");
         try {
             // Parseamos el token para verificar la firma y la validez
             Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey()) //  Usamos la clave fija configurada
+                    .setSigningKey(getSigningKey()) // Usamos la clave fija configurada
                     .build()
                     .parseClaimsJws(token); // Si el token no es válido, se lanzará una excepción
 
             return true; // Si no hay excepciones, el token es válido
         } catch (ExpiredJwtException e) {
             // El token ha expirado
-            System.out.println("Token expirado.");
+            System.out.println("Token expirado. Expiración: " + e.getClaims().getExpiration());
+            return false; // Retorna false, ya que el token ha expirado
+        } catch (MalformedJwtException e) {
+            // El token tiene un formato incorrecto
+            System.out.println("Token inválido: Formato incorrecto.");
+        } catch (UnsupportedJwtException e) {
+            // El token no es compatible
+            System.out.println("Token inválido: Tipo de token no soportado.");
+        } catch (IllegalArgumentException e) {
+            // El token es nulo o vacío
+            System.out.println("Token inválido: Argumento nulo o vacío.");
         } catch (Exception e) {
-            // Otros errores generales de JWT
-            System.out.println("Token inválido.");
+            // Otros errores generales
+            System.out.println("Error al validar el token: " + e.getMessage());
         }
-        return false;
+        return false; // Si se llega aquí, es porque hubo algún error en la validación
     }
 
     @Override
-    public String extraerUserId(String token) {
+    public String extraerEmail(String token) {
+        System.out.println("En extraccion email de token");
+
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getSigningKey()) // Usamos la clave fija configurada
                 .build()
-                .parseClaimsJws(token)
+                .parseClaimsJws(token) //da valor nulo
                 .getBody();
         return claims.getSubject(); // Devuelve el userId del token
     }
 
-    // Eliminar getSigningKey() estaría mal porque rompe la lógica JWT.
+    // Eliminar getSigningKey() estaría mal porque rompe la lógica JWT. //hace
+    // referencia a clave (secreto) de firma: jwt.jwt-secret
     private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(jwtProperties.getJwtSecret().getBytes());
-        //return Keys.secretKeyFor(SignatureAlgorithm.HS512);    //clave secreta con la longitud adecuada para el algoritmo HS512 // crearia clave new cada vez, no seria validable.
+        String secret = jwtProperties.getJwtSecret();
+        System.out.println("Clave secreta leída: " + secret);
+        return Keys.hmacShaKeyFor(secret.getBytes()); // usa el algoritmo HMAC-SHA
+        // return Keys.secretKeyFor(SignatureAlgorithm.HS512); //clave secreta con la
+        // longitud adecuada para el algoritmo HS512 // crearia clave new cada vez, no
+        // seria validable.
     }
 }
 

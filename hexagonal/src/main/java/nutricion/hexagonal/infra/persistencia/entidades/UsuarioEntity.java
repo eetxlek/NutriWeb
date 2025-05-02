@@ -1,4 +1,4 @@
-package nutricion.hexagonal.infra.persistencia;
+package nutricion.hexagonal.infra.persistencia.entidades;
 
 import jakarta.persistence.Column;
 
@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 
 
 // infraestructura/persistencia/UsuarioEntity.java
-//TABLA DONDE ALMACENA
+//TABLA DONDE ALMACENA debe tener entity y id y getters y setters si usas framework como hibernate.
 @Entity
 @Table(name = "Usuarios")
 public class UsuarioEntity {

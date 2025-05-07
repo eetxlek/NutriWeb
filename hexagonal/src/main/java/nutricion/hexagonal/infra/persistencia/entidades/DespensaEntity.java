@@ -9,20 +9,23 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "Despensa")
 public class DespensaEntity {
-      @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_despensa;
 
-    @Column(name = "id_usuario")
-    private Integer idUsuario;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_despensa")
+    private Integer id;
+
+    // @Column(name = "id_usuario")   //En vez de id con EntityUsuario
+    // private Integer idUsuario;
+    @ManyToOne
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
+    private UsuarioEntity usuario;  // Relación con UsuarioEntity
 
     @ManyToOne
-    @JoinColumn(name = "id_producto")
+    @JoinColumn(name = "id_producto", referencedColumnName = "id_producto")
     private ProductoEntity producto;
 
     private Integer cantidad;
@@ -30,32 +33,29 @@ public class DespensaEntity {
     @Column(name = "fecha_compra")
     private LocalDate fechaCompra;
 
-    public DespensaEntity() {
-    }
+    public DespensaEntity() {}
 
-    public DespensaEntity(Integer id_despensa, Integer idUsuario, ProductoEntity producto, Integer cantidad,
-            LocalDate fechaCompra) {
-        this.id_despensa = id_despensa;
-        this.idUsuario = idUsuario;
+    public DespensaEntity(ProductoEntity producto, UsuarioEntity idUsuario, Integer cantidad, LocalDate fechaCompra) {
         this.producto = producto;
+        this.usuario = idUsuario;
         this.cantidad = cantidad;
         this.fechaCompra = fechaCompra;
     }
 
-    public Integer getId_despensa() {
-        return id_despensa;
+    public Integer getId() {
+        return id;
     }
 
-    public void setId_despensa(Integer id_despensa) {
-        this.id_despensa = id_despensa;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public Integer getIdUsuario() {
-        return idUsuario;
+    public UsuarioEntity  getIdUsuario() {
+        return usuario;
     }
 
-    public void setIdUsuario(Integer idUsuario) {
-        this.idUsuario = idUsuario;
+    public void setIdUsuario(UsuarioEntity  idUsuario) {
+        this.usuario = idUsuario;
     }
 
     public ProductoEntity getProducto() {

@@ -86,9 +86,12 @@
         .content-wrapper {
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
-            /* Ocupa toda la altura de la pantalla */
+            padding-top: 20px;
+            /* Ajusta al alto real del navbar */
+            padding-bottom: 40px;
+            min-height: calc(100vh - 100px);
+            /* para asegurar espacio visible */
+
         }
 
         :root {
@@ -173,7 +176,11 @@
     <div class="content-wrapper">
         <div class="login-container">
             <h2>Registro de Usuario</h2>
-            <form method="POST" action="/registro">
+            <form method="POST" id="registroForm">
+                <div class="input-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
                 <div class="input-group">
                     <label for="correoElectronico">Correo electrónico</label>
                     <input type="email" id="correoElectronico" name="correoElectronico" required>
@@ -237,6 +244,81 @@
             </form>
         </div>
     </div>
+    <script>
+        //el script de arriba define auth para manejar token y fetch con autenticacion. OBJETO AUTH  singleton (obejto compartido global por scripts)
+        //el objeto no se recrea a no ser que cargues pagina nueva o pierdas el contexto.
+        //este hará la logica de login y la operacion de guardar el token.
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('registroForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const nombre = document.getElementById('nombre').value.trim();
+                const correoElectronico = document.getElementById('correoElectronico').value;
+                const edad = parseInt(document.getElementById('edad').value);
+                const password = document.getElementById('password').value;
+                const confirmarPassword = document.getElementById('confirmarPassword').value;
+                const peso = parseFloat(document.getElementById('peso').value);
+                const altura = parseFloat(document.getElementById('altura').value);
+                const nivelActividad = document.getElementById('nivelActividad').value;
+                const metaSalud = document.getElementById('metaSalud').value;
+                const tipoDieta = document.getElementById('tipoDieta').value;
+
+                // Validación de contraseñas
+                if (password !== confirmarPassword) {
+                    alert("Las contraseñas no coinciden.");
+                    return;
+                }
+                const registroDTO = {
+                    nombre,
+                    correoElectronico,
+                    edad,
+                    peso,
+                    altura,
+                    nivelActividad,
+                    metaSalud,
+                    tipoDieta,
+                    password
+                };
+                try {
+                    //evalua como el api rest devuelve el token o cómo proteges tu ruta privada con jwtAuthFilter.
+                    const response = await fetch('http://localhost:8080/api/auth/registro', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(registroDTO)
+                    });
+
+                    if (response.ok) {
+                        alert("Usuario registrado con éxito. Inicia sesión.");
+                        window.location.href = "/login"; // Redirige al login
+                    } else {
+                        const errorText = await response.text();
+                        alert("Error al registrar: " + errorText);
+                    }
+                } catch (error) {
+                    console.error("Error al registrar usuario:", error);
+                    alert("Error en la solicitud de registro.");
+                }
+            });
+        });
+        // document.getElementById('registerBtn').addEventListener('click', () => {
+        //     window.location.href = '/registro'; // O la ruta que corresponda en tu app
+        // });
+        // function updateNav() {
+        //     fetch('/navbar-fragment', {
+        //         headers: {
+        //             'Authorization': 'Bearer ' + auth.obtenerToken() // Asegurarte de enviar el token en los headers
+        //         }
+        //     })
+        //         .then(response => response.text())
+        //         .then(html => {
+        //             document.getElementById('navbar-container').innerHTML = html;
+        //         })
+        //         .catch(error => console.error('Error al cargar el navbar:', error));
+        // }
+
+    </script>
 </body>
 
 </html>

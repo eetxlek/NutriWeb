@@ -3,8 +3,6 @@ package nutricion.hexagonal.infra.persistencia.entidades;
 import jakarta.persistence.Column;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,7 +19,7 @@ public class UsuarioEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario")
-    private int idUsuario;
+    private int id;
 
     @Column(name = "nombre")
     private String nombre;
@@ -61,7 +59,7 @@ public class UsuarioEntity {
     }
 
     public UsuarioEntity(int idUsuario, String correoElectronico, String contraseña, String tipoUsuario) {
-        this.idUsuario = idUsuario;
+        this.id = idUsuario;
         this.correoElectronico = correoElectronico;
         this.contraseña = contraseña;
         this.tipoUsuario = tipoUsuario;
@@ -69,7 +67,7 @@ public class UsuarioEntity {
 
     public UsuarioEntity(int idUsuario, String nombre, String correoElectronico, String contraseña, int edad, float peso,
             float altura, String nivelActividad, String metaSalud, String tipoDieta, String tipoUsuario) {
-        this.idUsuario = idUsuario;
+        this.id = idUsuario;
         this.nombre = nombre;
         this.correoElectronico = correoElectronico;
         this.contraseña = contraseña;
@@ -83,11 +81,11 @@ public class UsuarioEntity {
     }
 
     public int getIdUsuario() {
-        return idUsuario;
+        return id;
     }
 
     public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
+        this.id = idUsuario;
     }
 
     public String getNombre() {

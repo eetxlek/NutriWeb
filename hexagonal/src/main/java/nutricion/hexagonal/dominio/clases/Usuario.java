@@ -5,7 +5,7 @@ package nutricion.hexagonal.dominio.clases;
 
 //SIMPLE MODELO 
 public class Usuario {
-    private int idUsuario; // Correspondiente a `id_usuario`
+    private int id; // Correspondiente a `id_usuario`
     private String nombre; // Correspondiente a `nombre`
     private String correoElectronico; // Correspondiente a `correo_electronico`
     private String contraseña; // Correspondiente a `contraseña` (guardada encriptada)
@@ -18,9 +18,11 @@ public class Usuario {
     private String tipoUsuario; // Correspondiente a `tipo_usuario` (ENUM)
 
 
+    public Usuario() {
+    }
     public Usuario(int idUsuario, String nombre, String correoElectronico, String contraseña, int edad, float peso,
             float altura, String nivelActividad, String metaSalud, String tipoDieta, String tipoUsuario) {
-        this.idUsuario = idUsuario;
+        this.id = idUsuario;
         this.nombre = nombre;
         this.correoElectronico = correoElectronico;
         this.contraseña = contraseña;
@@ -33,16 +35,16 @@ public class Usuario {
         this.tipoUsuario = tipoUsuario;
     }
     public Usuario(int idUsuario, String correoElectronico, String contraseña, String tipoUsuario) {
-        this.idUsuario = idUsuario;
+        this.id = idUsuario;
         this.correoElectronico = correoElectronico;
         this.contraseña = contraseña;
         this.tipoUsuario = tipoUsuario;
     }
     public int getIdUsuario() {
-        return idUsuario;
+        return id;
     }
     public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
+        this.id = idUsuario;
     }
     public String getNombre() {
         return nombre;

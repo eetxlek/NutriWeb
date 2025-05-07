@@ -216,12 +216,15 @@
         <!-- Aquí se cargarán los productos dinámicamente -->
     </div>
     <!-- Formulario para enviar los datos del producto -->
-    <div id="product-form">
+    <div id="product-form" sec:authorize="isAuthenticated()">
         <h3>Formulario del Producto</h3>
         <!--   <form action="http://localhost:8080/apinutricion/api/consumo" method="POST"></form> sin necesidad de fetch??? in dont think so-->
         <form id="form-product" onsubmit="submitProduct(event)">
             <label for="product-name">Nombre:</label>
             <input type="text" id="product-name" readonly>
+
+            <label for="energyKcal">Energia:</label>
+            <input type="text" id="energyKcal" readonly>
 
             <label for="product-fat">Grasas (g):</label>
             <input type="text" id="product-fat" readonly>
@@ -327,7 +330,7 @@
                 if (seen.has(productName)) {
                     return false;
                 }
-                const kcal = product.energy - kcal_100g || "No disponible";
+                const kcal = product["energy-kcal_100g"] || "No disponible";
                 const fat = product.fat_100g || "No disponible";
                 const carbs = product.carbohydrates_100g || "No disponible";
                 const proteins = product.proteins_100g || "No disponible";
@@ -351,7 +354,7 @@
 
                 const productName = product.product_name || "Producto sin nombre";
                 const brand = product.brands || "Marca no disponible";
-                const kcal = product.energy - kcal_100g || "Kcal no disponible";
+                const kcal = product["energy-kcal_100g"] || "Kcal no disponible";
                 const fat = product.fat_100g || "No disponible";
                 const carbs = product.carbohydrates_100g || "No disponible";
                 const proteins = product.proteins_100g || "No disponible";
@@ -363,17 +366,17 @@
                   <h3 class="product-name">${productName}</h3>
                     <img src="${productImage}" alt="Imagen del producto" />
                     <div class="product-meta">
-                    <p><strong>Marca:</strong> ${brand}</p> 
-                    <p><strong>Kcal 100g:</strong> ${kcal}g</p>
+                        <p><strong>Marca:</strong> ${brand}</p> 
+                        <p><strong>Kcal 100g:</strong> ${kcal}g</p>
                     </div>
                     <div class="product-nutrients">
-                    <p><strong>Grasas:</strong> ${fat}g</p>
-                    <p><strong>Carbohidratos:</strong> ${carbs}g</p>
-                    <p><strong>Proteínas:</strong> ${proteins}g</p>
-                    <p><strong>Azúcares:</strong> ${sugars}g</p>
-                    <p><strong>Fibra:</strong> ${fiber}g</p>
+                        <p><strong>Grasas:</strong> ${fat}g</p>
+                        <p><strong>Carbohidratos:</strong> ${carbs}g</p>
+                        <p><strong>Proteínas:</strong> ${proteins}g</p>
+                        <p><strong>Azúcares:</strong> ${sugars}g</p>
+                        <p><strong>Fibra:</strong> ${fiber}g</p>
                     </div>
-                    <button class="select-product-btn">Seleccionar</button>
+                    <button class="select-product-btn" sec:authorize="isAuthenticated()">Seleccionar</button>
                 `;
                 // Añadir event listener después de crear el elemento
                 const selectBtn = productItem.querySelector('.select-product-btn');
@@ -388,7 +391,7 @@
         // Función para seleccionar un producto y cargarlo en el formulario
         function selectProduct(product) {
             document.getElementById("product-name").value = product.product_name || "";
-            document.getElementById("product-name").value = product.product_name || "";
+            document.getElementById("energyKcal").value = product["energy-kcal_100g"] || "";
             document.getElementById("product-fat").value = product.fat_100g || "";
             document.getElementById("product-carbs").value = product.carbohydrates_100g || "";
             document.getElementById("product-protein").value = product.proteins_100g || "";

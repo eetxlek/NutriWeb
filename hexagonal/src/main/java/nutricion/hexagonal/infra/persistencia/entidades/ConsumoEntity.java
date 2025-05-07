@@ -8,21 +8,24 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Table;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-@Table(name = "Consumo")
 public class ConsumoEntity {
-        @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_despensa;
 
-    @Column(name = "id_usuario")
-    private Integer idUsuario;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_consumo")
+    private Integer id;
+
+    // @Column(name = "id_usuario")
+    // private Integer idUsuario;
+    @ManyToOne
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
+    private UsuarioEntity usuario;  // Relación con UsuarioEntity
 
     @ManyToOne
-    @JoinColumn(name = "id_producto")
+    @JoinColumn(name = "id_producto", referencedColumnName = "id_producto")
     private ProductoEntity producto;
 
     private Integer cantidad;
@@ -30,32 +33,29 @@ public class ConsumoEntity {
     @Column(name = "fecha_consumo")
     private LocalDate fechaConsumo;
 
-    public ConsumoEntity() {
-    }
+    public ConsumoEntity() {}
 
-    public ConsumoEntity(Integer id_despensa, Integer idUsuario, ProductoEntity producto, Integer cantidad,
-            LocalDate fechaConsumo) {
-        this.id_despensa = id_despensa;
-        this.idUsuario = idUsuario;
+    public ConsumoEntity(ProductoEntity producto, UsuarioEntity usuario, Integer cantidad, LocalDate fechaConsumo) {
         this.producto = producto;
+        this.usuario = usuario;
         this.cantidad = cantidad;
         this.fechaConsumo = fechaConsumo;
     }
 
-    public Integer getId_despensa() {
-        return id_despensa;
+    public Integer getId() {
+        return id;
     }
 
-    public void setId_despensa(Integer id_despensa) {
-        this.id_despensa = id_despensa;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
-    public Integer getIdUsuario() {
-        return idUsuario;
+    public UsuarioEntity getIdUsuario() {
+        return usuario;
     }
 
-    public void setIdUsuario(Integer idUsuario) {
-        this.idUsuario = idUsuario;
+    public void setIdUsuario(UsuarioEntity usuario) {
+        this.usuario = usuario;
     }
 
     public ProductoEntity getProducto() {
@@ -82,6 +82,7 @@ public class ConsumoEntity {
         this.fechaConsumo = fechaConsumo;
     }
 
-    
-
+    // Getters y setters...
 }
+
+    

@@ -1,53 +1,220 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Productos - OpenFoodFacts</title>
+    <title>Lista de Productos - Frescos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome (si usás íconos como el `fa-leaf`) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        :root {
+            --primary-color: #6db33f;
+            --secondary-color: #343a40;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
         }
+
+        .navbar {
+            background-color: var(--secondary-color);
+        }
+
+        .navbar a {
+            color: var(--light-color);
+            /* Para asegurarse de que los enlaces sean visibles en el navbar */
+        }
+
+        .navbar a:hover {
+            color: var(--primary-color);
+            /* Color de los enlaces al pasar el ratón */
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #5a9e34;
+            border-color: #5a9e34;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* 🔍 Search box más grande */
+        .search-box {
+            margin: 2rem auto;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .search-box input[type="text"] {
+            padding: 0.75rem;
+            font-size: 1.25rem;
+            flex-grow: 1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .search-box button {
+            padding: 0.75rem 2rem;
+            font-size: 1.25rem;
+            background-color: var(--primary-color);
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-box button:hover {
+            background-color: #5a9e34;
+        }
+
         .product-list {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
+            justify-content: center;
+            /* o space-between o flex-start */
+            padding: 1rem;
         }
+
         .product-item {
-            width: 200px;
+            flex: 1 1 200px;
+            /* Mínimo 200px, crece si hay espacio */
+            max-width: 250px;
+            background-color: white;
             padding: 15px;
             border: 1px solid #ddd;
             border-radius: 10px;
-            text-align: center;
+            text-align: left;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
+
+        .product-item h3 {
+            height: 2.6em;
+            /* Aproximadamente 2 líneas */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            text-overflow: ellipsis;
+            line-clamp: 2;
+            /* soporte futuro */
+            overflow: hidden;
+            text-align: left;
+            margin: 10px 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
         .product-item img {
             max-width: 100%;
-            max-height: 150px;
-            object-fit: contain;
+            max-height: 100px;
+            /* antes tenías 150px */
+            object-fit: cover;
+            object-position: center;
+            margin-bottom: 10px;
         }
-        .search-box {
-            margin-bottom: 20px;
+
+        .product-name {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            font-weight: 1000;
+            text-transform: uppercase;
+        }
+
+        .product-meta {
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            color: var(--dark-color);
+        }
+
+        .product-nutrients {
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid #ccc;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+
+
+        /* 📝 Formulario más pequeño y compacto */
+        #product-form {
+            max-width: 400px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #product-form h3 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 0.75rem;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 0.2rem;
+            font-weight: bold;
+        }
+
+        form input[type="text"],
+        form input[type="number"],
+        form input[type="date"] {
+            width: 100%;
+            padding: 0.35rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .button-row {
             display: flex;
-            justify-content: center;
-            gap: 10px;
+            justify-content: space-between;
+            margin-top: 1rem;
         }
-        input[type="text"] {
-            padding: 5px;
-            font-size: 16px;
-            width: 300px;
-        }
-        button {
-            padding: 5px 15px;
-            font-size: 16px;
+
+        .button-row button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            font-size: 1rem;
+            border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 48%;
+            /* Opcional, para que ambos botones ocupen el mismo ancho */
+        }
+
+        .button-row button:hover {
+            background-color: #5a9e34;
         }
     </style>
-  
+    <script type="module" src="/auth.js" defer></script>
 </head>
+
 <body>
-   
+    <div id="navbar-container" th:replace="~{nav :: navbar}"></div>
     <div class="search-box">
-        <input type="text" id="search-input" placeholder="Buscar por nombre de producto...">
+        <input type="text" id="search-input" placeholder="Buscar producto...">
         <button onclick="searchProducts()">Buscar</button>
     </div>
 
@@ -64,92 +231,110 @@
                 return;
             }
 
-            const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(searchTerm)}&action=process&json=true&page_size=10&fields=product_name,brands,image_url,fat_100g,carbohydrates_100g,proteins_100g,sugars_100g,fiber_100g`;
+            const url = `http://localhost:8080/api/producto?nombre=${encodeURIComponent(searchTerm)}`;
 
             try {
                 // Realizar la solicitud GET
                 const response = await fetch(url);
+                if (!response.ok) {
+                    alert('No se pudo obtener la respuesta del servidor.');
+                }
                 const data = await response.json();
 
                 // Verificar si hay productos en la respuesta
-                if (data.count > 0) {
-					const uniqueProducts = filterUniqueProducts(data.products);
-                    updateProductList(uniqueProducts);
+                if (data.length > 0) {
+                    updateProductList(data); // Puedes reutilizar la misma función de renderizado
                 } else {
                     alert("No se encontraron productos.");
                 }
             } catch (error) {
-                console.error("Error al obtener productos:", error);
+                //console.error("Error al obtener productos:", error);
                 alert("Hubo un error al buscar los productos.");
             }
         }
-		function filterUniqueProducts(products) {
-		    const seen = new Set();
-		    return products.filter(product => {
-		        const productName = product.product_name;  // Usamos el "product_name" como identificador único, en minúsculas para evitar diferencias de mayúsculas/minúsculas
-		        if (seen.has(productName)) {
-		            return false;  // Si ya hemos visto este nombre, no lo agregamos
-		        }
-		            const fat = product.fat_100g || "No disponible";
-			        const carbs = product.carbohydrates_100g || "No disponible";
-			        const proteins = product.proteins_100g || "No disponible";
-			        const sugars = product.sugars_100g || "No disponible";
-			        const fiber = product.fiber_100g || "No disponible";
-			        if (fat === "No disponible" || carbs === "No disponible" || proteins === "No disponible" || sugars === "No disponible" || fiber === "No disponible") {
-            			return false;  // No añadir a la lista si los valores son "No disponible"
-        			}
-		        
-		        seen.add(productName);
-		        return true;
-		    });
-		}
+        function formatNumber(value) {
+            const num = parseFloat(value);
+    return isNaN(num) ? "0" : num.toFixed(1); // Muestra 2 decimales
+        }
+        // function filterUniqueProducts(products) {
+        //     const seen = new Set();
+        //     return products.filter(product => {
+        //         const productName = product.product_name;  // Usamos el "product_name" como identificador único, en minúsculas para evitar diferencias de mayúsculas/minúsculas
+        //         if (seen.has(productName)) {
+        //             return false;  // Si ya hemos visto este nombre, no lo agregamos
+        //         }
+        //         const fat = product.grasas || "No disponible";
+        //         const carbs = product.carbohidratos || "No disponible";
+        //         const proteins = product.proteinas || "No disponible";
+        //         const sugars = product.azucares || "No disponible";
+        //         const fiber = product.fibra || "No disponible";
+        //         if (fat === "No disponible" || carbs === "No disponible" || proteins === "No disponible" || sugars === "No disponible" || fiber === "No disponible") {
+        //             return false;  // No añadir a la lista si los valores son "No disponible"
+        //         }
+
+        //         seen.add(productName);
+        //         return true;
+        //     });
+        // }
         // Función para actualizar la lista de productos
-        function updateProductList(products) {
+        function updateProductList(data) {
             const productListDiv = document.getElementById("product-list");
             productListDiv.innerHTML = ""; // Limpiar lista previa
 
             // Iterar sobre los productos y agregar a la lista
-            products.forEach(product => {
+            data.forEach(product => {
                 const productItem = document.createElement("div");
                 productItem.classList.add("product-item");
 
                 // Crear el contenido de cada producto
-                const productName = product.product_name || "Producto sin nombre";
-                const brand = product.brands || "Marca no disponible"; 
-                
-                const fat = product.fat_100g || "No disponible";
-                const carbs = product.carbohydrates_100g || "No disponible";
-                const proteins = product.proteins_100g || "No disponible";
-                const sugars = product.sugars_100g || "No disponible";
-                const fiber = product.fiber_100g || "No disponible";
-                const productImage = product.image_url || "https://via.placeholder.com/150";
+                const productName = product.nombre || "Producto sin nombre";
+
+                const fat = product.grasas || "No disponible";
+                const carbs = product.carbohidratos || "No disponible";
+                const proteins = product.proteinas || "No disponible";
+                const sugars = product.azucares || "No disponible";
+                const fiber = product.fibra || "No disponible";
+                const vitaminC = product.vitaminaC || "No disponible";
+                const potassium = product.potasio || "No disponible";
+                const calcium = product.calcio || "No disponible";
+                const magnesium = product.magnesio || "No disponible";
+                const iron = product.hierro || "No disponible";
+
 
                 productItem.innerHTML = `
 
                     <h3>${productName}</h3>
-                    <p><strong>Marca:</strong> ${brand}</p> 
-                    <img src="${productImage}" alt="Imagen del producto" />
-                    <p><strong>Grasas:</strong> ${fat}g</p>
-                    <p><strong>Carbohidratos:</strong> ${carbs}g</p>
-                    <p><strong>Proteínas:</strong> ${proteins}g</p>
-                    <p><strong>Azúcares:</strong> ${sugars}g</p>
-                    <p><strong>Fibra:</strong> ${fiber}g</p>
+                      <div class="product-nutrients">
+                            <p><strong>Grasas:</strong> ${formatNumber(fat)} g</p>
+                            <p><strong>Carbohidratos:</strong> ${formatNumber(carbs)} g</p>
+                            <p><strong>Proteínas:</strong> ${formatNumber(proteins)} g</p>
+                      </div>
+                    <p><strong>Azúcares:</strong> ${formatNumber(sugars)} g</p>
+                    <p><strong>Fibra:</strong> ${formatNumber(fiber)} g</p>
+                    <div class="product-nutrients">
+                        <p><strong>Vitamina C:</strong> ${formatNumber(vitaminC)} mg</p>
+                        <p><strong>Potasio:</strong> ${formatNumber(potassium)} mg</p>
+                        <p><strong>Calcio:</strong> ${formatNumber(calcium)} mg</p>
+                        <p><strong>Magnesio:</strong> ${formatNumber(magnesium)} mg</p>
+                        <p><strong>Hierro:</strong> ${formatNumber(iron)} mg</p>
+                    </div>
+                     <button class="select-product-btn" sec:authorize="isAuthenticated()">Seleccionar</button>
                 `;
 
                 productListDiv.appendChild(productItem);
             });
         }
-        
-         // Función para rellenar el formulario con los datos del producto seleccionado
-         function fillFormWithProductData(product) {
+
+        // Función para rellenar el formulario con los datos del producto seleccionado
+        function fillFormWithProductData(product) {
             document.getElementById("product-name").value = product.product_name || "";
             document.getElementById("product-fat").value = product.fat_100g || "";
             document.getElementById("product-carbs").value = product.carbohydrates_100g || "";
             document.getElementById("product-protein").value = product.proteins_100g || "";
-            
+
             // Establecer valores por defecto para los otros campos
             document.getElementById("product-quantity").value = "1";
-            
+
             // Establecer la fecha actual como valor por defecto
             const today = new Date();
             const formattedDate = today.toISOString().substr(0, 10);
@@ -157,5 +342,5 @@
         }
     </script>
 </body>
-</html>
 
+</html>

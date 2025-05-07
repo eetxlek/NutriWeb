@@ -12,30 +12,30 @@ import jakarta.persistence.Table;
 public class ProductoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_producto;
+    @Column(name = "id_producto")
+    private Integer id;
 
     @Column(name = "nombre_producto")
     private String nombreProducto;
 
+    @Column(name = "descripcion")
     private String descripcion;
-
-    
-
-    public ProductoEntity(Integer id_producto, String nombreProducto, String descripcion) {
-        this.id_producto = id_producto;
-        this.nombreProducto = nombreProducto;
-        this.descripcion = descripcion;
-    }
 
     public ProductoEntity() {
     }
 
+    public ProductoEntity(Integer id_producto, String nombreProducto, String descripcion) {
+        this.id = id_producto;
+        this.nombreProducto = nombreProducto;
+        this.descripcion = descripcion;
+    }    
+
     public Integer getId_producto() {
-        return id_producto;
+        return id;
     }
 
     public void setId_producto(Integer id_producto) {
-        this.id_producto = id_producto;
+        this.id = id_producto;
     }
 
     public String getNombreProducto() {

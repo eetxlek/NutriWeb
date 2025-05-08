@@ -200,7 +200,6 @@
             background-color: #5a9e34;
         }
     </style>
-
     <script type="module" src="/auth.js" defer></script>
 </head>
 
@@ -253,6 +252,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+
         // Función para realizar la llamada a la API y actualizar la lista de productos
         const cache = new Map();
 
@@ -305,8 +305,8 @@
                 return;
             }
 
-            const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(searchTerm)}&action=process&json=true&page_size=5&fields=product_name,brands,image_url,energy-kcal_100g,fat_100g,carbohydrates_100g,proteins_100g,sugars_100g,fiber_100g`;
-
+            //const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(searchTerm)}&action=process&json=true&page_size=5&fields=product_name,brands,image_url,energy-kcal_100g,fat_100g,carbohydrates_100g,proteins_100g,sugars_100g,fiber_100g`;
+            const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(searchTerm)}&action=process&json=true&page_size=3&fields=product_name,brands,image_url,energy-kcal_100g,fat_100g,carbohydrates_100g,proteins_100g,sugars_100g,fiber_100g,vitamin-c_100g,potassium_100g,calcium_100g,magnesium_100g,iron_100g`;
             try {
                 const data = await fetchWithRetries(url);
                 if (data.count > 0) {
@@ -319,7 +319,7 @@
                 }
             } catch (error) {
                 console.error("Error al obtener productos:", error);
-                alert("Hubo un error al buscar los productos.  ${error.message}");
+                alert(`Hubo un error al buscar los productos: ${error.message}`);
             }
         }
 
@@ -330,15 +330,21 @@
                 if (seen.has(productName)) {
                     return false;
                 }
-                const kcal = product["energy-kcal_100g"] || "No disponible";
-                const fat = product.fat_100g || "No disponible";
-                const carbs = product.carbohydrates_100g || "No disponible";
-                const proteins = product.proteins_100g || "No disponible";
-                const sugars = product.sugars_100g || "No disponible";
-                const fiber = product.fiber_100g || "No disponible";
-                if (kcal == "No disponible" || fat === "No disponible" || carbs === "No disponible" || proteins === "No disponible" || sugars === "No disponible" || fiber === "No disponible") {
-                    return false;
-                }
+                // Verificar que al menos los macronutrientes estén presentes
+                const macronutrientFields = [
+                    "energy-kcal_100g", "fat_100g", "carbohydrates_100g", "proteins_100g",
+                    "sugars_100g", "fiber_100g"
+                ];
+                // Verifica si los campos básicos (macronutrientes) están presentes
+                const allMacronutrientsPresent = macronutrientFields.every(field => product[field] !== undefined && product[field] !== null);
+                // Si los campos básicos no están presentes, no se debe incluir el producto
+                if (!allMacronutrientsPresent) return false;
+
+                const optionalFields = [
+                    "vitamin-c_100g", "potassium_100g", "calcium_100g", "magnesium_100g", "iron_100g"
+                ];
+                const allFieldsPresent = optionalFields.every(field => product[field] !== undefined && product[field] !== null);
+
                 seen.add(productName);
                 return true;
             });
@@ -354,35 +360,63 @@
 
                 const productName = product.product_name || "Producto sin nombre";
                 const brand = product.brands || "Marca no disponible";
-                const kcal = product["energy-kcal_100g"] || "Kcal no disponible";
-                const fat = product.fat_100g || "No disponible";
-                const carbs = product.carbohydrates_100g || "No disponible";
-                const proteins = product.proteins_100g || "No disponible";
-                const sugars = product.sugars_100g || "No disponible";
-                const fiber = product.fiber_100g || "No disponible";
+                const kcal = product["energy-kcal_100g"];
+                const fat = product.fat_100g;
+                const carbs = product.carbohydrates_100g;
+                const proteins = product.proteins_100g;
+                const sugars = product.sugars_100g;
+                const fiber = product.fiber_100g;
+                const vitaminC = product["vitamin-c_100g"];
+                const potassium = product["potassium_100g"];
+                const calcium = product["calcium_100g"];
+                const magnesium = product["magnesium_100g"];
+                const iron = product["iron_100g"];
                 const productImage = product.image_url || "https://via.placeholder.com/150";
-                //el objeto json no se reconstruye completamenta al pasar a string y despues.
+
+                // Construir HTML condicional para nutrientes disponibles
+                let nutrientsHtml = `
+                <p><strong>Grasas:</strong> ${fat ? fat + 'g' : ''}</p>
+                <p><strong>Carbohidratos:</strong> ${carbs ? carbs + 'g' : ''}</p>
+                <p><strong>Proteínas:</strong> ${proteins ? proteins + 'g' : ''}</p>
+                <p><strong>Azúcares:</strong> ${sugars ? sugars + 'g' : ''}</p>
+                <p><strong>Fibra:</strong> ${fiber ? fiber + 'g' : ''}</p>
+            `;
+                // Campos opcionales
+                if (vitaminC) nutrientsHtml += `<p><strong>Vitamina C:</strong> ${vitaminC}mg</p>`;
+                if (potassium) nutrientsHtml += `<p><strong>Potasio:</strong> ${potassium}mg</p>`;
+                if (calcium) nutrientsHtml += `<p><strong>Calcio:</strong> ${calcium}mg</p>`;
+                if (magnesium) nutrientsHtml += `<p><strong>Magnesio:</strong> ${magnesium}mg</p>`;
+                if (iron) nutrientsHtml += `<p><strong>Hierro:</strong> ${iron}mg</p>`;
+
+                // Solo mostrar los nutrientes si al menos uno está disponible
+                if (nutrientsHtml.trim() === '') {
+                    nutrientsHtml = '<p><em>No hay información de nutrientes disponible</em></p>';
+                }
+
                 productItem.innerHTML = `
-                  <h3 class="product-name">${productName}</h3>
-                    <img src="${productImage}" alt="Imagen del producto" />
-                    <div class="product-meta">
-                        <p><strong>Marca:</strong> ${brand}</p> 
-                        <p><strong>Kcal 100g:</strong> ${kcal}g</p>
-                    </div>
-                    <div class="product-nutrients">
-                        <p><strong>Grasas:</strong> ${fat}g</p>
-                        <p><strong>Carbohidratos:</strong> ${carbs}g</p>
-                        <p><strong>Proteínas:</strong> ${proteins}g</p>
-                        <p><strong>Azúcares:</strong> ${sugars}g</p>
-                        <p><strong>Fibra:</strong> ${fiber}g</p>
-                    </div>
-                    <button class="select-product-btn" sec:authorize="isAuthenticated()">Seleccionar</button>
-                `;
-                // Añadir event listener después de crear el elemento
+                <h3 class="product-name">${productName}</h3>
+                <img src="${productImage}" alt="Imagen del producto" />
+                <div class="product-meta">
+                    <p><strong>Marca:</strong> ${brand}</p>
+                    <p><strong>Kcal 100g:</strong> ${kcal}g</p>
+                </div>
+                <div class="product-nutrients">
+                    ${nutrientsHtml}
+                </div>
+                <button class="select-product-btn btn btn-primary text-white">Seleccionar</button>
+            `;
+                // Seleccionar el botón "Seleccionar"
                 const selectBtn = productItem.querySelector('.select-product-btn');
-                selectBtn.classList.add('btn', 'btn-primary', 'text-white');
+
+                // Añadir event listener para manejar la autenticación
                 selectBtn.addEventListener('click', () => {
-                    selectProduct(product); // Pasamos el objeto product directamente
+                    // Verificar si el usuario está autenticado
+                    if (!localStorage.getItem('authToken') || !auth.estaAutenticado()) {
+                        alert("Debes iniciar sesión para seleccionar un producto.");
+                    } else {
+                        // Si está autenticado, proceder con la selección del producto
+                        selectProduct(product);
+                    }
                 });
                 productListDiv.appendChild(productItem);
             });
@@ -395,6 +429,13 @@
             document.getElementById("product-fat").value = product.fat_100g || "";
             document.getElementById("product-carbs").value = product.carbohydrates_100g || "";
             document.getElementById("product-protein").value = product.proteins_100g || "";
+            document.getElementById("product-sugars").value = product.sugars_100g || "";
+            document.getElementById("product-fiber").value = product.fiber_100g || "";
+            document.getElementById("product-vitaminC").value = product["vitamin-c_100g"] || "";
+            document.getElementById("product-potassium").value = product["potassium_100g"] || "";
+            document.getElementById("product-calcium").value = product["calcium_100g"] || "";
+            document.getElementById("product-magnesium").value = product["magnesium_100g"] || "";
+            document.getElementById("product-iron").value = product["iron_100g"] || "";
 
             // Establecer cantidad por defecto a 1
             document.getElementById("product-quantity").value = "1";
@@ -406,19 +447,35 @@
 
         // Función para hacer el POST con los datos del producto
         async function submitProduct(event) {
+            if (!auth.estaAutenticado()) {
+                alert("Debes iniciar sesión para enviar productos.");
+                return;
+            }
+            //decide el endpoint al que enviar 
+            const action = event.submitter.value;
+            const baseurl = 'https://localhost:8080';
+            const url = action === "consumo" ? baseurl + "/api/consumo" : baseurl + "/api/despensa";
             event.preventDefault();  // Prevenir el envío por defecto del formulario
 
             const productData = {
-                name: document.getElementById("product-name").value,
-                fat: document.getElementById("product-fat").value,
-                carbs: document.getElementById("product-carbs").value,
-                protein: document.getElementById("product-protein").value,
-                quantity: document.getElementById("product-quantity").value,
-                purchaseDate: document.getElementById("purchase-date").value
+                nombre: document.getElementById("product-name").value,
+                calorias: parseFloat(document.getElementById("energyKcal").value) || 0,
+                grasas: parseFloat(document.getElementById("product-fat").value) || 0,
+                carbohidratos: parseFloat(document.getElementById("product-carbs").value) || 0,
+                proteinas: parseFloat(document.getElementById("product-protein").value) || 0,
+                azucares: parseFloat(document.getElementById("product-sugars").value) || 0,
+                fibra: parseFloat(document.getElementById("product-fiber").value) || 0,
+                vitaminaC: parseFloat(document.getElementById("product-vitaminC").value) || 0,
+                potasio: parseFloat(document.getElementById("product-potassium").value) || 0,
+                calcio: parseFloat(document.getElementById("product-calcium").value) || 0,
+                magnesio: parseFloat(document.getElementById("product-magnesium").value) || 0,
+                hierro: parseFloat(document.getElementById("product-iron").value) || 0,
+                cantidad: parseInt(document.getElementById("product-quantity").value) || 1,
+                fechaCompra: document.getElementById("purchase-date").value
             };
 
             try {
-                const response = await fetch('https://localhost:8080/api/despensa', {
+                const response = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -438,7 +495,7 @@
         }
 
         // Cargar caché del almacenamiento local al inicio
-    loadCacheFromLocalStorage();
+        loadCacheFromLocalStorage();
     </script>
 </body>
 

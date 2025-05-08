@@ -36,8 +36,8 @@ public class DespensaRepoImple implements DespensaRepoSalida {
     }
 
     @Override
-    public Optional<Despensa> findDespensaByUsuarioIdAndProductoId(int idUsuario, Integer idProducto) {
-        return jpa.findDespensaByUsuarioIdAndProductoId(idUsuario, idProducto).map(entity -> toDomain((entity)));  // Convierte la entidad a dominio
+    public Optional<Despensa> findByUsuarioCorreoElectronicoAndProductoId(String email, Integer idProducto) {
+        return jpa.findByUsuarioCorreoElectronicoAndProductoId(email, idProducto).map(entity -> toDomain((entity)));  // Convierte la entidad a dominio
     }
 
     public DespensaEntity toEntity(Despensa despensa, ProductoEntity productoEntity, UsuarioEntity usuarioEntity) {
@@ -90,8 +90,8 @@ public class DespensaRepoImple implements DespensaRepoSalida {
     }
 
     @Override
-    public boolean existe(int idUsuario, Integer id) {
-        Optional<DespensaEntity> existente = jpa.findDespensaByUsuarioIdAndProductoId(idUsuario, id);
+    public boolean existe(String email, Integer id) {
+        Optional<DespensaEntity> existente = jpa.findByUsuarioCorreoElectronicoAndProductoId(email, id);
         // Si el Optional no está vacío, significa que ya existe la despensa
         return existente.isPresent();
     }

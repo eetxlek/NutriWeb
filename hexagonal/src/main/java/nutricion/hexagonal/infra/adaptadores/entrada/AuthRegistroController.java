@@ -16,12 +16,12 @@ import nutricion.hexagonal.infra.aplicacion.UsuarioService;
 //clasico adaptador de entrada, recibe, delega y responde. Acoplado a authmanager de springsec y a jwttokenprovider (servicio de tokens)
 @RestController
 @RequestMapping("/api/auth")
-public class AuthController {
+public class AuthRegistroController {
     private final UsuarioService usuarioService;
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthController(UsuarioService usuarioService,
+    public AuthRegistroController(UsuarioService usuarioService,
             JwtTokenProvider jwtTokenProvider) {
         this.usuarioService = usuarioService;
         this.jwtTokenProvider = jwtTokenProvider;

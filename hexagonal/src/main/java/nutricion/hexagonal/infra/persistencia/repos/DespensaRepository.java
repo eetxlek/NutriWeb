@@ -9,7 +9,7 @@ import nutricion.hexagonal.infra.persistencia.entidades.DespensaEntity;
 @Repository
 public interface DespensaRepository extends JpaRepository<DespensaEntity, Integer> {
     // Métodos adicionales si es necesario
-    Optional<DespensaEntity> findDespensaByUsuarioIdAndProductoId(int idUsuario, Integer idProducto);
+    Optional<DespensaEntity> findByUsuarioCorreoElectronicoAndProductoId(String correoElectronico, Integer idProducto);
 
     //Optional<ProductoEntity> findByUsuarioIdAndProducto_Id(int idUsuario, Integer idProducto);
 

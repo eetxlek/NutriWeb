@@ -221,8 +221,70 @@
     <div id="product-list" class="product-list">
         <!-- Aquí se cargarán los productos dinámicamente -->
     </div>
+    <!-- Formulario para enviar los datos del producto -->
+    <div id="product-form" sec:authorize="isAuthenticated()">
+        <h3>Formulario del Producto</h3>
+        <!--   <form action="http://localhost:8080/apinutricion/api/consumo" method="POST"></form> sin necesidad de fetch??? in dont think so-->
+        <form id="form-product" onsubmit="submitProduct(event)">
+            <label for="product-name">Nombre:</label>
+            <input type="text" id="product-name" readonly>
+
+            <label for="product-description">Descripción:</label>
+            <input type="text" id="product-description" readonly>
+
+            <label for="energyKcal">Energia:</label>
+            <input type="text" id="energyKcal" readonly>
+
+            <label for="product-fat">Grasas (g):</label>
+            <input type="text" id="product-fat" readonly>
+
+            <label for="product-carbs">Carbohidratos (g):</label>
+            <input type="text" id="product-carbs" readonly>
+
+            <label for="product-protein">Proteínas (g):</label>
+            <input type="text" id="product-protein" readonly>
+
+            <label for="product-sugars">Azúcares (g):</label>
+            <input type="text" id="product-sugars" readonly>
+
+            <label for="product-fiber">Fibra (g):</label>
+            <input type="text" id="product-fiber" readonly>
+
+            <label for="product-vitaminC">Vitamina C (mg):</label>
+            <input type="text" id="product-vitaminC" readonly>
+
+            <label for="product-potassium">Potasio (mg):</label>
+            <input type="text" id="product-potassium" readonly>
+
+            <label for="product-calcium">Calcio (mg):</label>
+            <input type="text" id="product-calcium" readonly>
+
+            <label for="product-magnesium">Magnesio (mg):</label>
+            <input type="text" id="product-magnesium" readonly>
+
+            <label for="product-iron">Hierro (mg):</label>
+            <input type="text" id="product-iron" readonly>
+
+            <label for="product-quantity">Cantidad:</label>
+            <input type="number" id="product-quantity" value="1">
+
+            <label for="purchase-date">Fecha de compra:</label>
+            <input type="date" id="purchase-date">
+
+            <div class="button-row">
+                <button type="submit" name="action" value="despensa">Despensa</button>
+                <button type="submit" name="action" value="consumo">Consumo</button>
+            </div>
+        </form>
+    </div>
+    <footer>
+        <p>&copy; 2025 Nutrición inteligente, decisiones saludables. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+
         // Función para realizar la llamada a la API y actualizar la lista de productos
         async function searchProducts() {
             const searchTerm = document.getElementById("search-input").value;
@@ -252,31 +314,11 @@
                 alert("Hubo un error al buscar los productos.");
             }
         }
+
         function formatNumber(value) {
             const num = parseFloat(value);
-    return isNaN(num) ? "0" : num.toFixed(1); // Muestra 2 decimales
+            return isNaN(num) ? "0" : num.toFixed(1); //  1 decimal
         }
-        // function filterUniqueProducts(products) {
-        //     const seen = new Set();
-        //     return products.filter(product => {
-        //         const productName = product.product_name;  // Usamos el "product_name" como identificador único, en minúsculas para evitar diferencias de mayúsculas/minúsculas
-        //         if (seen.has(productName)) {
-        //             return false;  // Si ya hemos visto este nombre, no lo agregamos
-        //         }
-        //         const fat = product.grasas || "No disponible";
-        //         const carbs = product.carbohidratos || "No disponible";
-        //         const proteins = product.proteinas || "No disponible";
-        //         const sugars = product.azucares || "No disponible";
-        //         const fiber = product.fibra || "No disponible";
-        //         if (fat === "No disponible" || carbs === "No disponible" || proteins === "No disponible" || sugars === "No disponible" || fiber === "No disponible") {
-        //             return false;  // No añadir a la lista si los valores son "No disponible"
-        //         }
-
-        //         seen.add(productName);
-        //         return true;
-        //     });
-        // }
-        // Función para actualizar la lista de productos
         function updateProductList(data) {
             const productListDiv = document.getElementById("product-list");
             productListDiv.innerHTML = ""; // Limpiar lista previa
@@ -288,7 +330,6 @@
 
                 // Crear el contenido de cada producto
                 const productName = product.nombre || "Producto sin nombre";
-
                 const fat = product.grasas || "No disponible";
                 const carbs = product.carbohidratos || "No disponible";
                 const proteins = product.proteinas || "No disponible";
@@ -299,7 +340,6 @@
                 const calcium = product.calcio || "No disponible";
                 const magnesium = product.magnesio || "No disponible";
                 const iron = product.hierro || "No disponible";
-
 
                 productItem.innerHTML = `
 
@@ -318,8 +358,22 @@
                         <p><strong>Magnesio:</strong> ${formatNumber(magnesium)} mg</p>
                         <p><strong>Hierro:</strong> ${formatNumber(iron)} mg</p>
                     </div>
-                     <button class="select-product-btn" sec:authorize="isAuthenticated()">Seleccionar</button>
+                    <button class="select-product-btn btn btn-primary text-white">Seleccionar</button>
                 `;
+
+                // Seleccionar el botón "Seleccionar"
+                const selectBtn = productItem.querySelector('.select-product-btn');
+
+                // Añadir event listener para manejar la autenticación
+                selectBtn.addEventListener('click', () => {
+                    // Verificar si el usuario está autenticado
+                    if (!localStorage.getItem('authToken') || !auth.estaAutenticado()) {
+                        alert("Debes iniciar sesión para seleccionar un producto.");
+                    } else {
+                        // Si está autenticado, proceder con la selección del producto
+                        fillFormWithProductData(product);
+                    }
+                });
 
                 productListDiv.appendChild(productItem);
             });
@@ -328,9 +382,18 @@
         // Función para rellenar el formulario con los datos del producto seleccionado
         function fillFormWithProductData(product) {
             document.getElementById("product-name").value = product.product_name || "";
+            document.getElementById("product-description").value = product.descripcion || "";
+            document.getElementById("energyKcal").value = product.calorias || "";
             document.getElementById("product-fat").value = product.fat_100g || "";
             document.getElementById("product-carbs").value = product.carbohydrates_100g || "";
             document.getElementById("product-protein").value = product.proteins_100g || "";
+            document.getElementById("product-sugars").value = product.azucares || "";
+            document.getElementById("product-fiber").value = product.fibra || "";
+            document.getElementById("product-vitaminC").value = product.vitaminaC || "";
+            document.getElementById("product-potassium").value = product.potasio || "";
+            document.getElementById("product-calcium").value = product.calcio || "";
+            document.getElementById("product-magnesium").value = product.magnesio || "";
+            document.getElementById("product-iron").value = product.hierro || "";
 
             // Establecer valores por defecto para los otros campos
             document.getElementById("product-quantity").value = "1";
@@ -339,6 +402,56 @@
             const today = new Date();
             const formattedDate = today.toISOString().substr(0, 10);
             document.getElementById("purchase-date").value = formattedDate;
+        }
+
+        // Función para hacer el POST con los datos del producto
+        async function submitProduct(event) {
+            if (!auth.estaAutenticado()) {
+                alert("Debes iniciar sesión para enviar productos.");
+                return;
+            }
+            //decide el endpoint al que enviar 
+            const action = event.submitter.value;
+            const baseurl = 'https://localhost:8080';
+            const url = action === "consumo" ? baseurl + "/api/consumo" : baseurl + "/api/despensa";
+            event.preventDefault();  // Prevenir el envío por defecto del formulario
+
+            const productData = {
+                nombre: document.getElementById("product-name").value,
+                descripcion: document.getElementById("product-description").value,
+                calorias: parseFloat(document.getElementById("energyKcal").value) || 0,
+                grasas: parseFloat(document.getElementById("product-fat").value) || 0,
+                carbohidratos: parseFloat(document.getElementById("product-carbs").value) || 0,
+                proteinas: parseFloat(document.getElementById("product-protein").value) || 0,
+                azucares: parseFloat(document.getElementById("product-sugars").value) || 0,
+                fibra: parseFloat(document.getElementById("product-fiber").value) || 0,
+                vitaminaC: parseFloat(document.getElementById("product-vitaminC").value) || 0,
+                potasio: parseFloat(document.getElementById("product-potassium").value) || 0,
+                calcio: parseFloat(document.getElementById("product-calcium").value) || 0,
+                magnesio: parseFloat(document.getElementById("product-magnesium").value) || 0,
+                hierro: parseFloat(document.getElementById("product-iron").value) || 0,
+                cantidad: parseInt(document.getElementById("product-quantity").value) || 1,
+                fechaCompra: document.getElementById("purchase-date").value
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(productData),
+                });
+
+                if (response.ok) {
+                    alert("Producto enviado correctamente.");
+                } else {
+                    alert("Error al enviar el producto.");
+                }
+            } catch (error) {
+                console.error("Error al enviar los datos:", error);
+                alert("Hubo un error al enviar los datos.");
+            }
         }
     </script>
 </body>

@@ -42,7 +42,7 @@ public class SecurityConfig {
                                                                                                         // antes de
                                                                                                         // UsernamePasswordAuthenticationFilter
                                 .authorizeHttpRequests(auth -> auth
-                                                .requestMatchers("/", "/login", "/registro", "/landing",
+                                                .requestMatchers("/", "/login", "/registro", "/landing", "/editar-perfil",
                                                                 "/api/auth/login","/productosapi", "/perfil", "/productos", "/api/producto/**", "/api/auth/**", "/error",
                                                                 "/auth.js","/navbar-fragment", "/login.js", "/css/**","/favicon.ico", "/js/**",
                                                                 "/images/**")

@@ -17,14 +17,14 @@
             justify-content: center;
             align-items: center;
         }
-    
+
         .modal-content {
             background-color: white;
             padding: 20px;
             border-radius: 5px;
             width: 400px;
         }
-    
+
         .close-btn {
             background-color: #e74c3c;
             color: white;
@@ -33,7 +33,7 @@
             cursor: pointer;
             border-radius: 5px;
         }
-    
+
         .close-btn:hover {
             background-color: #c0392b;
         }
@@ -46,7 +46,7 @@
             <h1>Editar Perfil</h1>
         </div>
 
-        <form th:action="@{/perfil/actualizar}" method="POST">
+        <form id="editProfileForm">
             <div class="profile-section">
                 <h2>Información Personal</h2>
                 <div class="profile-row">
@@ -96,7 +96,7 @@
                 <div class="profile-row">
                     <div class="profile-label">Tipo de dieta:</div>
                     <div class="profile-value">
-                        <input type="text"  name="tipoDieta" th:value="${usuario.tipoDieta}" required />
+                        <input type="text" name="tipoDieta" th:value="${usuario.tipoDieta}" required />
                     </div>
                 </div>
             </div>
@@ -104,6 +104,72 @@
             <button type="submit" class="edit-btn">Actualizar Perfil</button>
         </form>
     </div>
+    <script type="module">
+        import { auth } from '/auth.js';
+
+        window.addEventListener("DOMContentLoaded", () => {
+            const token = auth.obtenerToken();  // Obtener el token del almacenamiento local
+
+            // Verificar si el token existe y es válido
+            if (!token || !auth.estaAutenticado()) {
+                console.error("No hay token o el token no es válido, redirigiendo a login...");
+                window.location.href = "/login";  // Redirigir al login si no está autenticado
+                return;
+            }
+            // Aquí puedes hacer la lógica para cargar el perfil del usuario o cualquier otra acción
+            const btnActualizarPerfil = document.querySelector(".edit-btn");
+             // Verificar si el botón existe en la página y agregar el evento de clic
+        if (btnActualizarPerfil) {
+            btnActualizarPerfil.addEventListener("click", async (e) => {
+                e.preventDefault();  // Prevenir el comportamiento predeterminado del botón de formulario (si aplica)
+
+                // Verificar nuevamente el token antes de hacer la solicitud
+                if (!auth.obtenerToken() || !auth.estaAutenticado()) {
+                    console.error("No hay token o el token no es válido, redirigiendo a login...");
+                    window.location.href = "/login";
+                    return;
+                }
+
+                // Recolectar los datos del formulario
+                const usuarioData = {
+                    nombre: document.getElementById('nombre').value,
+                    correoElectronico: document.getElementById('correoElectronico').value,
+                    edad: document.getElementById('edad').value,
+                    peso: document.getElementById('peso').value,
+                    altura: document.getElementById('altura').value,
+                    nivelActividad: document.getElementById('nivelActividad').value,
+                    metaSalud: document.getElementById('metaSalud').value,
+                    tipoDieta: document.getElementById('tipoDieta').value,
+                };
+
+                try {
+                    const response = await auth.fetchConAutenticacion('/api/usuario/perfil', {
+                        method: 'PUT', // Asegúrate de que sea PUT
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${auth.obtenerToken()}`, // Asegúrate de incluir el token
+                        },
+                        body: JSON.stringify(usuarioData),
+                    });
+
+                    if (response.ok) {
+                        const updatedUser = await response.json();
+                        console.log("Perfil actualizado:", updatedUser);
+                        // Mostrar mensaje de éxito al usuario (puedes añadir más lógica aquí para actualizar la UI)
+                        alert("Perfil actualizado exitosamente");
+                    } else {
+                        console.error("Error al actualizar el perfil");
+                        // Aquí puedes añadir un mensaje de error si la actualización falla
+                        alert("Error al actualizar el perfil, por favor intenta nuevamente.");
+                    }
+                } catch (error) {
+                    console.error("Error al actualizar perfil:", error);
+                    window.location.href = "/login";  // Redirigir al login en caso de error
+                }
+            });
+        }
+    });
+    </script>
 </body>
 
 </html>

@@ -102,7 +102,7 @@
             </div>
 
             <div class="text-end">
-                <button class="btn btn-primary" onclick="editProfile()">Editar Perfil</button>
+                <a th:href="@{/editar-perfil}" class="btn btn-primary">Editar Perfil</a>  
             </div>
         </div>
     </div>
@@ -115,14 +115,14 @@
 
         window.addEventListener("DOMContentLoaded", async () => {
             const token = auth.obtenerToken();
-            
+
             console.error("Token obtenido para fetchAuth..." + token);
             if (!token) {
                 console.error("No hay token, redirigiendo a login...");
                 window.location.href = "/login";
                 return;
             }
-            updateNav(); 
+            updateNav();
             try {
                 const res = await auth.fetchConAutenticacion('/api/usuario/perfil');
                 if (res && res.ok) {
@@ -149,21 +149,37 @@
             }
         });
         function updateNav() {
-            fetch('/navbar-fragment', {
-                headers: {
-                    'Authorization': 'Bearer ' + auth.obtenerToken() // Asegurarte de enviar el token en los headers
-                }
-            })
+            fetch('/navbar-fragment')
                 .then(response => response.text())
                 .then(html => {
                     document.getElementById('navbar-container').innerHTML = html;
+
+                    const isAuthenticated = !!auth.obtenerToken() && auth.estaAutenticado();
+                    // Mostrar/ocultar enlaces
+                    document.querySelectorAll('.auth-only').forEach(el => {
+                        el.style.display = isAuthenticated ? '' : 'none';
+                    });
+                    document.querySelectorAll('.guest-only').forEach(el => {
+                        el.style.display = isAuthenticated ? 'none' : '';
+                    });
                 })
                 .catch(error => console.error('Error al cargar el navbar:', error));
         }
 
-        function editProfile() {
-            window.location.href = "/editar-perfil";
-        }
+    //     function irEditProfile() {
+    //     const token = auth.obtenerToken();  // Obtener token desde localStorage
+
+    //     // Verificar si el token es válido
+    //     if (!token || !auth.estaAutenticado()) {
+    //         console.error("No hay token o el token es inválido, Redirigiendo a login...");
+    //         window.location.href = "/login";  // Redirigir a login si no hay token o es inválido
+    //         return;
+    //     }
+
+    //     // Si el token es válido, redirigir a la página de editar perfil
+    //     console.log('Redirigiendo a /editar-perfil');
+    //     window.location.href = "/editar-perfil";
+    // }
     </script>
 </body>
 

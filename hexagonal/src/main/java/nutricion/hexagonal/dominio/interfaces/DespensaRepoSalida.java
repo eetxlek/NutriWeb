@@ -6,7 +6,7 @@ import nutricion.hexagonal.dominio.clases.Despensa;
 
 public interface DespensaRepoSalida {
     void guardar(Despensa d);
-    Optional<Despensa> findDespensaByUsuarioIdAndProductoId(int idUsuario, Integer id);
-    boolean existe(int idUsuario, Integer id);
+    Optional<Despensa> findByUsuarioCorreoElectronicoAndProductoId(String correoElectronico, Integer id);
+    boolean existe(String email, Integer id);
 }
 

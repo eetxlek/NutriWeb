@@ -4,16 +4,19 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import nutricion.hexagonal.dominio.clases.Composicion;
 import nutricion.hexagonal.dominio.clases.Consumo;
 import nutricion.hexagonal.dominio.clases.Despensa;
 import nutricion.hexagonal.dominio.clases.Producto;
+import nutricion.hexagonal.dominio.clases.Usuario;
 import nutricion.hexagonal.dominio.interfaces.ConsumoRepoSalida;
 import nutricion.hexagonal.dominio.interfaces.DespensaRepoSalida;
 import nutricion.hexagonal.dominio.interfaces.ProductoRepoSalida;
 import nutricion.hexagonal.infra.adaptadores.entrada.dto.ProductoDespensaDTO;
+import nutricion.hexagonal.infra.adaptadores.salida.security.UserPrincipalAdapter;
 import nutricion.hexagonal.infra.persistencia.entidades.ComposicionEntity;
 import nutricion.hexagonal.infra.persistencia.repos.ComposicionProductoRepository;
 import nutricion.hexagonal.infra.persistencia.repos.ComposicionRepoImple;
@@ -21,13 +24,16 @@ import nutricion.hexagonal.infra.persistencia.repos.ComposicionRepoImple;
 @Service
 public class ProductoService {
 
+    private final UsuarioService usuarioService; // Inyección de UsuarioService
     private final ProductoRepoSalida productoRepo;
     private final ComposicionProductoRepository composicionRepo; // repo de infra que extiende JPA
     private final DespensaRepoSalida despensaRepo;
     private final ConsumoRepoSalida consumoRepo;
 
-    public ProductoService(ProductoRepoSalida productoRepo, ComposicionProductoRepository composicionRepo,
+    public ProductoService(UsuarioService usuarioService, ProductoRepoSalida productoRepo,
+            ComposicionProductoRepository composicionRepo,
             DespensaRepoSalida despensaRepo, ConsumoRepoSalida consumoRepo) {
+        this.usuarioService = usuarioService;
         this.productoRepo = productoRepo;
         this.composicionRepo = composicionRepo;
         this.despensaRepo = despensaRepo;
@@ -44,6 +50,7 @@ public class ProductoService {
                 .orElse(null);
     }
 
+    //NO SE USA
     public Producto guardarSiNoExiste(String nombre) { // FALTA CAMPO DESCRIPCION, la interfaz de dominio de
                                                        // porducto......ñe
         return productoRepo.findByNombre(nombre)
@@ -54,7 +61,10 @@ public class ProductoService {
     }
 
     // SERVICIO SOLO CON OBJETOS DE DOMINIO
-    public void guardarEnDespensa(ProductoDespensaDTO dto, int idUsuario) {
+    public void guardarEnDespensa(ProductoDespensaDTO dto,String usuarioEmail) {
+        // Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        // UserPrincipalAdapter userPrincipal = (UserPrincipalAdapter) auth.getPrincipal(); // Asegurate de hacer cast
+        // String usuarioEmail = userPrincipal.getUsername(); //usuario autenticado
         // 1. Buscar o crear el producto
         Producto producto = productoRepo.findByNombre(dto.getNombre())
                 .orElseGet(() -> productoRepo.save(new Producto(0, dto.getNombre(), "")));
@@ -81,7 +91,7 @@ public class ProductoService {
             composicionRepo.save(entity);
         }
         // 3. Buscar si el producto ya está en la despensa del usuario
-        Optional<Despensa> existente = despensaRepo.findDespensaByUsuarioIdAndProductoId(idUsuario, producto.getId());
+        Optional<Despensa> existente = despensaRepo.findByUsuarioCorreoElectronicoAndProductoId(usuarioEmail, producto.getId());
         if (existente.isPresent()) {
             Despensa despensaExistente = existente.get();
             despensaExistente.setCantidad(despensaExistente.getCantidad() + dto.getCantidad());
@@ -92,11 +102,18 @@ public class ProductoService {
         }
     }
 
-    public void guardarEnConsumo(ProductoDespensaDTO dto, int idUsuario) {
+    public void guardarEnConsumo(ProductoDespensaDTO dto,String usuarioEmail) {
+       
         Producto producto = productoRepo.findByNombre(dto.getNombre())
                 .orElseThrow(() -> new RuntimeException("El producto no existe"));
-
-        Consumo consumo = new Consumo(producto, idUsuario, dto.getCantidad(),
+        // Obtener el correo del usuario desde el contexto de seguridad
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipalAdapter userPrincipal = (UserPrincipalAdapter) auth.getPrincipal(); 
+        String emailUser = userPrincipal.getUsername(); 
+        //obtenr id del user autenticado
+        Usuario usuario = usuarioService.buscarPorEmail(emailUser);
+        int id = usuario.getIdUsuario();
+        Consumo consumo = new Consumo(producto,id, dto.getCantidad(),
                 LocalDate.parse(dto.getFechaCompraConsumo()));
         consumoRepo.guardar(consumo);
     }

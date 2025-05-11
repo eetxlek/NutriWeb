@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 
 import nutricion.hexagonal.dominio.clases.Usuario;
 import nutricion.hexagonal.dominio.interfaces.PasswordEncrypter;
-import nutricion.hexagonal.dominio.interfaces.UsuarioRepoSalida;
+import nutricion.hexagonal.dominio.interfaces.DeClases.UsuarioRepoSalida;
 import nutricion.hexagonal.infra.adaptadores.salida.security.TokenService;
 
 //verifica credencial- > delega generacion de token a TokenService

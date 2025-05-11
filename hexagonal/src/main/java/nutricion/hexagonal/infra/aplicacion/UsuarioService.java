@@ -1,14 +1,11 @@
 package nutricion.hexagonal.infra.aplicacion;
 
 import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 import nutricion.hexagonal.dominio.clases.Usuario;
-import nutricion.hexagonal.dominio.interfaces.UsuarioRepoSalida;
 import nutricion.hexagonal.infra.adaptadores.entrada.dto.RegistroRequestDTO;
 import nutricion.hexagonal.infra.adaptadores.salida.encrypter.BcryptPasswordEncrypter;
 import nutricion.hexagonal.infra.persistencia.entidades.UsuarioEntity;
-import nutricion.hexagonal.infra.persistencia.repos.UsuarioRepoImple;
 import nutricion.hexagonal.infra.persistencia.repos.UsuarioRepository;
 
 //Aplica reglas de negocio, en dominio. No tiene @service, se inyecta de config o con adaptador.
@@ -74,6 +71,7 @@ public class UsuarioService {
         usuario.setIdUsuario(entity.getIdUsuario());
         usuario.setNombre(entity.getNombre());
         usuario.setCorreoElectronico(entity.getCorreoElectronico());
+        usuario.setContraseña(entity.getContraseña());  //Faltaba
         usuario.setEdad(entity.getEdad());
         usuario.setPeso(entity.getPeso());
         usuario.setAltura(entity.getAltura());

@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import nutricion.hexagonal.dominio.clases.Usuario;
-import nutricion.hexagonal.dominio.interfaces.UsuarioRepoSalida;
+import nutricion.hexagonal.dominio.interfaces.DeClases.UsuarioRepoSalida;
 
 //imple de servicio que usa UsuarioRepo para recuperar suers
 //convierete usuario en Userprincipaladapter

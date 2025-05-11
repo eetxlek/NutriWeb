@@ -102,7 +102,7 @@
             </div>
 
             <div class="text-end">
-                <a th:href="@{/editar-perfil}" class="btn btn-primary">Editar Perfil</a>  
+                <a th:href="@{/editar-perfil}" class="btn btn-primary">Editar Perfil</a>
             </div>
         </div>
     </div>
@@ -112,17 +112,36 @@
 
     <script type="module">
         import { auth } from '/auth.js';
-
+        // Aquí cargamos el fragmento del navbar desde el servidor
         window.addEventListener("DOMContentLoaded", async () => {
+            // Obtenemos el token de la sesión local
             const token = auth.obtenerToken();
 
-            console.error("Token obtenido para fetchAuth..." + token);
             if (!token) {
                 console.error("No hay token, redirigiendo a login...");
-                window.location.href = "/login";
+                window.location.href = "/login"; // Redirige si no hay token
                 return;
             }
-            updateNav();
+
+            // Cargar el navbar
+            fetch('/navbar-fragment')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('navbar-container').innerHTML = html;
+                    updateNav();
+                    // Ahora que el navbar ya está en el DOM, agregamos el event listener
+                    const logoutBtn = document.getElementById('logout-button');
+                    if (logoutBtn) {
+                        logoutBtn.addEventListener('click', (e) => {
+                            e.preventDefault(); // Previene comportamiento por defecto si es un <a>
+                            auth.cerrarSesion();  // Borra token, etc.
+                            updateNav();
+                            window.location.href = "/login";
+                        });
+                    }
+
+                });
+
             try {
                 const res = await auth.fetchConAutenticacion('/api/usuario/perfil');
                 if (res && res.ok) {
@@ -148,38 +167,20 @@
                 window.location.href = "/login";
             }
         });
+        // Esta función muestra u oculta los elementos basados en la autenticación
         function updateNav() {
-            fetch('/navbar-fragment')
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('navbar-container').innerHTML = html;
+            const isAuthenticated = !!auth.obtenerToken() && auth.estaAutenticado(); // Basado en JWT
 
-                    const isAuthenticated = !!auth.obtenerToken() && auth.estaAutenticado();
-                    // Mostrar/ocultar enlaces
-                    document.querySelectorAll('.auth-only').forEach(el => {
-                        el.style.display = isAuthenticated ? '' : 'none';
-                    });
-                    document.querySelectorAll('.guest-only').forEach(el => {
-                        el.style.display = isAuthenticated ? 'none' : '';
-                    });
-                })
-                .catch(error => console.error('Error al cargar el navbar:', error));
+            // Mostrar/ocultar elementos de autenticados
+            document.querySelectorAll('.auth-only').forEach(el => {
+                el.style.display = isAuthenticated ? '' : 'none';
+            });
+
+            // Mostrar/ocultar elementos de no autenticados
+            document.querySelectorAll('.guest-only').forEach(el => {
+                el.style.display = isAuthenticated ? 'none' : '';
+            });
         }
-
-    //     function irEditProfile() {
-    //     const token = auth.obtenerToken();  // Obtener token desde localStorage
-
-    //     // Verificar si el token es válido
-    //     if (!token || !auth.estaAutenticado()) {
-    //         console.error("No hay token o el token es inválido, Redirigiendo a login...");
-    //         window.location.href = "/login";  // Redirigir a login si no hay token o es inválido
-    //         return;
-    //     }
-
-    //     // Si el token es válido, redirigir a la página de editar perfil
-    //     console.log('Redirigiendo a /editar-perfil');
-    //     window.location.href = "/editar-perfil";
-    // }
     </script>
 </body>
 

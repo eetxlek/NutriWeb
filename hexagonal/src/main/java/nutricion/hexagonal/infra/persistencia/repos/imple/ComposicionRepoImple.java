@@ -1,4 +1,4 @@
-package nutricion.hexagonal.infra.persistencia.repos;
+package nutricion.hexagonal.infra.persistencia.repos.imple;
 
 import java.util.Optional;
 
@@ -6,9 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import nutricion.hexagonal.dominio.clases.Composicion;
-import nutricion.hexagonal.dominio.interfaces.ComposicionRepoSalida;
+import nutricion.hexagonal.dominio.interfaces.DeClases.ComposicionRepoSalida;
 import nutricion.hexagonal.infra.persistencia.entidades.ComposicionEntity;
 import nutricion.hexagonal.infra.persistencia.entidades.ProductoEntity;
+import nutricion.hexagonal.infra.persistencia.repos.ComposicionProductoRepository;
 
 @Repository
 public class ComposicionRepoImple implements ComposicionRepoSalida {

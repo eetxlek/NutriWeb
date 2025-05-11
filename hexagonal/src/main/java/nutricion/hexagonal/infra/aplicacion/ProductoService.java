@@ -12,14 +12,14 @@ import nutricion.hexagonal.dominio.clases.Consumo;
 import nutricion.hexagonal.dominio.clases.Despensa;
 import nutricion.hexagonal.dominio.clases.Producto;
 import nutricion.hexagonal.dominio.clases.Usuario;
-import nutricion.hexagonal.dominio.interfaces.ConsumoRepoSalida;
-import nutricion.hexagonal.dominio.interfaces.DespensaRepoSalida;
-import nutricion.hexagonal.dominio.interfaces.ProductoRepoSalida;
+import nutricion.hexagonal.dominio.interfaces.DeClases.ProductoRepoSalida;
+import nutricion.hexagonal.dominio.interfaces.DeClases.ConsumoRepoSalida;
+import nutricion.hexagonal.dominio.interfaces.DeClases.DespensaRepoSalida;
 import nutricion.hexagonal.infra.adaptadores.entrada.dto.ProductoDespensaDTO;
 import nutricion.hexagonal.infra.adaptadores.salida.security.UserPrincipalAdapter;
 import nutricion.hexagonal.infra.persistencia.entidades.ComposicionEntity;
 import nutricion.hexagonal.infra.persistencia.repos.ComposicionProductoRepository;
-import nutricion.hexagonal.infra.persistencia.repos.ComposicionRepoImple;
+import nutricion.hexagonal.infra.persistencia.repos.imple.ComposicionRepoImple;
 
 @Service
 public class ProductoService {

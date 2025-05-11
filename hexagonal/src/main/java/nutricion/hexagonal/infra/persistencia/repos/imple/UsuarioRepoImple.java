@@ -1,10 +1,12 @@
-package nutricion.hexagonal.infra.persistencia.repos;
+package nutricion.hexagonal.infra.persistencia.repos.imple;
 
 
 import org.springframework.stereotype.Repository;
 import nutricion.hexagonal.dominio.clases.Usuario;
-import nutricion.hexagonal.dominio.interfaces.UsuarioRepoSalida;
+import nutricion.hexagonal.dominio.interfaces.DeClases.UsuarioRepoSalida;
 import nutricion.hexagonal.infra.persistencia.entidades.UsuarioEntity;
+import nutricion.hexagonal.infra.persistencia.repos.UsuarioRepository;
+
 import java.util.Optional;
 
 // infraestructura/persistencia/UsuarioRepositoryJpa.java

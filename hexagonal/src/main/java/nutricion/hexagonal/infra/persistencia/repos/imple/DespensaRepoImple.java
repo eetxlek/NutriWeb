@@ -1,13 +1,16 @@
-package nutricion.hexagonal.infra.persistencia.repos;
+package nutricion.hexagonal.infra.persistencia.repos.imple;
 
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
 import nutricion.hexagonal.dominio.clases.Despensa;
 import nutricion.hexagonal.dominio.clases.Producto;
-import nutricion.hexagonal.dominio.interfaces.DespensaRepoSalida;
+import nutricion.hexagonal.dominio.interfaces.DeClases.DespensaRepoSalida;
 import nutricion.hexagonal.infra.persistencia.entidades.DespensaEntity;
 import nutricion.hexagonal.infra.persistencia.entidades.ProductoEntity;
 import nutricion.hexagonal.infra.persistencia.entidades.UsuarioEntity;
+import nutricion.hexagonal.infra.persistencia.repos.DespensaRepository;
+import nutricion.hexagonal.infra.persistencia.repos.ProductoRepoJpa;
+import nutricion.hexagonal.infra.persistencia.repos.UsuarioRepository;
 
 @Repository
 public class DespensaRepoImple implements DespensaRepoSalida {

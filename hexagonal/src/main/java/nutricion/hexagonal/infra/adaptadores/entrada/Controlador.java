@@ -1,24 +1,15 @@
 package nutricion.hexagonal.infra.adaptadores.entrada;
 
-import org.springframework.security.core.Authentication;
+
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import nutricion.hexagonal.dominio.clases.Usuario;
-import nutricion.hexagonal.infra.aplicacion.UsuarioService;
 
 //distinto al otro controller que devueve json, este devuelve vistas thymeleaf, (o jps, oosea respuestas html para navegador
 //no devuelve datos sino vistas.
 @Controller
 public class Controlador {
 
-    private final UsuarioService usuarioService;
-
-      // Inyección por constructor
-    public Controlador(UsuarioService usuarioService) {
-        this.usuarioService = usuarioService;
-    }
 
     @GetMapping("/")
     public String mostrarInicio() {
@@ -36,14 +27,14 @@ public class Controlador {
     }
 
     @GetMapping("/editar-perfil")
-    public String editarPerfil(Model model, Authentication auth) {
-         if (auth == null || !auth.isAuthenticated()) {
-             return "redirect:/login";
-         }
-        String email = auth.getName(); // El principal es el email
-        Usuario usuario = usuarioService.buscarPorEmail(email); // Asegúrate de tener este método
-        model.addAttribute("usuario", usuario);
-  
+    public String editarPerfil() {
+        // if (auth == null || !auth.isAuthenticated()) {
+        //     return "redirect:/login";
+        // }
+        // String email = auth.getName(); // null porque lo pasas en el fetch
+        // Usuario usuario = usuarioService.buscarPorEmail(email); // Asegúrate de tener este método
+        // model.addAttribute("usuario", usuario);
+
         return "editar-perfil"; // Thymeleaf buscará registro.html en templates
     }
 

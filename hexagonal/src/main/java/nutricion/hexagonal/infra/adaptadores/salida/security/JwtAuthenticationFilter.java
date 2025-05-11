@@ -57,8 +57,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { // ANTES DE 
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getServletPath();
         ///productosapi
-        return path.equals("/api/auth/login") || path.equals("/productosapi") || path.equals("/favicon.ico") || path.equals("/editar-perfil") ||
-        path.equals("/") || path.equals("/auth.js") || path.equals("/login")|| path.equals("/api/auth/registro")
+        return path.equals("/api/auth/login") || path.equals("/productosapi") || path.equals("/favicon.ico") || path.equals("/navbar-fragment")
+        ||  path.equals("/") || path.equals("/auth.js") || path.equals("/login")|| path.equals("/api/auth/registro")
                 || path.startsWith("/api/auth") || path.startsWith("/productos") || path.startsWith("/api/producto");
     }
 

@@ -26,6 +26,9 @@ public class UsuarioDTO {
         this.tipoUsuario = usuario.getTipoUsuario();
     }
 
+    public UsuarioDTO() {
+    }
+
     // Getters y Setters
     public String getNombre() {
         return nombre;

@@ -25,16 +25,12 @@ public class JwtTokenProvider {
     public boolean validateToken(String token) {  //da booleano tras verificar token fon la firma.
         return tokenService.validarToken(token);
     }
-
+    //LO IMPORTANTE
     public Authentication getAuthentication(String token) {  // saca id del token y devuelve authtoken con email del usuario como principal
         String email = tokenService.extraerEmail(token);
         // Aquí podrías obtener más datos del usuario (roles, etc.)
         return new UsernamePasswordAuthenticationToken(email, null, List.of()); //debeeria ser email en vez de id?
     }
-    public TokenService getTokenService() {
-        return tokenService;
-    }
-
     
 }
 

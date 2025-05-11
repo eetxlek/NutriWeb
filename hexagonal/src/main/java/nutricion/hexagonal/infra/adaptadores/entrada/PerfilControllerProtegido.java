@@ -3,16 +3,13 @@ package nutricion.hexagonal.infra.adaptadores.entrada;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import nutricion.hexagonal.dominio.clases.Usuario;
 import nutricion.hexagonal.infra.adaptadores.entrada.dto.UsuarioDTO;
 import nutricion.hexagonal.infra.aplicacion.UsuarioService;
-import nutricion.hexagonal.infra.persistencia.entidades.UsuarioEntity;
 
 
 //filtro pone usuario en contexto de spring =securityContextHolderr . asi que controller puede accedesa authetication auth con auth.getName()
@@ -42,6 +39,7 @@ public class PerfilControllerProtegido {
         // Actualiza los datos del usuario con la información proveniente del cuerpo de la solicitud
         usuario.setNombre(usuarioDTO.getNombre());
         usuario.setCorreoElectronico(usuarioDTO.getCorreoElectronico());
+        usuario.setContraseña(usuario.getContraseña());
         usuario.setEdad(usuarioDTO.getEdad());
         usuario.setPeso((float)usuarioDTO.getPeso());
         usuario.setAltura((float)usuarioDTO.getAltura());

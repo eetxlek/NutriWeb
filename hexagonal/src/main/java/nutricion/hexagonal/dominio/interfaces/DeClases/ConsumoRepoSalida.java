@@ -1,4 +1,4 @@
-package nutricion.hexagonal.dominio.interfaces;
+package nutricion.hexagonal.dominio.interfaces.DeClases;
 
 import nutricion.hexagonal.dominio.clases.Consumo;
 

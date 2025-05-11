@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Nutrición inteligente, decisiones saludables</title>
 </head>
 <body>
-
+    <div id="navbar-container">
+        <!-- Este se actualizará con JavaScript después del login -->
+    </div>
     <h2>Registrar Consumo</h2>
 
     <form action="http://localhost:8080/apinutricion/api/consumo" method="POST">
@@ -44,6 +48,26 @@
         <button type="submit">Registrar Consumo</button>
         
     </form>
+<script>
+     function updateNav() {
+            fetch('/navbar-fragment')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('navbar-container').innerHTML = html;
 
+                    const isAuthenticated = !!auth.obtenerToken() && auth.estaAutenticado();
+                    // Mostrar/ocultar enlaces
+                    document.querySelectorAll('.auth-only').forEach(el => {
+                        el.style.display = isAuthenticated ? '' : 'none';
+                    });
+                    document.querySelectorAll('.guest-only').forEach(el => {
+                        el.style.display = isAuthenticated ? 'none' : '';
+                    });
+                })
+                .catch(error => console.error('Error al cargar el navbar:', error));
+        }
+        // Llamada inicial para actualizar el navbar cuando se carga la página
+        window.addEventListener('DOMContentLoaded', updateNav);
+</script>
 </body>
 </html>

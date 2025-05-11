@@ -4,8 +4,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Editar Perfil</title>
     <style>
+        :root {
+            --primary-color: #6db33f;
+            --secondary-color: #343a40;
+        }
+
+        /* Estilos para la barra de navegación */
+        .navbar {
+            background-color: var(--secondary-color);
+
+        }
+
+        .navbar-brand {
+            color: var(--primary-color) !important;
+        }
+
+        /* Estilos para los botones */
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+
+        }
+
+        .btn-primary:hover {
+            background-color: #5a9e34;
+            border-color: #5a9e34;
+        }
+
+        .card {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+
+        .form-control {
+            border-radius: 5px;
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            color: var(--secondary-color);
+            margin-top: 1rem;
+        }
+
+        /* Estilos para el modal */
         .modal {
             display: none;
             position: fixed;
@@ -41,134 +86,163 @@
 </head>
 
 <body>
-    <div class="profile-container">
-        <div class="profile-header">
-            <h1>Editar Perfil</h1>
-        </div>
-
-        <form id="editProfileForm">
-            <div class="profile-section">
-                <h2>Información Personal</h2>
-                <div class="profile-row">
-                    <div class="profile-label">Correo electrónico:</div>
-                    <div class="profile-value">
-                        <input type="email" name="correoElectronico" th:value="${usuario.correoElectronico}" required />
-                    </div>
-                </div>
-                <div class="profile-row">
-                    <div class="profile-label">Edad:</div>
-                    <div class="profile-value">
-                        <input type="number" name="edad" th:value="${usuario.edad}" required />
-                    </div>
-                </div>
-            </div>
-
-            <div class="profile-section">
-                <h2>Medidas Corporales</h2>
-                <div class="profile-row">
-                    <div class="profile-label">Peso:</div>
-                    <div class="profile-value">
-                        <input type="number" name="peso" th:value="${usuario.peso}" required />
-                    </div>
-                </div>
-                <div class="profile-row">
-                    <div class="profile-label">Altura:</div>
-                    <div class="profile-value">
-                        <input type="number" name="altura" th:value="${usuario.altura}" required />
-                    </div>
-                </div>
-            </div>
-
-            <div class="profile-section">
-                <h2>Preferencias de Salud</h2>
-                <div class="profile-row">
-                    <div class="profile-label">Nivel de actividad:</div>
-                    <div class="profile-value">
-                        <input type="text" name="nivelActividad" th:value="${usuario.nivelActividad}" required />
-                    </div>
-                </div>
-                <div class="profile-row">
-                    <div class="profile-label">Meta de salud:</div>
-                    <div class="profile-value">
-                        <input type="text" name="metaSalud" th:value="${usuario.metaSalud}" required />
-                    </div>
-                </div>
-                <div class="profile-row">
-                    <div class="profile-label">Tipo de dieta:</div>
-                    <div class="profile-value">
-                        <input type="text" name="tipoDieta" th:value="${usuario.tipoDieta}" required />
-                    </div>
-                </div>
-            </div>
-
-            <button type="submit" class="edit-btn">Actualizar Perfil</button>
-        </form>
+    <div id="navbar-container">
+        <!-- Este se actualizará con JavaScript después del login -->
     </div>
+    <div class="container mt-5">
+        <div class="card p-4">
+            <h1 class="mb-4">Editar Perfil</h1>
+            <form id="editarPerfilForm">
+                <h2>Información Personal</h2>
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre:</label>
+                    <input type="text" id="nombre" name="nombre" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label for="correoElectronico" class="form-label">Correo electrónico:</label>
+                    <input type="email" id="correoElectronico" name="correoElectronico" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label for="edad" class="form-label">Edad:</label>
+                    <input type="number" name="edad" id="edad" class="form-control" required />
+                </div>
+
+
+                <h2>Medidas Corporales</h2>
+                <div class="mb-3">
+                    <label for="peso" class="form-label">Peso:</label>
+                    <input type="number" name="peso" id="peso" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label for="altura" class="form-label">Altura:</label>
+                    <input type="number" name="altura" id="altura" class="form-control" required />
+                </div>
+
+                <h2>Preferencias de Salud</h2>
+                <div class="mb-3">
+                    <label for="nivelActividad" class="form-label">Nivel de actividad:</label>
+                    <input type="text" name="nivelActividad" id="nivelActividad" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label for="metaSalud" class="form-label">Meta de salud:</label>
+                    <input type="text" name="metaSalud" id="metaSalud" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label for="tipoDieta" class="form-label">Tipo de dieta:</label>
+                    <input type="text" name="tipoDieta" id="tipoDieta" class="form-control" required />
+                </div>
+
+                <button type="submit" class="btn btn-primary">Actualizar Perfil</button>
+            </form>
+        </div>
+    </div>
+
     <script type="module">
         import { auth } from '/auth.js';
 
-        window.addEventListener("DOMContentLoaded", () => {
+        window.addEventListener("DOMContentLoaded", async () => {
             const token = auth.obtenerToken();  // Obtener el token del almacenamiento local
 
-            // Verificar si el token existe y es válido
-            if (!token || !auth.estaAutenticado()) {
+
+            if (!token) {
                 console.error("No hay token o el token no es válido, redirigiendo a login...");
                 window.location.href = "/login";  // Redirigir al login si no está autenticado
                 return;
             }
-            // Aquí puedes hacer la lógica para cargar el perfil del usuario o cualquier otra acción
-            const btnActualizarPerfil = document.querySelector(".edit-btn");
-             // Verificar si el botón existe en la página y agregar el evento de clic
-        if (btnActualizarPerfil) {
-            btnActualizarPerfil.addEventListener("click", async (e) => {
-                e.preventDefault();  // Prevenir el comportamiento predeterminado del botón de formulario (si aplica)
+            try {
+                // Obtener los datos del perfil actual
+                //const res = await auth.fetchConAutenticacion('/api/usuario/perfil');
+                // if (res && res.ok) {
+                //     const usuario = await res.json();
+                const response = await auth.fetchConAutenticacion('/api/usuario/perfil', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
 
-                // Verificar nuevamente el token antes de hacer la solicitud
-                if (!auth.obtenerToken() || !auth.estaAutenticado()) {
-                    console.error("No hay token o el token no es válido, redirigiendo a login...");
+                if (response.ok) {
+                    const usuario = await response.json();
+
+                    // Rellenar los campos del formulario con los datos del usuario
+                    document.getElementById('nombre').value = usuario.nombre || '';
+                    document.getElementById('correoElectronico').value = usuario.correoElectronico || '';
+                    document.getElementById('edad').value = usuario.edad || '';
+                    document.getElementById('peso').value = usuario.peso || '';
+                    document.getElementById('altura').value = usuario.altura || '';
+                    document.getElementById('nivelActividad').value = usuario.nivelActividad || '';
+                    document.getElementById('metaSalud').value = usuario.metaSalud || '';
+                    document.getElementById('tipoDieta').value = usuario.tipoDieta || '';
+
+                } else {
+                    console.error("Error al cargar datos del perfil");
+                    alert("No se pudo cargar el perfil.");
                     window.location.href = "/login";
-                    return;
                 }
 
-                // Recolectar los datos del formulario
-                const usuarioData = {
-                    nombre: document.getElementById('nombre').value,
-                    correoElectronico: document.getElementById('correoElectronico').value,
-                    edad: document.getElementById('edad').value,
-                    peso: document.getElementById('peso').value,
-                    altura: document.getElementById('altura').value,
-                    nivelActividad: document.getElementById('nivelActividad').value,
-                    metaSalud: document.getElementById('metaSalud').value,
-                    tipoDieta: document.getElementById('tipoDieta').value,
-                };
+                // Manejar el envío del formulario
+                document.getElementById('editarPerfilForm').addEventListener('submit', async (event) => {
+                    event.preventDefault();
 
-                try {
+                    // Obtener los datos del formulario
+                    const usuarioDTO = {
+                        nombre: document.getElementById('nombre').value,
+                        correoElectronico: document.getElementById('correoElectronico').value,
+                        edad: parseInt(document.getElementById('edad').value),
+                        peso: parseFloat(document.getElementById('peso').value),
+                        altura: parseFloat(document.getElementById('altura').value),
+                        nivelActividad: document.getElementById('nivelActividad').value,
+                        metaSalud: document.getElementById('metaSalud').value,
+                        tipoDieta: document.getElementById('tipoDieta').value
+                    };
+
+                    // Enviar los datos al backend con una solicitud PUT
                     const response = await auth.fetchConAutenticacion('/api/usuario/perfil', {
-                        method: 'PUT', // Asegúrate de que sea PUT
+                        method: 'PUT',
                         headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${auth.obtenerToken()}`, // Asegúrate de incluir el token
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'  // Asegúrate de que la API espera JSON
                         },
-                        body: JSON.stringify(usuarioData),
+                        body: JSON.stringify(usuarioDTO)  // Enviar los datos del usuario como cuerpo de la solicitud
                     });
 
                     if (response.ok) {
-                        const updatedUser = await response.json();
-                        console.log("Perfil actualizado:", updatedUser);
-                        // Mostrar mensaje de éxito al usuario (puedes añadir más lógica aquí para actualizar la UI)
-                        alert("Perfil actualizado exitosamente");
+                        const usuarioActualizado = await response.json();
+                        console.log('Perfil actualizado:', usuarioActualizado);
+                        alert("Perfil actualizado correctamente.");
+                        // Aquí podrías redirigir a otra página si es necesario
+                        window.location.href = "/perfil";  // O la ruta que desees
                     } else {
-                        console.error("Error al actualizar el perfil");
-                        // Aquí puedes añadir un mensaje de error si la actualización falla
-                        alert("Error al actualizar el perfil, por favor intenta nuevamente.");
+                        console.error("Error al actualizar el perfil del usuario:", response.status, response.statusText);
+                        alert("Hubo un error al actualizar el perfil.");
                     }
-                } catch (error) {
-                    console.error("Error al actualizar perfil:", error);
-                    window.location.href = "/login";  // Redirigir al login en caso de error
-                }
-            });
+                });
+
+            } catch (error) {
+                console.error("Error en la solicitud fetchConAutenticacion:", error);
+                alert("Hubo un error al cargar los datos del perfil.");
+            }
+        });
+
+        function updateNav() {
+            fetch('/navbar-fragment')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('navbar-container').innerHTML = html;
+
+                    const isAuthenticated = !!auth.obtenerToken() && auth.estaAutenticado();
+                    // Mostrar/ocultar enlaces
+                    document.querySelectorAll('.auth-only').forEach(el => {
+                        el.style.display = isAuthenticated ? '' : 'none';
+                    });
+                    document.querySelectorAll('.guest-only').forEach(el => {
+                        el.style.display = isAuthenticated ? 'none' : '';
+                    });
+                })
+                .catch(error => console.error('Error al cargar el navbar:', error));
         }
-    });
+        // Llamada inicial para actualizar el navbar cuando se carga la página
+        window.addEventListener('DOMContentLoaded', updateNav);
     </script>
 </body>
 

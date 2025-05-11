@@ -1,4 +1,4 @@
-package nutricion.hexagonal.infra.persistencia.repos;
+package nutricion.hexagonal.infra.persistencia.repos.imple;
 
 // infra/jpa/repository/ProductoRepositoryJpaImpl.java
 
@@ -6,8 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import nutricion.hexagonal.dominio.clases.Producto;
-import nutricion.hexagonal.dominio.interfaces.ProductoRepoSalida;
+import nutricion.hexagonal.dominio.interfaces.DeClases.ProductoRepoSalida;
 import nutricion.hexagonal.infra.persistencia.entidades.ProductoEntity;
+import nutricion.hexagonal.infra.persistencia.repos.ProductoRepoJpa;
 
 import java.util.List;
 import java.util.Optional;

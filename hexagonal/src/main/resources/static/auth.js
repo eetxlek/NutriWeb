@@ -58,13 +58,14 @@ export const auth = {
       this.cerrarSesion();
       return new Response(null, { status: 401 });
     }
+     // Agregar header de autorización a lo que ya exista
+    opciones.headers = {
+        ...(opciones.headers || {}),
+        'Authorization': `Bearer ${token}`
+    };
 
-    return fetch(url, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${this.obtenerToken()}`
-      }
-    });
+    // Usar el método, body, etc. que hayas definido en opciones
+    return fetch(url, opciones);
   }
 };
 

@@ -1,4 +1,4 @@
-package nutricion.hexagonal.dominio.interfaces;
+package nutricion.hexagonal.dominio.interfaces.DeClases;
 
 import java.util.Optional;
 import nutricion.hexagonal.dominio.clases.Despensa;

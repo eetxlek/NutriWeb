@@ -7,7 +7,7 @@ package nutricion.hexagonal.dominio.interfaces;
 // Caso de uso (puerto de entrada). // Implementación del caso de uso @Service public class AuthService 
 
 //auth representa el qué quiere hacer y el usuariorepo representa cómo (con dependencia externa)
-public interface AuthServicePortEntrada {
+public interface AuthEntrada {
     String authenticate(String email, String password);
     boolean validateToken(String token);
     String extractUserId(String token);

@@ -3,7 +3,6 @@ package nutricion.hexagonal.infra.adaptadores.entrada.dto;
 public class JwtResponseDTO {
     // modelo de respuesta de la auth
     private String token;
-
     private String email;
 
     public JwtResponseDTO(String token, String email) {

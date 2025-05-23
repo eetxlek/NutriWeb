@@ -2,7 +2,6 @@ package nutricion.hexagonal.infra.adaptadores.entrada;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,22 +15,24 @@ import nutricion.hexagonal.infra.persistencia.entidades.ComposicionEntity;
 
 @RestController
 @RequestMapping("/api")
-public class ProductoController {
+public class BuscaProductoController {
 
     private final ProductoService productoService;
 
-    public ProductoController(ProductoService productoService) {
+    public BuscaProductoController(ProductoService productoService) {
         this.productoService = productoService;
     }
 
     @GetMapping("/producto") // para coincidir con el frontend
     public ResponseEntity<List<ProductoDTO>> buscarProductos(@RequestParam String nombre) {
+
         if (nombre == null || nombre.isEmpty()) {
             return ResponseEntity.badRequest().body(null); // HTTP 400 Bad Request
         }
         try {
+            System.out.println("🔍 Buscando productos que contengan: " + nombre);
             List<Producto> productos = productoService.findByNombreContainingIgnoreCase(nombre);
-
+            System.out.println("✅ Cantidad encontrada: " + productos.size());
             if (productos.isEmpty()) {
                 return ResponseEntity.noContent().build(); // HTTP 204
             }
@@ -39,23 +40,22 @@ public class ProductoController {
 
             for (Producto producto : productos) {
                 ComposicionEntity composicion = productoService.obtenerComposicionPorProductoId(producto.getId());
-
+                System.out.println("🧪 Producto: " + producto.getNombre() + " -> composición: " + (composicion != null));
                 if (composicion != null) {
                     ProductoDTO dto = new ProductoDTO(
                             producto.getId(),
                             producto.getNombre(),
-                            producto.getDescripcion(),
-                            (double) composicion.getCalorias(),
-                            (double) composicion.getProteinas(),
-                            (double) composicion.getGrasas(),
-                            (double) composicion.getCarbohidratos(),
-                            (double) composicion.getFibra(),
-                            (double) composicion.getAzucares(),
-                            (double) composicion.getVitaminaC(),
-                            (double) composicion.getPotasio(),
-                            (double) composicion.getCalcio(),
-                            (double) composicion.getMagnesio(),
-                            (double) composicion.getHierro());
+                            safeDouble(composicion.getCalorias()),
+                            safeDouble(composicion.getProteinas()),
+                            safeDouble(composicion.getGrasas()),
+                            safeDouble(composicion.getCarbohidratos()),
+                            safeDouble(composicion.getFibra()),
+                            safeDouble(composicion.getAzucares()),
+                            safeDouble(composicion.getVitaminaC()),
+                            safeDouble(composicion.getPotasio()),
+                            safeDouble(composicion.getCalcio()),
+                            safeDouble(composicion.getMagnesio()),
+                            safeDouble(composicion.getHierro()));
                     dtoList.add(dto);
                 }
             }
@@ -64,5 +64,9 @@ public class ProductoController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null); // HTTP 500
         }
+    }
+
+    private double safeDouble(Number valor) {
+        return valor != null ? valor.doubleValue() : 0.0;
     }
 }

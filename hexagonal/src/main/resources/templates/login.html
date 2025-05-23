@@ -9,10 +9,29 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        :root {
+            --primary-color: #6db33f;
+            --secondary-color: #343a40;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
+        }
+
+        /* Asegura que la página ocupe todo el alto disponible y el formulario se centre */
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Ocupa toda la altura de la pantalla */
         }
 
 
@@ -24,9 +43,6 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 400px;
-            /* Limitar el ancho */
-            margin-top: 80px;
-            /* Separar del navbar */
         }
 
         h2 {
@@ -63,34 +79,10 @@
         }
 
         .btn:hover {
-            background-color: #45a049;
+            background-color: var(--primary-color);
         }
 
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        /* Asegura que la página ocupe todo el alto disponible y el formulario se centre */
-        .content-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            /* Ocupa toda la altura de la pantalla */
-        }
-
-        :root {
-            --primary-color: #6db33f;
-            --secondary-color: #343a40;
-            --light-color: #f8f9fa;
-            --dark-color: #212529;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
+        /* Estilos de navbar (para el fragmento cargado dinámicamente) */
         .navbar {
             background-color: var(--secondary-color);
         }
@@ -106,59 +98,24 @@
         }
 
         .btn-primary:hover {
-            background-color: #5a9e34;
-            border-color: #5a9e34;
-        }
-
-        .hero-section {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--dark-color) 100%);
-            color: white;
-            padding: 5rem 0;
-        }
-
-        .feature-icon {
-            font-size: 2.5rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-
-        .feature-card {
-            transition: transform 0.3s;
-            height: 100%;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-        }
-
-        .cta-section {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 4rem 0;
+            background-color: #45a049;
+            border-color: var(--primary-hover);
         }
 
         footer {
             background-color: var(--secondary-color);
             color: white;
-        }
-
-        .tech-logo {
-            height: 50px;
-            margin: 15px;
-            opacity: 0.7;
-            transition: opacity 0.3s;
-        }
-
-        .tech-logo:hover {
-            opacity: 1;
+            text-align: center;
+            padding: 1rem;
         }
     </style>
     <script type="module" src="/auth.js" defer></script>
 </head>
 
 <body>
-    <!-- Reemplaza el fragmento de navbar -->
-    <div id="navbar-container" th:replace="~{nav :: navbar}"></div>
+    <div id="navbar-container">
+        <!-- Este se actualizará con JavaScript después del login -->
+    </div>
 
     <div class="content-wrapper">
         <div class="login-container">
@@ -179,9 +136,6 @@
             <div style="margin-top: 10px; text-align: center;">
                 <a href="/registro" class="btn" style="text-decoration: none;">Registrarse</a>
             </div>
-            <div class="footer">
-                <a href="#">¿Olvidaste tu contraseña?</a>
-            </div>
         </div>
     </div>
     <!-- Footer -->
@@ -191,69 +145,71 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+    <script type="module">
+        import { auth } from '/auth.js';
+        window.addEventListener("DOMContentLoaded", async () => {
+            const token = auth.obtenerToken();
 
-
-    <script>
-        //el script de arriba define auth para manejar token y fetch con autenticacion. OBJETO AUTH  singleton (obejto compartido global por scripts)
-        //el objeto no se recrea a no ser que cargues pagina nueva o pierdas el contexto.
-        //este hará la logica de login y la operacion de guardar el token.
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('loginForm').addEventListener('submit', async function (e) {
-                e.preventDefault();
-
-                const email = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-
-                try {
-                    //evalua como el api rest devuelve el token o cómo proteges tu ruta privada con jwtAuthFilter.
-                    const response = await fetch('http://localhost:8080/api/auth/login', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ email, password })
-                    });
-
-                    if (response.ok) {
-                        //si todo ok guarda token en storage y redirige a otra vista
-                        const data = await response.json(); // Verifica que la respuesta sea correcta
-
-                        const token = data.token; // Aquí extraemos el token correctamente segun estructura json {token:   , email: }
-
-                        if (token) {
-                            auth.guardarToken(token);
-                            //updateNav();  // Llamada para actualizar el navbar
-                            //para redirigir o servir la pagina requiere de un controllador que tenga las rutas definidas.
-                            window.location.href = '/perfil'; //objeto window. redirige el navegador a ruta productos
-                            //dinamic path es que adapta proceso en funcion de la actividad. en thymeleaf forma correcta sería:
-                        } else {
-                            alert('El servidor no devolvió un token');
-                        }
-                    } else {
-                        alert('Usuario o contraseña incorrectos');
-                    }
-                } catch (error) {
-                    console.error('Error de login:', error);
-                    alert('Error al intentar iniciar sesión');
-                }
-            });
-        });
-        // document.getElementById('registerBtn').addEventListener('click', () => {
-        //     window.location.href = '/registro'; // O la ruta que corresponda en tu app
-        // });
-        function updateNav() {
-            fetch('/navbar-fragment', {
-                headers: {
-                    'Authorization': 'Bearer ' + auth.obtenerToken() // Asegurarte de enviar el token en los headers
-                }
-            })
+            // Cargar el navbar
+            fetch('/navbar-fragment')
                 .then(response => response.text())
                 .then(html => {
                     document.getElementById('navbar-container').innerHTML = html;
-                })
-                .catch(error => console.error('Error al cargar el navbar:', error));
-        }
+                    updateNav(); // <--- esta línea es clave
+                });
+        });
 
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                //evalua como el api rest devuelve el token o cómo proteges tu ruta privada con jwtAuthFilter.
+                const response = await fetch('http://localhost:8080/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                if (response.ok) {
+                    //si todo ok guarda token en storage y redirige a otra vista
+                    const data = await response.json(); // Verifica que la respuesta sea correcta
+
+                    const token = data.token; // Aquí extraemos el token correctamente segun estructura json {token:   , email: }
+
+                    if (token) {
+                        auth.guardarToken(token);
+        
+                        window.location.href = '/perfil'; //objeto window. redirige el navegador a ruta productos
+                    } else {
+                        alert('El servidor no devolvió un token');
+                    }
+                } else {
+                    alert('Usuario o contraseña incorrectos');
+                }
+            } catch (error) {
+                console.error('Error de login:', error);
+                alert('Error al intentar iniciar sesión');
+            }
+        });
+
+        function updateNav() {
+            const isAuthenticated = !!auth.obtenerToken() && auth.estaAutenticado(); // Basado en JWT
+
+            // Mostrar/ocultar elementos de autenticados
+            document.querySelectorAll('.auth-only').forEach(el => {
+                el.style.display = isAuthenticated ? '' : 'none';
+            });
+
+            // Mostrar/ocultar elementos de no autenticados
+            document.querySelectorAll('.guest-only').forEach(el => {
+                el.style.display = isAuthenticated ? 'none' : '';
+            });
+        }
     </script>
 </body>
 

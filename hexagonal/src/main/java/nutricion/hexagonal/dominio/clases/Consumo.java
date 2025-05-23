@@ -1,6 +1,7 @@
 package nutricion.hexagonal.dominio.clases;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 public class Consumo {
@@ -9,10 +10,10 @@ public class Consumo {
     private Integer idUsuario;
     private Producto producto;
     private Integer cantidad;
-    private LocalDate fechaConsumo;
+    private LocalDateTime fechaConsumo;
     public Consumo() {}
 
-    public Consumo(Producto producto, Integer idUsuario, Integer cantidad, LocalDate fechaConsumo) {
+    public Consumo(Producto producto, Integer idUsuario, Integer cantidad, LocalDateTime fechaConsumo) {
         this.producto = producto;
         this.idUsuario = idUsuario;
         this.cantidad = cantidad;
@@ -51,11 +52,11 @@ public class Consumo {
         this.cantidad = cantidad;
     }
 
-    public LocalDate getFechaConsumo() {
+    public LocalDateTime getFechaConsumo() {
         return fechaConsumo;
     }
 
-    public void setFechaConsumo(LocalDate fechaConsumo) {
+    public void setFechaConsumo(LocalDateTime fechaConsumo) {
         this.fechaConsumo = fechaConsumo;
     }
     

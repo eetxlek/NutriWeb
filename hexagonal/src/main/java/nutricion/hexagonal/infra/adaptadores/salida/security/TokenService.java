@@ -2,9 +2,7 @@ package nutricion.hexagonal.infra.adaptadores.salida.security;
 
 import java.security.Key;
 import java.util.Date;
-
 import org.springframework.stereotype.Service;
-
 import nutricion.hexagonal.dominio.interfaces.Token;
 import nutricion.hexagonal.infra.config.JwtProperties;
 import io.jsonwebtoken.Claims;
@@ -15,9 +13,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 
-//Tras authservice, este implementa la logica del token. // para seguir patron de servicio podria ser @service en vez de @component.
+//Tras authservice, este implementa la logica del token. 
 //implementa interfaz token. Da felxibilidad para implementar otro tipo de token mas adelante.
-//genera token con clave secreta cono expiracion, valida token legitimidad, extrae id de token.
+//genera token con clave secreta Y expiracion, valida token legitimidad, extrae id/email de token.
 //clase servicio manejo de token: crea valida extrae info de token JWT
 @Service
 public class TokenService implements Token {
@@ -28,19 +26,18 @@ public class TokenService implements Token {
         this.jwtProperties = jwtProperties;
     }
 
-    // genera token usano clave secreta. jwt.jwt-secret=mi-super-clave es la clave
-    // de tu servidor apra firmar token JWT. Tambien para validarlo, que no ha sido
-    // alterado
+    // genera token usando clave secreta. jwt.jwt-secret=mi-super-clave es la clave de tu servidor apra firmar token JWT. 
+    // tambien para validarlo, que no haya sido alterado
     @Override
     public String generarToken(String email) { // el controller pasa usuario tokenProvider.generarToken(usuario);
-        // uso de jwt.expiration-ms=86400000 = 24h agrega expiracion al token
+                                                // uso de jwt.expiration-ms=86400000 = 24h agrega expiracion al token
         System.out.println("Generaando token");
         try {
             long expirationMs = jwtProperties.getExpirationMs();
             Date now = new Date();
             Date expirationDate = new Date(now.getTime() + expirationMs);
 
-            Key signingKey = getSigningKey(); // ✅ Usa la misma clave secreta configurada
+            Key signingKey = getSigningKey(); // Usa la misma clave secreta configurada
             System.out.println("TOKEN GENERADO ES: "+Jwts.builder()
                     .setSubject(email)
                     .setIssuedAt(now)
@@ -97,21 +94,16 @@ public class TokenService implements Token {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getSigningKey()) // Usamos la clave fija configurada
                 .build()
-                .parseClaimsJws(token) //da valor nulo
+                .parseClaimsJws(token) 
                 .getBody();
-        return claims.getSubject(); // Devuelve el userId del token
+        return claims.getSubject(); // Devuelve el userId email del token
     }
 
-    // Eliminar getSigningKey() estaría mal porque rompe la lógica JWT. //hace
-    // referencia a clave (secreto) de firma: jwt.jwt-secret
+    // es parte de la lógica JWT. Hace referencia a clave (secreto) de firma: jwt.jwt-secret
     private Key getSigningKey() {
         String secret = jwtProperties.getJwtSecret();
         System.out.println("Clave secreta leída: " + secret);
         return Keys.hmacShaKeyFor(secret.getBytes()); // usa el algoritmo HMAC-SHA
-        // return Keys.secretKeyFor(SignatureAlgorithm.HS512); //clave secreta con la
-        // longitud adecuada para el algoritmo HS512 // crearia clave new cada vez, no
-        // seria validable.
     }
 }
 
-// Implementa los demás métodos...

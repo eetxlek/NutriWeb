@@ -1,17 +1,16 @@
 package nutricion.hexagonal.infra.persistencia.entidades;
 
+import java.util.Set;
 import jakarta.persistence.Column;
-
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 
-// infraestructura/persistencia/UsuarioEntity.java
-//TABLA DONDE ALMACENA debe tener entity y id y getters y setters si usas framework como hibernate.
 @Entity
 @Table(name = "Usuarios")
 public class UsuarioEntity {
@@ -33,29 +32,53 @@ public class UsuarioEntity {
     @Column(name = "edad")
     private int edad;
 
+    @Column(name = "sexo")
+    private String sexo;
+
     @Column(name = "peso")
     private float peso;
 
     @Column(name = "altura")
     private float altura;
 
-  
     @Column(name = "nivel_actividad")
     private String nivelActividad;
 
     @Column(name = "meta_salud")
     private String metaSalud;
 
-
     @Column(name = "tipo_dieta")
     private String tipoDieta;
 
-   
     @Column(name = "tipo_usuario")
     private String tipoUsuario;
 
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
+    private Set<ConsumoEntity> consumos;
+
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
+    private Set<DespensaEntity> despensa;
 
     public UsuarioEntity() {
+    }
+
+    public UsuarioEntity(int id, String nombre, String correoElectronico, String contraseña, int edad, String sexo, float peso,
+            float altura, String nivelActividad, String metaSalud, String tipoDieta, String tipoUsuario,
+            Set<ConsumoEntity> consumos, Set<DespensaEntity> despensa) {
+        this.id = id;
+        this.nombre = nombre;
+        this.correoElectronico = correoElectronico;
+        this.contraseña = contraseña;
+        this.edad = edad;
+        this.sexo=sexo;
+        this.peso = peso;
+        this.altura = altura;
+        this.nivelActividad = nivelActividad;
+        this.metaSalud = metaSalud;
+        this.tipoDieta = tipoDieta;
+        this.tipoUsuario = tipoUsuario;
+        this.consumos = consumos;
+        this.despensa = despensa;
     }
 
     public UsuarioEntity(int idUsuario, String correoElectronico, String contraseña, String tipoUsuario) {
@@ -65,13 +88,15 @@ public class UsuarioEntity {
         this.tipoUsuario = tipoUsuario;
     }
 
-    public UsuarioEntity(int idUsuario, String nombre, String correoElectronico, String contraseña, int edad, float peso,
+    public UsuarioEntity(int idUsuario, String nombre, String correoElectronico, String contraseña, int edad,
+            String sexo,float peso,
             float altura, String nivelActividad, String metaSalud, String tipoDieta, String tipoUsuario) {
         this.id = idUsuario;
         this.nombre = nombre;
         this.correoElectronico = correoElectronico;
         this.contraseña = contraseña;
         this.edad = edad;
+          this.sexo = sexo;
         this.peso = peso;
         this.altura = altura;
         this.nivelActividad = nivelActividad;
@@ -80,12 +105,12 @@ public class UsuarioEntity {
         this.tipoUsuario = tipoUsuario;
     }
 
-    public int getIdUsuario() {
+    public int getId() {
         return id;
     }
 
-    public void setIdUsuario(int idUsuario) {
-        this.id = idUsuario;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNombre() {
@@ -99,7 +124,6 @@ public class UsuarioEntity {
     public String getCorreoElectronico() {
         return correoElectronico;
     }
-
 
     public void setCorreoElectronico(String correoElectronico) {
         this.correoElectronico = correoElectronico;
@@ -119,6 +143,14 @@ public class UsuarioEntity {
 
     public void setEdad(int edad) {
         this.edad = edad;
+    }
+
+    public String getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
     }
 
     public float getPeso() {
@@ -169,10 +201,22 @@ public class UsuarioEntity {
         this.tipoUsuario = tipoUsuario;
     }
 
+    public Set<ConsumoEntity> getConsumos() {
+        return consumos;
+    }
 
+    public void setConsumos(Set<ConsumoEntity> consumos) {
+        this.consumos = consumos;
+    }
 
+    public Set<DespensaEntity> getDespensa() {
+        return despensa;
+    }
 
+    public void setDespensa(Set<DespensaEntity> despensa) {
+        this.despensa = despensa;
+    }
+
+  
 
 }
-
-

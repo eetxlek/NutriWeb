@@ -16,6 +16,9 @@ public class RegistroRequestDTO {
     @Max(120)
     private int edad;
 
+     @NotBlank
+    private String sexo; // <-- Nuevo campo
+
     @Positive
     private float peso;
 
@@ -38,16 +41,15 @@ public class RegistroRequestDTO {
     @Size(min = 6, max = 20)
     private String password;
 
-    
-    // Getters y Setters
 
     public RegistroRequestDTO(@NotBlank String nombre, @NotBlank @Email @Size(max = 40) String correoElectronico,
-            @Min(1) @Max(120) int edad, @Positive float peso, @Positive float altura, @NotBlank String nivelActividad,
+            @Min(1) @Max(120) int edad,@NotBlank String sexo, @Positive float peso, @Positive float altura, @NotBlank String nivelActividad,
             @NotBlank String metaSalud, @NotBlank String tipoDieta, @NotBlank String tipoUsuario,
             @NotBlank @Size(min = 6, max = 20) String password) {
         this.nombre = nombre;
         this.correoElectronico = correoElectronico;
         this.edad = edad;
+         this.sexo = sexo;
         this.peso = peso;
         this.altura = altura;
         this.nivelActividad = nivelActividad;
@@ -137,17 +139,12 @@ public class RegistroRequestDTO {
         this.password = password;
     }
 
-    // public void crearUsuario(RegistroRequestDTO dto) {
-    // Usuario usuario = new Usuario();
+    public String getSexo() {
+        return sexo;
+    }
 
-    // usuario.setNombre(dto.getNombre());
-    // usuario.setCorreoElectronico(dto.getCorreoElectronico());
-    // usuario.setEdad(dto.getEdad());
-    // usuario.setPeso(dto.getPeso());
-    // usuario.setAltura(dto.getAltura());
-    // usuario.setNivelActividad(dto.getNivelActividad());
-    // usuario.setMetaSalud(dto.getMetaSalud());
-    // usuario.setTipoDieta(dto.getTipoDieta());
-    // usuario.setTipoUsuario(dto.getTipoUsuario());
-    // }
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
+    }
+
 }

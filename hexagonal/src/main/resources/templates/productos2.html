@@ -19,6 +19,15 @@
         .navbar {
             background-color: var(--secondary-color);
         }
+          .navbar a {
+            color: var(--light-color);
+            /* Para asegurarse de que los enlaces sean visibles en el navbar */
+        }
+
+        .navbar a:hover {
+            color: var(--primary-color);
+            /* Color de los enlaces al pasar el ratón */
+        }
 
         .navbar-brand {
             font-weight: 700;
@@ -35,8 +44,21 @@
             border-color: #5a9e34;
         }
 
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .content-wrapper {
+            flex: 1 0 auto;
         }
 
         /* 🔍 Search box más grande */
@@ -142,8 +164,6 @@
             color: #555;
         }
 
-
-
         /* 📝 Formulario más pequeño y compacto */
         #product-form {
             max-width: 400px;
@@ -199,51 +219,84 @@
         .button-row button:hover {
             background-color: #5a9e34;
         }
+
+        footer {
+            background-color: var(--secondary-color);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
     </style>
-    <script type="module" src="/auth.js" defer></script>
+
 </head>
 
 <body>
-    <!-- ESTATICO Y PUBLICO // DEBE HABER UNA PARTE O OTRA VISTA PRIVADA QUE TENGA EL FORMULACIO PARA VOLVER EL PRODUCTO Y AÑADIR A DESPENSA O CONSUMO -->
-    <div id="navbar-container" th:replace="~{nav :: navbar}"></div>
+    <div class="content-wrapper">
+        <!-- ESTATICO Y PUBLICO // DEBE HABER UNA PARTE O OTRA VISTA PRIVADA QUE TENGA EL FORMULACIO PARA VOLVER EL PRODUCTO Y AÑADIR A DESPENSA O CONSUMO -->
+        <div id="navbar-container">
+            <!-- Este se actualizará con JavaScript después del login -->
+        </div>
 
-    <div class="search-box">
-        <input type="text" id="search-input" placeholder="Buscar por nombre de producto...">
-        <button onclick="searchProducts()">Buscar</button>
-    </div>
-    <div id="product-list" class="product-list">
-        <!-- Aquí se cargarán los productos dinámicamente -->
-    </div>
-    <!-- Formulario para enviar los datos del producto -->
-    <div id="product-form" sec:authorize="isAuthenticated()">
-        <h3>Formulario del Producto</h3>
-        <!--   <form action="http://localhost:8080/apinutricion/api/consumo" method="POST"></form> sin necesidad de fetch??? in dont think so-->
-        <form id="form-product" onsubmit="submitProduct(event)">
-            <label for="product-name">Nombre:</label>
-            <input type="text" id="product-name" readonly>
-
-            <label for="energyKcal">Energia:</label>
-            <input type="text" id="energyKcal" readonly>
-
-            <label for="product-fat">Grasas (g):</label>
-            <input type="text" id="product-fat" readonly>
-
-            <label for="product-carbs">Carbohidratos (g):</label>
-            <input type="text" id="product-carbs" readonly>
-            <label for="product-protein">Proteínas (g):</label>
-            <input type="text" id="product-protein" readonly>
-
-            <label for="product-quantity">Cantidad:</label>
-            <input type="number" id="product-quantity" value="1">
-
-            <label for="purchase-date">Fecha de compra:</label>
-            <input type="date" id="purchase-date">
-
-            <div class="button-row">
-                <button type="submit" name="action" value="despensa">Despensa</button>
-                <button type="submit" name="action" value="consumo">Consumo</button>
+        <div class="container d-flex align-items-center justify-content-between flex-wrap gap-3 my-4">
+            <div class="text-center">
+                <div class="text-center">
+                    <img src="https://static.openfoodfacts.org/images/logos/off-logo-horizontal-light.png"
+                        alt="OpenFoodFacts" style="max-height: 80px;">
+                </div>
             </div>
-        </form>
+            <div class="search-box d-flex align-items-center gap-2">
+                <input type="text" id="search-input" class="form-control"
+                    placeholder="Buscar por nombre de producto...">
+                <button id="search-btn" class="btn btn-primary">Buscar</button>
+            </div>
+        </div>
+
+        <div class="container my-4">
+            <div class="row">
+                <!-- Formulario a la izquierda para enviar los datos del producto -->
+                <div id="product-form" class="auth-only" style="display: none;">
+                    <h3>Formulario del Producto</h3>
+
+                    <form id="form-product">
+                        <label for="product-name">Nombre:</label>
+                        <input type="text" id="product-name" readonly>
+
+                        <label for="energyKcal">Energia:</label>
+                        <input type="text" id="energyKcal" readonly>
+
+                        <label for="product-fat">Grasas (g):</label>
+                        <input type="text" id="product-fat" readonly>
+
+                        <label for="product-carbs">Carbohidratos (g):</label>
+                        <input type="text" id="product-carbs" readonly>
+                        <label for="product-protein">Proteínas (g):</label>
+                        <input type="text" id="product-protein" readonly>
+                        <label for="product-sugars">Azúcares (g):</label>
+                        <input type="text" id="product-sugars" readonly>
+
+                        <label for="product-fiber">Fibra (g):</label>
+                        <input type="text" id="product-fiber" readonly>
+
+                        <label for="product-quantity">Cantidad:</label>
+                        <input type="number" id="product-quantity" value="1">
+
+                        <label for="purchase-date">Fecha de compra:</label>
+                        <input type="datetime-local" id="purchase-date">
+
+                        <div class="button-row">
+                            <button type="submit" name="action" value="despensa">Despensa</button>
+                            <button type="submit" name="action" value="consumo">Consumo</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- Lista de productos a la derecha -->
+                <div class="col-md-8">
+                    <div id="product-list" class="d-flex flex-wrap gap-3">
+                        <!-- Aquí se cargarán los productos dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <footer>
         <p>&copy; 2025 Nutrición inteligente, decisiones saludables. Todos los derechos reservados.</p>
@@ -251,8 +304,45 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
+    <script type="module">
+        import { auth } from '/auth.js';
+          window.auth = auth;
+        let selectedProductData = {};
+        window.addEventListener("DOMContentLoaded", async () => {
 
+            // 1. Cargar el fragmento del navbar desde el servidor
+            fetch('/navbar-fragment')
+                .then(response => response.text())
+                .then(html => {
+                    // 2. Insertar el fragmento HTML en el contenedor del navbar
+                    document.getElementById('navbar-container').innerHTML = html;
+
+                    updateNav(); // <-- Mostrar u ocultar elementos según autenticación
+                    const loginBtn = document.getElementById("login-btn");
+                    if (loginBtn) {
+                        loginBtn.addEventListener("click", () => {
+                            window.location.href = "/login"; // o la ruta que uses para el login
+                        });
+                    }
+                    const searchBtn = document.getElementById("search-btn");
+                    if (searchBtn) {
+                        searchBtn.addEventListener("click", searchProducts);
+                    }
+                    const form = document.getElementById("form-product");
+                    if (form) {
+                        form.addEventListener("submit", submitProduct);
+                    }
+                      // Configurar el evento de logout (opcional, ya que usamos onclick)
+                    const logoutBtn = document.getElementById("logout-button");
+                    if (logoutBtn) {
+                        logoutBtn.addEventListener("click", (e) => {
+                            e.preventDefault();
+                            auth.cerrarSesion();
+                        });
+                    }
+                });
+
+        });
         // Función para realizar la llamada a la API y actualizar la lista de productos
         const cache = new Map();
 
@@ -305,7 +395,6 @@
                 return;
             }
 
-            //const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(searchTerm)}&action=process&json=true&page_size=5&fields=product_name,brands,image_url,energy-kcal_100g,fat_100g,carbohydrates_100g,proteins_100g,sugars_100g,fiber_100g`;
             const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(searchTerm)}&action=process&json=true&page_size=3&fields=product_name,brands,image_url,energy-kcal_100g,fat_100g,carbohydrates_100g,proteins_100g,sugars_100g,fiber_100g,vitamin-c_100g,potassium_100g,calcium_100g,magnesium_100g,iron_100g`;
             try {
                 const data = await fetchWithRetries(url);
@@ -356,6 +445,10 @@
 
             products.forEach(product => {
                 const productItem = document.createElement("div");
+                //modificando
+                productItem.classList.add("product-item");
+                productItem.style.flex = "1 1 100px"; // Ocupa mínimo 100px, se adapta
+                productItem.style.maxWidth = "100%"; // Para evitar desbordes
                 productItem.classList.add("product-item");
 
                 const productName = product.product_name || "Producto sin nombre";
@@ -398,7 +491,7 @@
                 <img src="${productImage}" alt="Imagen del producto" />
                 <div class="product-meta">
                     <p><strong>Marca:</strong> ${brand}</p>
-                    <p><strong>Kcal 100g:</strong> ${kcal}g</p>
+                    <p><strong>100g:</strong> ${kcal}kcal</p>
                 </div>
                 <div class="product-nutrients">
                     ${nutrientsHtml}
@@ -424,6 +517,9 @@
 
         // Función para seleccionar un producto y cargarlo en el formulario
         function selectProduct(product) {
+            // Guardar una copia en memoria
+            selectedProductData = product;
+
             document.getElementById("product-name").value = product.product_name || "";
             document.getElementById("energyKcal").value = product["energy-kcal_100g"] || "";
             document.getElementById("product-fat").value = product.fat_100g || "";
@@ -431,31 +527,46 @@
             document.getElementById("product-protein").value = product.proteins_100g || "";
             document.getElementById("product-sugars").value = product.sugars_100g || "";
             document.getElementById("product-fiber").value = product.fiber_100g || "";
-            document.getElementById("product-vitaminC").value = product["vitamin-c_100g"] || "";
-            document.getElementById("product-potassium").value = product["potassium_100g"] || "";
-            document.getElementById("product-calcium").value = product["calcium_100g"] || "";
-            document.getElementById("product-magnesium").value = product["magnesium_100g"] || "";
-            document.getElementById("product-iron").value = product["iron_100g"] || "";
-
+            // document.getElementById("product-vitaminC").value = product["vitamin-c_100g"] || "";
+            // document.getElementById("product-potassium").value = product["potassium_100g"] || "";
+            // document.getElementById("product-calcium").value = product["calcium_100g"] || "";
+            // document.getElementById("product-magnesium").value = product["magnesium_100g"] || "";
+            // document.getElementById("product-iron").value = product["iron_100g"] || "";
             // Establecer cantidad por defecto a 1
             document.getElementById("product-quantity").value = "1";
 
+            // Establecer la fecha actual como valor por defecto
             const today = new Date();
-            const formattedDate = today.toISOString().substr(0, 10);
-            document.getElementById("purchase-date").value = formattedDate;
+            console.log(today); // Verifica si la fecha es correcta
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // Los meses empiezan en 0
+            const day = String(today.getDate()).padStart(2, '0');
+            const hours = String(today.getHours()).padStart(2, '0');
+            const minutes = String(today.getMinutes()).padStart(2, '0');
+
+            const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+            console.log(formattedDateTime); // Verifica si la fecha está formateada correctament
+            document.getElementById("purchase-date").value = formattedDateTime;
+            // Hacer visible el formulario 
+            document.getElementById("product-form").style.display = "block";
+
         }
 
         // Función para hacer el POST con los datos del producto
         async function submitProduct(event) {
+            event.preventDefault();  // Primero?
             if (!auth.estaAutenticado()) {
                 alert("Debes iniciar sesión para enviar productos.");
                 return;
             }
-            //decide el endpoint al que enviar 
+            //decide el url, seleccion dinamica 
+            const protocol = window.location.protocol;
             const action = event.submitter.value;
-            const baseurl = 'https://localhost:8080';
-            const url = action === "consumo" ? baseurl + "/api/consumo" : baseurl + "/api/despensa";
-            event.preventDefault();  // Prevenir el envío por defecto del formulario
+            const host = 'localhost:8080';
+            const baseUrl = `${protocol}//${host}`;
+            const isDespensa = action === "despensa";
+            const url = isDespensa ? `${baseUrl}/api/despensa` : `${baseUrl}/api/consumos`;
+            console.log(`Enviando datos a: ${url}`);
 
             const productData = {
                 nombre: document.getElementById("product-name").value,
@@ -463,19 +574,20 @@
                 grasas: parseFloat(document.getElementById("product-fat").value) || 0,
                 carbohidratos: parseFloat(document.getElementById("product-carbs").value) || 0,
                 proteinas: parseFloat(document.getElementById("product-protein").value) || 0,
-                azucares: parseFloat(document.getElementById("product-sugars").value) || 0,
-                fibra: parseFloat(document.getElementById("product-fiber").value) || 0,
-                vitaminaC: parseFloat(document.getElementById("product-vitaminC").value) || 0,
-                potasio: parseFloat(document.getElementById("product-potassium").value) || 0,
-                calcio: parseFloat(document.getElementById("product-calcium").value) || 0,
-                magnesio: parseFloat(document.getElementById("product-magnesium").value) || 0,
-                hierro: parseFloat(document.getElementById("product-iron").value) || 0,
+                azucares: parseFloat(selectedProductData.sugars_100g) || 0,
+                fibra: parseFloat(selectedProductData.fiber_100g) || 0,
+                vitaminaC: parseFloat(selectedProductData["vitamin-c_100g"]) || 0,
+                potasio: parseFloat(selectedProductData["potassium_100g"]) || 0,
+                calcio: parseFloat(selectedProductData["calcium_100g"]) || 0,
+                magnesio: parseFloat(selectedProductData["magnesium_100g"]) || 0,
+                hierro: parseFloat(selectedProductData["iron_100g"]) || 0,
                 cantidad: parseInt(document.getElementById("product-quantity").value) || 1,
-                fechaCompra: document.getElementById("purchase-date").value
+                fechaCompraConsumo: document.getElementById("purchase-date").value
             };
 
+
             try {
-                const response = await fetch(url, {
+                const response = await auth.fetchConAutenticacion(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -493,7 +605,18 @@
                 alert("Hubo un error al enviar los datos.");
             }
         }
+        // Función para actualizar el navbar según autenticación
+        function updateNav() {
+            const isAuthenticated = !!auth.obtenerToken();
 
+            // Actualizar visibilidad de los elementos basados en autenticación
+            document.querySelectorAll('.auth-only').forEach(el => {
+                el.style.display = isAuthenticated ? '' : 'none';
+            });
+            document.querySelectorAll('.guest-only').forEach(el => {
+                el.style.display = isAuthenticated ? 'none' : '';
+            });
+        }
         // Cargar caché del almacenamiento local al inicio
         loadCacheFromLocalStorage();
     </script>

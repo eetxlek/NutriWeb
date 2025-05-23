@@ -2,14 +2,13 @@ package nutricion.hexagonal.infra.adaptadores.salida.security;
 
 import java.util.Collection;
 import java.util.List;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import nutricion.hexagonal.dominio.clases.Usuario;
 
-// implementa la interfaz UserDetails y adapta usuario para spring sec (userDetails). Para Usuario dominio a algo que sprong sec entiende: UserDetails.
+// implementa la interfaz UserDetails y adapta usuario para spring sec (userDetails). 
+// Pasa Usuario dominio a algo que spring sec entiende: UserDetails. Una instancia con permiso.
 public class UserPrincipalAdapter implements UserDetails {
     private final Usuario usuario;
 
@@ -20,9 +19,7 @@ public class UserPrincipalAdapter implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
-        // return usuario.getRoles().stream()
-        //     .map(rol -> new SimpleGrantedAuthority("ROLE_" + rol))
-        //     .toList();
+     
     }
 
     @Override

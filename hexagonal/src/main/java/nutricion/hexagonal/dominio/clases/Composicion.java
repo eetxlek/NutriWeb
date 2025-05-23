@@ -33,7 +33,7 @@ public class Composicion {
         this.magnesio = magnesio;
         this.hierro = hierro;
     }
-     // Constructor sin el idComposicion
+     // Constructor sin el idComposicion ni micro
      public Composicion(Integer idProducto, float calorias, float proteinas, float grasas, float carbohidratos) {
         this.idProducto = idProducto;
         this.calorias = calorias;

@@ -14,7 +14,7 @@ export const auth = {
     if (typeof token === 'string' && token.split('.').length === 3) {
       localStorage.setItem('authToken', token);        // Almacenar el token en localStorage
       // Decodificar y guardar exp (si necesitas)
-       const tokenData = JSON.parse(atob(token.split('.')[1])); // Decodificación del payload
+      const tokenData = JSON.parse(atob(token.split('.')[1])); // Decodificación del payload
       // console.log(tokenData.toString());
       localStorage.setItem('tokenExpiracion', new Date(tokenData.exp * 1000));
     } else {
@@ -50,7 +50,7 @@ export const auth = {
   },
 
   fetchConAutenticacion: async function (url, opciones = {}) {
-
+    console.log(`[Auth] Iniciando fetchConAutenticacion para URL: ${url}`);
     const token = this.obtenerToken();
     console.log("Token que se va a enviar:", token);
 
@@ -58,29 +58,24 @@ export const auth = {
       this.cerrarSesion();
       return new Response(null, { status: 401 });
     }
-     // Agregar header de autorización a lo que ya exista
-    opciones.headers = {
+    // Agregar header de autorización a lo que ya exista
+    // Configurar las opciones para el fetch
+    const opcionesFetch = {
+      ...opciones,
+      headers: {
         ...(opciones.headers || {}),
         'Authorization': `Bearer ${token}`
+      }
     };
-
-    // Usar el método, body, etc. que hayas definido en opciones
-    return fetch(url, opciones);
+    console.log("[Auth] Opciones de fetch:", JSON.stringify({
+      method: opcionesFetch.method,
+      headers: Object.keys(opcionesFetch.headers),
+      bodyLength: opcionesFetch.body ? opcionesFetch.body.length : 0
+    }));
+    // Hace peti
+    return fetch(url, opcionesFetch);
   }
 };
 
 window.auth = auth; //expone auth al window global
 
-/*
-// ejemplo simple que hace llamada htttp, recoge respuesta y almacena el token en storage
-fetch('/login', {
-method: 'POST',
-body: JSON.stringify({ username, password }),
-headers: { 'Content-Type': 'application/json' }
-})
-.then(res => res.json())
-.then(data => {
-const token = data.token;
-localStorage.setItem('authToken', token);
-});
-*/

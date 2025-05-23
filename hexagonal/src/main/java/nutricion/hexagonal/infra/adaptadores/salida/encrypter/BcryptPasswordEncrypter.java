@@ -3,7 +3,6 @@ package nutricion.hexagonal.infra.adaptadores.salida.encrypter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
 import nutricion.hexagonal.dominio.interfaces.PasswordEncrypter;
 
 @Component

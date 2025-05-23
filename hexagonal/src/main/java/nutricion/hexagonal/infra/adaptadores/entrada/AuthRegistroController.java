@@ -33,11 +33,7 @@ public class AuthRegistroController {
         System.out.println("Intentando login con: " + request.getEmail());
 
         // Verificar las credenciales del usuario
-        if (!usuarioService.verificarLogin(request.getEmail(), request.getPassword())) { // mejor que
-                                                                                       
-                                                                                         // : control completo para
-                                                                                         // comparar contraseña con
-                                                                                         // encriptacion en BD
+        if (!usuarioService.verificarLogin(request.getEmail(), request.getPassword())) { 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
         }
         // Generar el token JWT si las credenciales son correctas
@@ -55,8 +51,8 @@ public class AuthRegistroController {
         }
       
         // recibe DTO genera un user y encripta en el metodo registrar
-        usuarioService.registrar(request); // debe encriptar la contraseña internamente lo hace el servicio antes de
-                                           // guardar en BD
+        usuarioService.registrarUsuario(request); // debe encriptar la contraseña internamente lo hace el servicio antes 
+        usuarioService.registrarRecomendacion(request);                                   
         return ResponseEntity.status(HttpStatus.CREATED).body("Usuario registrado con éxito");
     }
 

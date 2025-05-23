@@ -9,7 +9,42 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        :root {
+            --primary-color: #6db33f;
+            --secondary-color: #343a40;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+        }
+
+        html,
         body {
+            height: 100%;
+            margin: 0;
+        }
+
+        .navbar {
+            background-color: var(--secondary-color);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #5a9e34;
+            border-color: #5a9e34;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
@@ -23,9 +58,9 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 400px;
+            max-width: 800px;
             /* Limitar el ancho */
-            margin-top: 80px;
+            margin-top: 40px;
             /* Separar del navbar */
         }
 
@@ -84,6 +119,7 @@
 
         /* Asegura que la página ocupe todo el alto disponible y el formulario se centre */
         .content-wrapper {
+            flex: 1;
             display: flex;
             justify-content: center;
             padding-top: 20px;
@@ -93,120 +129,74 @@
             /* para asegurar espacio visible */
 
         }
-
-        :root {
-            --primary-color: #6db33f;
-            --secondary-color: #343a40;
-            --light-color: #f8f9fa;
-            --dark-color: #212529;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        .navbar {
-            background-color: var(--secondary-color);
-        }
-
-        .navbar-brand {
-            font-weight: 700;
-            color: var(--primary-color) !important;
-        }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .btn-primary:hover {
-            background-color: #5a9e34;
-            border-color: #5a9e34;
-        }
-
-        .hero-section {
-            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--dark-color) 100%);
-            color: white;
-            padding: 5rem 0;
-        }
-
-        .feature-icon {
-            font-size: 2.5rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-
-        .feature-card {
-            transition: transform 0.3s;
-            height: 100%;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-10px);
-        }
-
-        .cta-section {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 4rem 0;
-        }
-
         footer {
             background-color: var(--secondary-color);
             color: white;
+            text-align: center;
+            padding: 1rem;
         }
 
-        .tech-logo {
-            height: 50px;
-            margin: 15px;
-            opacity: 0.7;
-            transition: opacity 0.3s;
+        #registroForm {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            /* 2 columnas iguales */
+            gap: 1rem 3rem;
+            /* espacio entre filas y columnas */
         }
 
-        .tech-logo:hover {
-            opacity: 1;
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Que el botón ocupe las dos columnas */
+        #registroForm button {
+            grid-column: 1 / -1;
+            padding: 0.75rem;
+            font-size: 1rem;
         }
     </style>
     <script src="/auth.js"></script>
 </head>
 
 <body>
-    <!-- Reemplaza el fragmento de navbar -->
-    <div th:replace="~{nav :: navbar}"></div>
+    <div id="navbar-container">
+        <!-- Este se actualizará con JavaScript después del login -->
+    </div>
     <div class="content-wrapper">
         <div class="login-container">
             <h2>Registro de Usuario</h2>
             <form method="POST" id="registroForm">
                 <div class="input-group">
-                    <label for="nombre">Nombre</label>
+                    <label for="nombre" class="form-label fw-bold">Nombre</label>
                     <input type="text" id="nombre" name="nombre" required>
                 </div>
                 <div class="input-group">
-                    <label for="correoElectronico">Correo electrónico</label>
+                    <label for="correoElectronico" class="form-label fw-bold">Correo electrónico</label>
                     <input type="email" id="correoElectronico" name="correoElectronico" required>
                 </div>
                 <div class="input-group">
-                    <label for="edad">Edad</label>
+                    <label for="edad" class="form-label fw-bold">Edad</label>
                     <input type="number" id="edad" name="edad" required>
                 </div>
                 <div class="input-group">
-                    <label for="password">Contraseña</label>
+                    <label for="password" class="form-label fw-bold">Contraseña</label>
                     <input type="password" id="password" name="password" required>
                 </div>
                 <div class="input-group">
-                    <label for="confirmarPassword">Confirmar contraseña</label>
+                    <label for="confirmarPassword" class="form-label fw-bold">Confirmar contraseña</label>
                     <input type="password" id="confirmarPassword" name="confirmarPassword" required>
                 </div>
                 <div class="input-group">
-                    <label for="peso">Peso (kg)</label>
+                    <label for="peso" class="form-label fw-bold">Peso (kg)</label>
                     <input type="number" id="peso" name="peso" required>
                 </div>
                 <div class="input-group">
-                    <label for="altura">Altura (cm)</label>
+                    <label for="altura" class="form-label fw-bold">Altura (cm)</label>
                     <input type="number" id="altura" name="altura" required>
                 </div>
                 <div class="input-group">
-                    <label for="nivelActividad">Nivel de actividad</label>
+                    <label for="nivelActividad" class="form-label fw-bold">Nivel de actividad</label>
                     <select id="nivelActividad" name="nivelActividad" required>
                         <option value="">-- Selecciona --</option>
                         <option value="Sedentaria">Sedentaria</option>
@@ -216,9 +206,8 @@
                         <option value="Muy Intensa">Muy Intensa</option>
                     </select>
                 </div>
-
                 <div class="input-group">
-                    <label for="metaSalud">Meta de salud</label>
+                    <label for="metaSalud" class="form-label fw-bold">Meta de salud</label>
                     <select id="metaSalud" name="metaSalud" required>
                         <option value="">-- Selecciona --</option>
                         <option value="Perder peso">Perder peso</option>
@@ -229,7 +218,7 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="tipoDieta">Tipo de dieta</label>
+                    <label for="tipoDieta" class="form-label fw-bold">Tipo de dieta</label>
                     <select id="tipoDieta" name="tipoDieta" required>
                         <option value="">-- Selecciona --</option>
                         <option value="Omnívora">Omnívora</option>
@@ -239,16 +228,49 @@
                         <option value="Otro">Otro</option>
                     </select>
                 </div>
-
+                <div class="input-group">
+                    <label for="tipoUsuario" class="form-label fw-bold">Tipo de usuario:</label>
+                    <select id="tipoUsuario" name="tipoUsuario" required>
+                        <option value="">-- Selecciona --</option>
+                        <option value="Basic" selected>Basic</option>
+                        <option value="Pro">Pro</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="sexo" class="form-label fw-bold">Sexo</label>
+                    <select id="sexo" name="sexo" required>
+                        <option value="">-- Selecciona --</option>
+                        <option value="Femenino">Femenino</option>
+                        <option value="Masculino">Masculino</option>
+                    </select>
+                </div>
                 <button type="submit" class="btn">Registrarse</button>
             </form>
         </div>
     </div>
-    <script>
-        //el script de arriba define auth para manejar token y fetch con autenticacion. OBJETO AUTH  singleton (obejto compartido global por scripts)
-        //el objeto no se recrea a no ser que cargues pagina nueva o pierdas el contexto.
-        //este hará la logica de login y la operacion de guardar el token.
-        document.addEventListener('DOMContentLoaded', () => {
+    <footer>
+        <p>&copy; 2025 Nutrición inteligente, decisiones saludables. Todos los derechos reservados.</p>
+    </footer>
+    <script type="module">
+        import { auth } from '/auth.js';
+        // Aquí cargamos el fragmento del navbar desde el servidor
+        window.addEventListener("DOMContentLoaded", async () => {
+            // 1. Verificar el token de autenticación
+            const token = auth.obtenerToken();
+
+            // Si ya está autenticado, redirigir a perfil
+            if (token && auth.estaAutenticado()) {
+                window.location.href = "/perfil";
+                return;
+            }
+
+            // Cargar navbar
+            const response = await fetch('/navbar-fragment');
+            const html = await response.text();
+            document.getElementById('navbar-container').innerHTML = html;
+            updateNav();
+
+            // 3. Evento para registrar usuario
             document.getElementById('registroForm').addEventListener('submit', async function (e) {
                 e.preventDefault();
 
@@ -262,22 +284,31 @@
                 const nivelActividad = document.getElementById('nivelActividad').value;
                 const metaSalud = document.getElementById('metaSalud').value;
                 const tipoDieta = document.getElementById('tipoDieta').value;
+                const tipoUsuario = document.getElementById('tipoUsuario').value;
+                const sexo = document.getElementById('sexo').value;
 
                 // Validación de contraseñas
                 if (password !== confirmarPassword) {
                     alert("Las contraseñas no coinciden.");
                     return;
                 }
+                // Validación de nivel de actividad
+                if (!['Sedentaria', 'Ligera', 'Moderada', 'Intensa', 'Muy Intensa'].includes(nivelActividad)) {
+                    alert('Nivel de actividad no válido');
+                    return;
+                }
                 const registroDTO = {
                     nombre,
                     correoElectronico,
                     edad,
+                    sexo,
+                    password,
                     peso,
                     altura,
                     nivelActividad,
                     metaSalud,
                     tipoDieta,
-                    password
+                    tipoUsuario
                 };
                 try {
                     //evalua como el api rest devuelve el token o cómo proteges tu ruta privada con jwtAuthFilter.
@@ -301,22 +332,19 @@
                     alert("Error en la solicitud de registro.");
                 }
             });
-        });
-        // document.getElementById('registerBtn').addEventListener('click', () => {
-        //     window.location.href = '/registro'; // O la ruta que corresponda en tu app
-        // });
-        // function updateNav() {
-        //     fetch('/navbar-fragment', {
-        //         headers: {
-        //             'Authorization': 'Bearer ' + auth.obtenerToken() // Asegurarte de enviar el token en los headers
-        //         }
-        //     })
-        //         .then(response => response.text())
-        //         .then(html => {
-        //             document.getElementById('navbar-container').innerHTML = html;
-        //         })
-        //         .catch(error => console.error('Error al cargar el navbar:', error));
-        // }
+            // Función para actualizar el navbar según autenticación
+            function updateNav() {
+                const isAuthenticated = !!auth.obtenerToken();
+
+                // Actualizar visibilidad de los elementos basados en autenticación
+                document.querySelectorAll('.auth-only').forEach(el => {
+                    el.style.display = isAuthenticated ? '' : 'none';
+                });
+                document.querySelectorAll('.guest-only').forEach(el => {
+                    el.style.display = isAuthenticated ? 'none' : '';
+                });
+            }
+        })
 
     </script>
 </body>

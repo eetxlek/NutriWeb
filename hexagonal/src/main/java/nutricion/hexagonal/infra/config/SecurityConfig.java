@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import nutricion.hexagonal.infra.adaptadores.salida.security.JwtAuthEntryPointAdapter;
 import nutricion.hexagonal.infra.adaptadores.salida.security.JwtAuthenticationFilter;
 
@@ -29,30 +28,22 @@ public class SecurityConfig {
 
         ) throws Exception {
                 http
-                               // .cors(withDefaults()) // Habilita CORS con configuración por defecto
                                 .csrf(AbstractHttpConfigurer::disable) // Desactiva CSRF
                                 .sessionManagement(sess -> sess
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Stateless
-                                                                                                        // para no
-                                                                                                        // mantener
-                                                                                                        // sesiones
+                                                                                                       
                                 )
-                                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // Agrega el
-                                                                                                        // filtro JWT
-                                                                                                        // antes de
-                                                                                                        // UsernamePasswordAuthenticationFilter
+                                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) 
                                 .authorizeHttpRequests(auth -> auth
-                                                .requestMatchers("/", "/login", "/registro", "/landing", "/editar-perfil", "/navbar-fragment",
+                                                .requestMatchers("/", "/login", "/despensa", "/consumo", "/registro", "/landing", "/editar-perfil", "/navbar-fragment",
                                                                 "/api/auth/login","/productosapi", "/perfil", "/productos", "/api/producto/**", "/api/auth/**", "/error",
                                                                 "/auth.js","/navbar-fragment", "/login.js", "/css/**","/favicon.ico", "/js/**",
                                                                 "/images/**")
                                                 .permitAll() // Permite el acceso sin autenticación a estas rutas
-                                                .anyRequest().authenticated() // Requiere autenticación para el resto de
-                                                                              // las rutas
+                                                .anyRequest().authenticated() // Requiere autenticación para el resto 
                                 )
                                 .exceptionHandling(ex -> ex
-                                                .authenticationEntryPoint(jwtAuthEntryPoint) // Manejo de excepciones de
-                                                                                             // autenticación
+                                                .authenticationEntryPoint(jwtAuthEntryPoint) // Manejo de excepciones de autenticación
                                 );
 
                 return http.build();

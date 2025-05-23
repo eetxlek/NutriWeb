@@ -45,11 +45,25 @@
             border-color: #5a9e34;
         }
 
+        html,
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100%;
+            margin: 0;
         }
 
-        /* 🔍 Search box más grande */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            /* Alternativa a height: 100% */
+        }
+
+        .content-wrapper {
+            flex: 1 0 auto;
+            /* Esto hace que el contenido principal ocupe todo el espacio disponible */
+        }
+
         .search-box {
             margin: 2rem auto;
             display: flex;
@@ -150,8 +164,6 @@
             color: #555;
         }
 
-
-
         /* 📝 Formulario más pequeño y compacto */
         #product-form {
             max-width: 400px;
@@ -207,75 +219,93 @@
         .button-row button:hover {
             background-color: #5a9e34;
         }
+
+        footer {
+            background-color: var(--secondary-color);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+        }
     </style>
-    <script type="module" src="/auth.js" defer></script>
+
 </head>
 
 <body>
-    <div id="navbar-container" th:replace="~{nav :: navbar}"></div>
-    <div class="search-box">
-        <input type="text" id="search-input" placeholder="Buscar producto...">
-        <button onclick="searchProducts()">Buscar</button>
-    </div>
+    <div class="content-wrapper">
+        <div id="navbar-container">
+            <!-- Este se actualizará con JavaScript después del login -->
+        </div>
 
-    <div id="product-list" class="product-list">
-        <!-- Aquí se cargarán los productos dinámicamente -->
-    </div>
-    <!-- Formulario para enviar los datos del producto -->
-    <div id="product-form" sec:authorize="isAuthenticated()">
-        <h3>Formulario del Producto</h3>
-        <!--   <form action="http://localhost:8080/apinutricion/api/consumo" method="POST"></form> sin necesidad de fetch??? in dont think so-->
-        <form id="form-product" onsubmit="submitProduct(event)">
-            <label for="product-name">Nombre:</label>
-            <input type="text" id="product-name" readonly>
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="Buscar producto...">
+            <!-- Quité onclick, lo deja en js-->
+            <button id="search-btn">Buscar</button>
+        </div>
+        <div class="container my-4">
+            <div class="row">
+                <!-- Formulario para enviar los datos del producto -->
+                <div id="product-form" class="auth-only" style="display: none;">
+                    <h3>Formulario del Producto</h3>
+                    <!-- Formulario   // quité onsumit del form, lo manejo en js-->
+                    <form id="form-product">
+                        <!--id producto-->
+                        <input type="hidden" id="product-id">
 
-            <label for="product-description">Descripción:</label>
-            <input type="text" id="product-description" readonly>
+                        <label for="product-name">Nombre:</label>
+                        <input type="text" id="product-name" readonly>
 
-            <label for="energyKcal">Energia:</label>
-            <input type="text" id="energyKcal" readonly>
+                        <label for="energyKcal">Energia:</label>
+                        <input type="text" id="energyKcal" readonly>
 
-            <label for="product-fat">Grasas (g):</label>
-            <input type="text" id="product-fat" readonly>
+                        <label for="product-fat">Grasas (g):</label>
+                        <input type="text" id="product-fat" readonly>
 
-            <label for="product-carbs">Carbohidratos (g):</label>
-            <input type="text" id="product-carbs" readonly>
+                        <label for="product-carbs">Carbohidratos (g):</label>
+                        <input type="text" id="product-carbs" readonly>
 
-            <label for="product-protein">Proteínas (g):</label>
-            <input type="text" id="product-protein" readonly>
+                        <label for="product-protein">Proteínas (g):</label>
+                        <input type="text" id="product-protein" readonly>
 
-            <label for="product-sugars">Azúcares (g):</label>
-            <input type="text" id="product-sugars" readonly>
+                        <label for="product-sugars">Azúcares (g):</label>
+                        <input type="text" id="product-sugars" readonly>
 
-            <label for="product-fiber">Fibra (g):</label>
-            <input type="text" id="product-fiber" readonly>
+                        <label for="product-fiber">Fibra (g):</label>
+                        <input type="text" id="product-fiber" readonly>
 
-            <label for="product-vitaminC">Vitamina C (mg):</label>
-            <input type="text" id="product-vitaminC" readonly>
+                        <label for="product-vitaminC">Vitamina C (mg):</label>
+                        <input type="text" id="product-vitaminC" readonly>
 
-            <label for="product-potassium">Potasio (mg):</label>
-            <input type="text" id="product-potassium" readonly>
+                        <label for="product-potassium">Potasio (mg):</label>
+                        <input type="text" id="product-potassium" readonly>
 
-            <label for="product-calcium">Calcio (mg):</label>
-            <input type="text" id="product-calcium" readonly>
+                        <label for="product-calcium">Calcio (mg):</label>
+                        <input type="text" id="product-calcium" readonly>
 
-            <label for="product-magnesium">Magnesio (mg):</label>
-            <input type="text" id="product-magnesium" readonly>
+                        <label for="product-magnesium">Magnesio (mg):</label>
+                        <input type="text" id="product-magnesium" readonly>
 
-            <label for="product-iron">Hierro (mg):</label>
-            <input type="text" id="product-iron" readonly>
+                        <label for="product-iron">Hierro (mg):</label>
+                        <input type="text" id="product-iron" readonly>
 
-            <label for="product-quantity">Cantidad:</label>
-            <input type="number" id="product-quantity" value="1">
+                        <label for="product-quantity">Cantidad:</label>
+                        <input type="number" id="product-quantity" value="1">
 
-            <label for="purchase-date">Fecha de compra:</label>
-            <input type="date" id="purchase-date">
+                        <label for="purchase-date">Fecha de compra:</label>
+                        <input type="datetime-local" id="purchase-date">
 
-            <div class="button-row">
-                <button type="submit" name="action" value="despensa">Despensa</button>
-                <button type="submit" name="action" value="consumo">Consumo</button>
+                        <div class="button-row">
+                            <button type="submit" name="action" value="despensa">Despensa</button>
+                            <button type="submit" name="action" value="consumo">Consumo</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-8">
+                    <div id="product-list" class="d-flex flex-wrap gap-3">
+                        <!-- Aquí se cargarán los productos dinámicamente -->
+                    </div>
+                </div>
             </div>
-        </form>
+        </div>
     </div>
     <footer>
         <p>&copy; 2025 Nutrición inteligente, decisiones saludables. Todos los derechos reservados.</p>
@@ -283,20 +313,60 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
+    <script type="module">
+        import { auth } from '/auth.js';
+        window.auth = auth;
+        window.addEventListener("DOMContentLoaded", async () => {
+            document.getElementById("product-form").addEventListener("submit", submitProduct);
 
-        // Función para realizar la llamada a la API y actualizar la lista de productos
+
+            const token = auth.obtenerToken();
+            // 1. Cargar el fragmento del navbar desde el servidor
+            fetch('/navbar-fragment')
+                .then(response => response.text())
+                .then(html => {
+                    // 2. Insertar el fragmento navbar
+                    document.getElementById('navbar-container').innerHTML = html;
+
+                    updateNav(); // <-- Mostrar u ocultar elementos según autenticación
+
+                    // Botón de login
+                    const loginBtn = document.getElementById("login-btn");
+                    if (loginBtn) {
+                        loginBtn.addEventListener("click", () => {
+                            window.location.href = "/login"; // o la ruta que uses para el login
+                        });
+                    }
+                    // Botón de búsqueda
+                    const searchBtn = document.getElementById("search-btn");
+                    if (searchBtn) {
+                        searchBtn.addEventListener("click", searchProducts);
+                    }
+                    // Configurar el evento de logout (opcional, ya que usamos onclick)
+                    const logoutBtn = document.getElementById("logout-button");
+                    if (logoutBtn) {
+                        logoutBtn.addEventListener("click", (e) => {
+                            e.preventDefault();
+                            auth.cerrarSesion();
+                        });
+                    }
+
+                });
+        });
+
+        // llama y carga lista de productos con updateProductList con cada elemento su boton seleccionar: 
+        // solo utilizable si autenticado rellena formulario y habilita despensa
+
         async function searchProducts() {
             const searchTerm = document.getElementById("search-input").value;
             if (!searchTerm) {
                 alert("Por favor ingresa un nombre de producto para buscar.");
                 return;
             }
-
             const url = `http://localhost:8080/api/producto?nombre=${encodeURIComponent(searchTerm)}`;
 
             try {
-                // Realizar la solicitud GET
+                // Realizar  GET  
                 const response = await fetch(url);
                 if (!response.ok) {
                     alert('No se pudo obtener la respuesta del servidor.');
@@ -326,6 +396,9 @@
             // Iterar sobre los productos y agregar a la lista
             data.forEach(product => {
                 const productItem = document.createElement("div");
+                productItem.classList.add("product-item");
+                productItem.style.flex = "1 1 130px"; // ✅ Ocupa mínimo 100px, se adapta
+                productItem.style.maxWidth = "100%"; // Para evitar desbordes
                 productItem.classList.add("product-item");
 
                 // Crear el contenido de cada producto
@@ -379,46 +452,64 @@
             });
         }
 
-        // Función para rellenar el formulario con los datos del producto seleccionado
+        // Función para rellenar el formulario con los datos del producto seleccionado    
         function fillFormWithProductData(product) {
-            document.getElementById("product-name").value = product.product_name || "";
-            document.getElementById("product-description").value = product.descripcion || "";
-            document.getElementById("energyKcal").value = product.calorias || "";
-            document.getElementById("product-fat").value = product.fat_100g || "";
-            document.getElementById("product-carbs").value = product.carbohydrates_100g || "";
-            document.getElementById("product-protein").value = product.proteins_100g || "";
-            document.getElementById("product-sugars").value = product.azucares || "";
-            document.getElementById("product-fiber").value = product.fibra || "";
-            document.getElementById("product-vitaminC").value = product.vitaminaC || "";
-            document.getElementById("product-potassium").value = product.potasio || "";
-            document.getElementById("product-calcium").value = product.calcio || "";
-            document.getElementById("product-magnesium").value = product.magnesio || "";
-            document.getElementById("product-iron").value = product.hierro || "";
+            document.getElementById("product-id").value = product.id != null ? product.id : ""; // NUEVO
+            document.getElementById("product-name").value = product.nombre || "";
+            // document.getElementById("product-description").value = product.descripcion || "";
+            document.getElementById("energyKcal").value = formatNumber(product.calorias || "");
+            document.getElementById("product-fat").value = formatNumber(product.grasas || "");
+            document.getElementById("product-carbs").value = formatNumber(product.carbohidratos || "");
+            document.getElementById("product-protein").value = formatNumber(product.proteinas || "");
+            document.getElementById("product-sugars").value = formatNumber(product.azucares || "");
+            document.getElementById("product-fiber").value = formatNumber(product.fibra || "");
+            document.getElementById("product-vitaminC").value = formatNumber(product.vitaminaC || "");
+            document.getElementById("product-potassium").value = formatNumber(product.potasio || "");
+            document.getElementById("product-calcium").value = formatNumber(product.calcio || "");
+            document.getElementById("product-magnesium").value = formatNumber(product.magnesio || "");
+            document.getElementById("product-iron").value = formatNumber(product.hierro || "");
 
             // Establecer valores por defecto para los otros campos
             document.getElementById("product-quantity").value = "1";
 
             // Establecer la fecha actual como valor por defecto
             const today = new Date();
-            const formattedDate = today.toISOString().substr(0, 10);
-            document.getElementById("purchase-date").value = formattedDate;
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // Los meses empiezan en 0
+            const day = String(today.getDate()).padStart(2, '0');
+            const hours = String(today.getHours()).padStart(2, '0');
+            const minutes = String(today.getMinutes()).padStart(2, '0');
+
+            const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+            document.getElementById("purchase-date").value = formattedDateTime;
+            //document.getElementById("purchase-date").value = formattedDate;
+            // Mostrar el formulario (si está oculto)
+            document.getElementById("product-form").style.display = "block";  //quizá rellana form pero  no muestra.
+
         }
 
         // Función para hacer el POST con los datos del producto
         async function submitProduct(event) {
+            event.preventDefault();  // Primero previene submit por default.
+            //corta no autenticado
             if (!auth.estaAutenticado()) {
                 alert("Debes iniciar sesión para enviar productos.");
                 return;
             }
-            //decide el endpoint al que enviar 
-            const action = event.submitter.value;
-            const baseurl = 'https://localhost:8080';
-            const url = action === "consumo" ? baseurl + "/api/consumo" : baseurl + "/api/despensa";
-            event.preventDefault();  // Prevenir el envío por defecto del formulario
+            //decide el url, seleccion dinamica 
+            const protocol = window.location.protocol;
+            const action = event.submitter.value;  //obtener el valor del boton submit.
+            const host = 'localhost:8080';
+            const baseUrl = `${protocol}//${host}`;
+            const isDespensa = action === "despensa";
+            const url = isDespensa ? `${baseUrl}/api/despensa` : `${baseUrl}/api/consumos`;
+            console.log(`Enviando datos a: ${url}`);
 
+            //parsea y evita nan con ||0
             const productData = {
+                id: parseInt(document.getElementById("product-id").value) || null,
                 nombre: document.getElementById("product-name").value,
-                descripcion: document.getElementById("product-description").value,
+                //descripcion: document.getElementById("product-description").value,
                 calorias: parseFloat(document.getElementById("energyKcal").value) || 0,
                 grasas: parseFloat(document.getElementById("product-fat").value) || 0,
                 carbohidratos: parseFloat(document.getElementById("product-carbs").value) || 0,
@@ -431,27 +522,62 @@
                 magnesio: parseFloat(document.getElementById("product-magnesium").value) || 0,
                 hierro: parseFloat(document.getElementById("product-iron").value) || 0,
                 cantidad: parseInt(document.getElementById("product-quantity").value) || 1,
-                fechaCompra: document.getElementById("purchase-date").value
+                fechaCompraConsumo: document.getElementById("purchase-date").value
             };
-
+            //evalua direccion, si existe id en despensa cambia el POST a PUT  //el dto tendrá todo productData
             try {
-                const response = await fetch(url, {
-                    method: 'POST',
+                let finalMethod = 'POST'; // por defecto
+                let finalUrl = url;
+
+                if (isDespensa) {
+                    console.log("productData.id para verificación:", productData.id);
+                    // Evaluamos si ya existe el producto en la despensa del usuario
+                    const checkUrl = `${baseUrl}/api/despensa/existe?productoId=${productData.id}`;
+                    const checkResponse = await auth.fetchConAutenticacion(checkUrl);   //GET a productExiste en despensa
+
+                    if (checkResponse.ok) {
+                        const existe = await checkResponse.json(); // booleano true/false   si es true PUT sino POST
+                        if (existe) {
+                            finalMethod = 'PUT'; // Actualizar si ya existe
+                        }
+                    } else {
+                        console.warn("No se pudo verificar si el producto ya existe en la despensa.");
+                    }
+                }
+                // Hade la operación evaluada previamente URL y METODO con productData
+                const response = await auth.fetchConAutenticacion(finalUrl, {
+                    method: finalMethod,
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(productData),
                 });
-
+                //REESPUESTA DE LA OPERACION
                 if (response.ok) {
-                    alert("Producto enviado correctamente.");
+                    const mensaje =
+                        isDespensa
+                            ? `Producto ${finalMethod === 'POST' ? 'añadido' : 'actualizado'} correctamente en la despensa.`
+                            : 'Producto consumido correctamente.';
+                    alert(mensaje);
                 } else {
-                    alert("Error al enviar el producto.");
+                    alert("Error al enviar el producto. Consulta si existe ya en tu despensa.");
                 }
             } catch (error) {
                 console.error("Error al enviar los datos:", error);
                 alert("Hubo un error al enviar los datos.");
             }
+        }
+        // Función para actualizar el navbar según autenticación
+        function updateNav() {
+            const isAuthenticated = !!auth.obtenerToken();
+
+            // Actualizar visibilidad de los elementos basados en autenticación
+            document.querySelectorAll('.auth-only').forEach(el => {
+                el.style.display = isAuthenticated ? '' : 'none';
+            });
+            document.querySelectorAll('.guest-only').forEach(el => {
+                el.style.display = isAuthenticated ? 'none' : '';
+            });
         }
     </script>
 </body>

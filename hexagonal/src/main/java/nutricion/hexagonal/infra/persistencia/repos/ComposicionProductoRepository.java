@@ -7,7 +7,7 @@ import nutricion.hexagonal.infra.persistencia.entidades.ComposicionEntity;
 
 @Repository
 public interface ComposicionProductoRepository extends JpaRepository<ComposicionEntity, Integer> {
-    Optional<ComposicionEntity> findByProducto_Id(Integer id);
+    Optional<ComposicionEntity> findByProducto_Id(Integer id); 
     boolean existsByProducto_Id(Integer idProducto);
 
 }

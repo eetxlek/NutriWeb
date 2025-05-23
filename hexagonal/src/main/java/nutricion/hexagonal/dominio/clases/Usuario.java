@@ -10,6 +10,7 @@ public class Usuario {
     private String correoElectronico; // Correspondiente a `correo_electronico`
     private String contraseña; // Correspondiente a `contraseña` (guardada encriptada)
     private int edad; // Correspondiente a `edad`
+    private String sexo;
     private float peso; // Correspondiente a `peso`
     private float altura; // Correspondiente a `altura`
     private String nivelActividad; // Correspondiente a `nivel_actividad` (ENUM)
@@ -20,13 +21,14 @@ public class Usuario {
 
     public Usuario() {
     }
-    public Usuario(int idUsuario, String nombre, String correoElectronico, String contraseña, int edad, float peso,
+    public Usuario(int idUsuario, String nombre, String correoElectronico, String contraseña, int edad, String sexo, float peso,
             float altura, String nivelActividad, String metaSalud, String tipoDieta, String tipoUsuario) {
         this.id = idUsuario;
         this.nombre = nombre;
         this.correoElectronico = correoElectronico;
         this.contraseña = contraseña;
         this.edad = edad;
+        this.sexo=sexo;
         this.peso = peso;
         this.altura = altura;
         this.nivelActividad = nivelActividad;
@@ -40,11 +42,18 @@ public class Usuario {
         this.contraseña = contraseña;
         this.tipoUsuario = tipoUsuario;
     }
-    public int getIdUsuario() {
+    
+    public int getId() {
         return id;
     }
-    public void setIdUsuario(int idUsuario) {
-        this.id = idUsuario;
+    public void setId(int id) {
+        this.id = id;
+    }
+    public String getSexo() {
+        return sexo;
+    }
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
     }
     public String getNombre() {
         return nombre;

@@ -1,7 +1,6 @@
 package nutricion.hexagonal.infra.persistencia.entidades;
 
-import java.time.LocalDate;
-
+import java.time.LocalDateTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,8 +8,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "consumo") 
 public class ConsumoEntity {
 
     @Id
@@ -26,16 +27,16 @@ public class ConsumoEntity {
 
     @ManyToOne
     @JoinColumn(name = "id_producto", referencedColumnName = "id_producto")
-    private ProductoEntity producto;
+    private ProductoEntity producto; // Relación con ProductoEntity
 
     private Integer cantidad;
 
     @Column(name = "fecha_consumo")
-    private LocalDate fechaConsumo;
+    private LocalDateTime fechaConsumo;
 
     public ConsumoEntity() {}
 
-    public ConsumoEntity(ProductoEntity producto, UsuarioEntity usuario, Integer cantidad, LocalDate fechaConsumo) {
+    public ConsumoEntity(ProductoEntity producto, UsuarioEntity usuario, Integer cantidad, LocalDateTime fechaConsumo) {
         this.producto = producto;
         this.usuario = usuario;
         this.cantidad = cantidad;
@@ -74,11 +75,11 @@ public class ConsumoEntity {
         this.cantidad = cantidad;
     }
 
-    public LocalDate getFechaConsumo() {
+    public LocalDateTime getFechaConsumo() {
         return fechaConsumo;
     }
 
-    public void setFechaConsumo(LocalDate fechaConsumo) {
+    public void setFechaConsumo(LocalDateTime fechaConsumo) {
         this.fechaConsumo = fechaConsumo;
     }
 

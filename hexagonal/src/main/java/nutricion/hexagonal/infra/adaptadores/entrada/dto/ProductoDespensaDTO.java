@@ -1,47 +1,52 @@
 package nutricion.hexagonal.infra.adaptadores.entrada.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import nutricion.hexagonal.dominio.clases.Despensa;
 import nutricion.hexagonal.dominio.clases.Producto;
 
 public class ProductoDespensaDTO extends ProductoDTO {
     private Integer cantidad;
-    private String fechaCompraConsumo;
+    private LocalDateTime fechaCompraConsumo;
+    @JsonIgnore
     private Integer idUsuario;
     
-    public ProductoDespensaDTO(Integer id, String nombre, String descripcion, Double calorias, Double proteinas,
+
+     public ProductoDespensaDTO(Integer id, String nombre, String descripcion, Double calorias, Double proteinas,
                                Double grasas, Double carbohidratos, Double fibra, Double azucares, Double vitaminaC,
                                Double potasio, Double calcio, Double magnesio, Double hierro, Integer cantidad,
-                               String fechaCompraConsumo, Integer idUsuario) {
-        super(id, nombre, descripcion, calorias, proteinas, grasas, carbohidratos, fibra, azucares, vitaminaC, 
+                               LocalDateTime fechaCompraConsumo) {
+        super(id, nombre, calorias, proteinas, grasas, carbohidratos, fibra, azucares, vitaminaC, 
               potasio, calcio, magnesio, hierro); // Llamada al constructor de ProductoDTO
         this.cantidad = cantidad;
         this.fechaCompraConsumo = fechaCompraConsumo;
-        this.idUsuario = idUsuario;
     }
     public ProductoDespensaDTO() {
     }
+
+    
+    
     public Integer getCantidad() {
         return cantidad;
     }
     public void setCantidad(Integer cantidad) {
         this.cantidad = cantidad;
     }
-    public String getFechaCompraConsumo() {
+    public LocalDateTime getFechaCompraConsumo() {
         return fechaCompraConsumo;
     }
-    public void setFechaCompraConsumo(String fechaCompraConsumo) {
+    public void setFechaCompraConsumo(LocalDateTime fechaCompraConsumo) {
         this.fechaCompraConsumo = fechaCompraConsumo;
     }
 
      public Despensa toDespensa(Producto producto) {
-           //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
         return new Despensa(
-            null, // No asignamos id, será autoincrementado por la base de datos
+            null, // autoincrementado por la base de datos
             this.idUsuario,
             producto,
             this.cantidad,
-            LocalDate.parse(this.fechaCompraConsumo)
+            this.fechaCompraConsumo
         );
     }
      public Integer getIdUsuario() {
@@ -50,5 +55,12 @@ public class ProductoDespensaDTO extends ProductoDTO {
      public void setIdUsuario(Integer idUsuario) {
          this.idUsuario = idUsuario;
      }
+     @Override
+     public String toString() {
+        return "ProductoDespensaDTO [cantidad=" + cantidad + ", fechaCompraConsumo=" + fechaCompraConsumo
+                + ", idUsuario=" + idUsuario + ", getId()=" + getId() + "]";
+     }
+    
+     
 }
 

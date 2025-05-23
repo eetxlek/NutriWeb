@@ -1,243 +1,344 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Despensa de Productos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>Despensa de Productos</title>
+
     <style>
-            #update-product-form {
-        background-color: #f8f9fa; /* Fondo claro */
-        border-radius: 8px; /* Bordes redondeados */
-        padding: 30px; /* Espaciado interior */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
-        margin-bottom: 40px; /* Espacio inferior */
-    }
-
-    /* Títulos dentro del formulario */
-    #update-product-form h1 {
-        font-size: 1.8rem;
-        margin-bottom: 20px; /* Espacio debajo del título */
-        text-align: center;
-        color: var(--primary-color);
-    }
-
-    /* Estilos de los campos de formulario */
-    #update-product-form .form-control {
-        border-radius: 5px; /* Bordes redondeados */
-        border: 1px solid #ced4da; /* Borde gris claro */
-        padding: 15px; /* Espaciado interior */
-        margin-bottom: 15px; /* Espacio debajo de cada campo */
-    }
-
-    /* Estilo de los botones */
-    #update-product-form button[type="submit"] {
-        background-color: var(--primary-color); /* Color primario */
-        color: black; /* Texto blanco */
-        font-size: 1.1rem; /* Fuente más grande */
-        padding: 12px 20px; /* Relleno del botón */
-        border: none; /* Eliminar borde */
-        border-radius: 5px; /* Bordes redondeados */
-        width: 100%; /* Hacer el botón de ancho completo */
-        cursor: pointer;
-    }
-
-    #update-product-form button[type="submit"]:hover {
-        background-color: #5a9e34; /* Cambio de color en hover */
-    }
-
-    /* Estilo de las etiquetas */
-    #update-product-form .form-label {
-        font-weight: bold;
-        margin-bottom: 10px; /* Espacio debajo de la etiqueta */
-    }
-    
-    /* Estilo para el contenedor del formulario */
-    .container {
-        max-width: 600px;
-        margin: 0 auto; /* Centrar el formulario */
-        padding: 20px;
-    }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+        :root {
+            --primary-color: #6db33f;
+            --primary-dark: #5a9e34;
+            --secondary-color: #343a40;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
         }
-        th, td {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            text-align: left;
+
+        /* Estilos base */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
         }
-        th {
-            background-color: #f4f4f4;
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            /* Alternativa a height: 100% */
         }
+
+        /* Navbar */
+        .navbar {
+            background-color: var(--secondary-color);
+        }
+          .navbar a {
+            color: var(--light-color);
+            /* Para asegurarse de que los enlaces sean visibles en el navbar */
+        }
+
+        .navbar a:hover {
+            color: var(--primary-color);
+            /* Color de los enlaces al pasar el ratón */
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+        }
+
+        /* Botones */
+        .btn-primary,
+        #update-product-form button[type="submit"],
+        .search-box button,
+        .button-row button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            padding: 0.6rem 1.2rem;
+        }
+
+        .btn-primary:hover,
+        #update-product-form button[type="submit"]:hover,
+        .search-box button:hover,
+        .button-row button:hover {
+            background-color: var(--primary-dark);
+        }
+
+         /* Contenido principal - clave para el footer pegada */
+       .content-wrapper {
+            flex: 1 0 auto;
+            /* Esto hace que el contenido principal ocupe todo el espacio disponible */
+        }
+
+        /* Layout */
+
+   
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
+ 
+        /* Formularios */
+        .form-base {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-base h2,
+        .form-base h3 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            padding: 10px;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        /* Tablas */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--secondary-color);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            flex-shrink: 0;
+        }
+
     </style>
+
 </head>
+
 <body>
-    <div id="navbar-container">
-        <!-- Este se actualizará con JavaScript después del login -->
-    </div>
+      <div class="content-wrapper">
+        <div id="navbar-container">
+            <!-- Este se actualizará con JavaScript después del login -->
+        </div>
+       
+        <div class="container">
+            <h2>Lista de Productos en la Despensa</h2>
 
-    <div class="container">
-        <!-- Formulario PUT para actualizar un producto en la despensa -->
-        <h1>Actualizar Producto en la Despensa</h1>
-        <form id="update-product-form" method="POST" action="https://localhost:8080/apinutricion/api/despensa" class="mb-4">
-            <!-- Asegúrate de que este formulario esté vinculado a la lógica del backend para manejar PUT -->
-            <input type="hidden" name="_method" value="PUT"> <!-- Para simular un PUT -->
+            <table id="despensa-table">
+                <thead>
+                    <tr>
+                        <th>Nombre Producto</th>
+                        <th>Cantidad</th>
+                        <th>Fecha de Compra</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Los productos se cargarán aquí, solo ultimo registro despensa relacionado con cada producto -->
+                </tbody>
+            </table>
+        </div>
+        <div class="container">
+            <!-- Formulario PUT para actualizar un producto en la despensa -->
+            <h2>Actualizar Producto</h2>
+            <form id="update-product-form" class="mb-4">
 
-            <div class="mb-3">
-                <label for="product-name" class="form-label">Nombre del Producto</label>
-                <input type="text" class="form-control" id="product-name" name="nombreProducto" required>
-            </div>
+                <div class="mb-3">
+                    <label for="product-name" class="form-label fw-bold">Nombre del Producto</label>
+                    <input type="text" class="form-control fw-bold" id="product-name" name="nombreProducto" required
+                        readonly>
+                </div>
+                <input type="hidden" id="product-id" />
+                <div class="mb-3">
+                    <label for="product-quantity" class="form-label fw-bold">Cantidad</label>
+                    <input type="number" class="form-control fw-bold" id="product-quantity" name="cantidad" required>
+                </div>
 
-            <div class="mb-3">
-                <label for="product-quantity" class="form-label">Cantidad</label>
-                <input type="number" class="form-control" id="product-quantity" name="cantidad" required>
-            </div>
+                <div class="mb-3">
+                    <label for="purchase-date" class="form-label">Fecha de Compra</label>
+                    <input type="datetime-local" class="form-control fw-bold" id="purchase-date" name="fechaCompra"
+                        required>
+                </div>
 
-            <div class="mb-3">
-                <label for="purchase-date" class="form-label">Fecha de Compra</label>
-                <input type="date" class="form-control" id="purchase-date" name="fechaCompra" required>
-            </div>
+                <button type="submit" class="btn btn-primary">Guardar edición </button>
+            </form>
+        </div>
+   </div>
+    <footer>
+        <p>&copy; 2025 Nutrición inteligente, decisiones saludables. Todos los derechos reservados.</p>
+    </footer>
 
-            <button type="submit" class="btn btn-primary">Actualizar Producto</button>
-        </form>
-    </div>
-    <div class="container">
-        <h1>Lista de Productos en la Despensa</h1>
-        
-        <table id="despensa-table">
-            <thead>
-                <tr>
-                    <th>Nombre Producto</th>
-                    <th>Cantidad</th>
-                    <th>Fecha de Compra</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Los productos se cargarán aquí -->
-            </tbody>
-        </table>
-    </div>
-
-    <script src="/js/auth.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', async function() {
+    <script type="module">
+        import { auth } from '/auth.js';
+        window.addEventListener('DOMContentLoaded', async function () {
             // Verificar autenticación
-            if (!auth.estaAutenticado()) {
-                window.location.href = '/login';
+            const token = auth.obtenerToken();
+            if (!token || !auth.estaAutenticado()) {
+                console.error("No autenticado, redirigiendo...");
+                window.location.href = "/login";
                 return;
             }
-            
+            // Cargar navbar
             try {
-                // Usar la función con autenticación
-                const response = await auth.fetchConAutenticacion('/api/productos');
-                
-                if (response.ok) {
-                    const productos = await response.json();
-                    const container = document.getElementById('productos-container');
-                    
-                    productos.forEach(producto => {
-                        const div = document.createElement('div');
-                        div.textContent = `${producto.nombre} - $${producto.precio}`;
-                        container.appendChild(div);
+                const navbarHtml = await fetch('/navbar-fragment').then(res => res.text());
+                document.getElementById('navbar-container').innerHTML = navbarHtml;
+                updateNav();
+
+                // Event listener logout
+                const logoutBtn = document.getElementById('logout-button');
+                if (logoutBtn) {
+                    logoutBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        auth.cerrarSesion();
+                        updateNav();
+                        window.location.href = "/login";
                     });
                 }
-            } catch (error) {
-                console.error('Error al cargar productos:', error);
+            } catch (e) {
+                console.error("Error cargando navbar:", e);
             }
-            
-            // Botón de logout
-            document.getElementById('logout').addEventListener('click', function() {
-                auth.cerrarSesion();
+
+            // Cargar datos de la despensa
+            try {
+                const response = await auth.fetchConAutenticacion('/api/usuario/despensa');
+                if (response.ok) {
+                    const productos = await response.json();
+                    const tableBody = document.querySelector('#despensa-table tbody');
+                    tableBody.innerHTML = '';
+
+                    productos.forEach(producto => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                        <td>${producto.nombreProducto}</td>
+                        <td>${producto.cantidad}</td>
+                        <td>${formatearFecha(producto.fechaCompra)}</td>
+                          <td>
+                             <button class="btn btn-sm btn-secondary editar-btn"
+                                    data-id-despensa="${producto.idDespensa}"
+                                    data-nombre="${producto.nombreProducto}"
+                                    data-cantidad="${producto.cantidad}"
+                                    data-fecha="${producto.fechaCompra}">
+                                Editar
+                             </button>
+                          </td>
+                    `;
+                        tableBody.appendChild(row);
+
+                        const btnEditar = row.querySelector('.editar-btn');
+                        btnEditar.addEventListener('click', () => {
+                            document.getElementById('product-id').value = btnEditar.getAttribute('data-id-despensa');
+                            document.getElementById('product-name').value = btnEditar.getAttribute('data-nombre');
+                            document.getElementById('product-quantity').value = btnEditar.getAttribute('data-cantidad');
+                            const now = new Date();
+                            const year = now.getFullYear();
+                            const month = String(now.getMonth() + 1).padStart(2, '0');
+                            const day = String(now.getDate()).padStart(2, '0');
+                            const hours = String(now.getHours()).padStart(2, '0');
+                            const minutes = String(now.getMinutes()).padStart(2, '0');
+                            const formattedNow = `${year}-${month}-${day}T${hours}:${minutes}`;
+
+                            // Establecer la fecha actual en el input
+                            document.getElementById('purchase-date').value = formattedNow;
+                        });
+
+                    });
+                } else {
+                    console.error("Error al cargar despensa:", response.status);
+                }
+            } catch (error) {
+                console.error('Error al cargar despensa:', error);
+            }
+            //formulario
+            document.getElementById('update-product-form').addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const id = document.getElementById('product-id').value;  // Asegúrate de que este campo contiene el ID correcto
+                const nombre = document.getElementById('product-name').value;
+                const cantidad = document.getElementById('product-quantity').value;
+                const fecha = document.getElementById('purchase-date').value;
+
+                // const fechaFormateada = new Date(fecha).toISOString();   // Convierte la fecha en formato ISO para LocalDateTime
+                const dto = {
+                    idDespensa: parseInt(id),
+                    nombre: nombre,
+                    cantidad: parseInt(cantidad),
+                    fechaCompra: fecha
+                };
+
+                try {
+                    const response = await auth.fetchConAutenticacion('/api/despensa', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(dto)
+                    });
+
+                    if (response.ok) {
+                        alert("Producto actualizado exitosamente");
+                        location.reload(); // recarga la tabla
+                    } else {
+                        const errorMsg = await response.text();
+                        alert("Error al actualizar: " + errorMsg);
+                    }
+                } catch (err) {
+                    console.error("Error al enviar actualización:", err);
+                    alert("Error técnico");
+                }
             });
+            function formatearFecha(fechaISO) {
+                const fecha = new Date(fechaISO);
+                if (isNaN(fecha)) return fechaISO; // por si algo falla, muestra original
+                const año = fecha.getFullYear();
+                const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+                const dia = String(fecha.getDate()).padStart(2, '0');
+                const horas = String(fecha.getHours()).padStart(2, '0');
+                const minutos = String(fecha.getMinutes()).padStart(2, '0');
+                return `${año}-${mes}-${dia} ${horas}:${minutos}`;
+            }
+
+
+            function updateNav() {
+                const isAuthenticated = !!auth.obtenerToken() && auth.estaAutenticado(); // Basado en JWT
+
+                // Mostrar/ocultar elementos de autenticados
+                document.querySelectorAll('.auth-only').forEach(el => {
+                    el.style.display = isAuthenticated ? '' : 'none';
+                });
+
+                // Mostrar/ocultar elementos de no autenticados
+                document.querySelectorAll('.guest-only').forEach(el => {
+                    el.style.display = isAuthenticated ? 'none' : '';
+                });
+            }
         });
     </script>
- <script>
-    function updateNav() {
-           fetch('/navbar-fragment')
-               .then(response => response.text())
-               .then(html => {
-                   document.getElementById('navbar-container').innerHTML = html;
 
-                   const isAuthenticated = !!auth.obtenerToken() && auth.estaAutenticado();
-                   // Mostrar/ocultar enlaces
-                   document.querySelectorAll('.auth-only').forEach(el => {
-                       el.style.display = isAuthenticated ? '' : 'none';
-                   });
-                   document.querySelectorAll('.guest-only').forEach(el => {
-                       el.style.display = isAuthenticated ? 'none' : '';
-                   });
-               })
-               .catch(error => console.error('Error al cargar el navbar:', error));
-       }
-       // Llamada inicial para actualizar el navbar cuando se carga la página
-       window.addEventListener('DOMContentLoaded', updateNav);
-</script>
-    <!-- <script>
-        // URL del API backend que devuelve la lista de productos en la despensa
-        const apiUrl = 'https://localhost:8080/apinutricion/api/despensa'; // Reemplaza con tu URL de API real
-
-        // Función para cargar los productos desde el API
-        async function loadDespensa() {
-            try {
-                // Realizamos una solicitud GET al API para obtener los productos
-                const response = await fetch(apiUrl);
-
-                // Verificamos que la respuesta sea exitosa
-                if (!response.ok) {
-                    throw new Error('No se pudo cargar los productos de la despensa');
-                }
-
-                // Convertimos la respuesta en formato JSON
-                const productos = await response.json();
-
-                // Llamamos a la función para mostrar los productos en la tabla
-                displayProductos(productos);
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Hubo un error al cargar los productos de la despensa');
-            }
-        }
-
-        // Función para mostrar los productos en la tabla HTML
-        function displayProductos(productos) {
-            const tableBody = document.getElementById("despensa-table").getElementsByTagName("tbody")[0];
-            tableBody.innerHTML = ""; // Limpiar tabla previa
-
-            // Iteramos sobre los productos y los mostramos en la tabla
-            productos.forEach(producto => {
-                const row = document.createElement("tr");
-
-                // Crear las celdas de la tabla para cada producto
-                const cellNombre = document.createElement("td");
-                cellNombre.textContent = producto.nombre_producto || "Producto sin nombre";
-
-                const cellCantidad = document.createElement("td");
-                cellCantidad.textContent = producto.cantidad || "No disponible";
-
-                const cellFechaCompra = document.createElement("td");
-                cellFechaCompra.textContent = producto.fecha_compra || "No disponible";
-
-                // Añadimos las celdas a la fila
-                row.appendChild(cellNombre);
-                row.appendChild(cellCantidad);
-                row.appendChild(cellFechaCompra);
-
-                // Añadimos la fila a la tabla
-                tableBody.appendChild(row);
-            });
-        }
-
-        // Cargar los productos al cargar la página
-        window.onload = loadDespensa;
-    </script> -->
 </body>
+
 </html>

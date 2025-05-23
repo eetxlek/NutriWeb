@@ -1,7 +1,6 @@
 package nutricion.hexagonal.infra.aplicacion;
 
 import org.springframework.stereotype.Service;
-
 import nutricion.hexagonal.dominio.clases.Usuario;
 import nutricion.hexagonal.dominio.interfaces.PasswordEncrypter;
 import nutricion.hexagonal.dominio.interfaces.DeClases.UsuarioRepoSalida;
@@ -10,12 +9,12 @@ import nutricion.hexagonal.infra.adaptadores.salida.security.TokenService;
 //verifica credencial- > delega generacion de token a TokenService
 //servicio de autenticacion que orquesta proceso de log in. no se encarga del toekn en si y la seguridad.
 //servicio que ve si user existe y la contraseña es válida, valida que es quien dice ser y ello da paso a generar un token.
-//es cparte de la capa de logica de negocio // depende de interfaz, es buena practica para dar flexibilidad a las pruebas de implementaciones diferentes.
+//es parte de la capa de logica de negocio 
 
-//mplementa un puerto de ENTRADA . Orquesta la lógica de login o validación de tokens. Usa puertos de salida: usuariorepo, passencryp, tokenservice
+//Orquesta la lógica de login o validación de tokens. 
 @Service
 public class AuthService {
-    private final TokenService tokenService; // <- Depende de la interfaz
+    private final TokenService tokenService; // Implementa token
     private final UsuarioRepoSalida usuarioRepository;
     private final PasswordEncrypter passwordEncrypter;
 
@@ -33,7 +32,7 @@ public class AuthService {
             throw new RuntimeException("Credenciales inválidas");
         }
 
-        return tokenService.generarToken(String.valueOf(usuario.getCorreoElectronico()));
+        return tokenService.generarToken(String.valueOf(usuario.getCorreoElectronico())); //GENERA TOKEN
     }
 
 }

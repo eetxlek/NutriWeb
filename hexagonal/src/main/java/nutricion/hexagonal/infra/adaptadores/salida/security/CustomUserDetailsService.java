@@ -4,13 +4,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 import nutricion.hexagonal.dominio.clases.Usuario;
 import nutricion.hexagonal.dominio.interfaces.DeClases.UsuarioRepoSalida;
 
-//imple de servicio que usa UsuarioRepo para recuperar suers
-//convierete usuario en Userprincipaladapter
 
+//convierete usuario en Userprincipaladapter desde repo.
 //servicio personalizado de spring sec que carga usuario en spring sec. loaduser se invoca en proceso de autenticacion, busca en BD y da UserPrincipalAdapter
 //este da usuario cargado desde repo, el otro hace la traduccion conversion de usuario a userdetails.
 @Service

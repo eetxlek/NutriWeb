@@ -1,73 +1,125 @@
 package nutricion.hexagonal.infra.persistencia.repos.imple;
 
-
 import org.springframework.stereotype.Repository;
+import nutricion.hexagonal.dominio.clases.Consumo;
+import nutricion.hexagonal.dominio.clases.Despensa;
+import nutricion.hexagonal.dominio.clases.Producto;
 import nutricion.hexagonal.dominio.clases.Usuario;
 import nutricion.hexagonal.dominio.interfaces.DeClases.UsuarioRepoSalida;
+import nutricion.hexagonal.infra.persistencia.entidades.ConsumoEntity;
+import nutricion.hexagonal.infra.persistencia.entidades.DespensaEntity;
+import nutricion.hexagonal.infra.persistencia.entidades.ProductoEntity;
 import nutricion.hexagonal.infra.persistencia.entidades.UsuarioEntity;
 import nutricion.hexagonal.infra.persistencia.repos.UsuarioRepository;
-
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-// infraestructura/persistencia/UsuarioRepositoryJpa.java
-//adaptador de SALIDA, conecta con dominio con jpa
-//@repo bien se detecta e inyecta en UsuarioService
 @Repository
-public class UsuarioRepoImple implements UsuarioRepoSalida {   //convierte UsuarioJPA en Usuario y guarda con Spring data (persistencia)
-    //implementa repo de dominio
-    
-    private final UsuarioRepository jpaRepo;  // Spring Data JPA //la interfaz repo de INFRA la que te permite buscar por mail. 
+public class UsuarioRepoImple implements UsuarioRepoSalida {
+
+    private final UsuarioRepository jpaRepo;
 
     public UsuarioRepoImple(UsuarioRepository jpaRepo) {
         this.jpaRepo = jpaRepo;
     }
+
+    @Override
+    public Optional<Usuario> buscarPorId(Integer id) {
+        return jpaRepo.findById(id)
+                .map(this::toDomain);
+    }
+
     @Override
     public Optional<Usuario> buscarPorEmail(String email) {
         return jpaRepo.findByCorreoElectronico(email)
-            .map(this::toDomain);
+                .map(this::toDomain);
     }
-    //convierte userEntity infra a usuario dominio, perfecto
-    private Usuario toDomain(UsuarioEntity entity) {
-        return new Usuario(
-            entity.getIdUsuario(),
-            entity.getNombre(),  // Suponiendo que la clase Usuario tiene el campo nombre
-            entity.getCorreoElectronico(),
-            entity.getContraseña(),
-            entity.getEdad(),  // Suponiendo que la clase Usuario tiene estos campos
-            entity.getPeso(),
-            entity.getAltura(),
-            entity.getNivelActividad(),
-            entity.getMetaSalud(),
-            entity.getTipoDieta(),
-            entity.getTipoUsuario()) // Conversión a List<String>
-        ;
+
+    @Override
+    public Set<Consumo> obtenerConsumos(String correo) {
+        UsuarioEntity usuario = jpaRepo.findWithConsumosByCorreoElectronico(correo)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        return toDomainConsumo(usuario.getConsumos()); // consumoEntity set to setConsumo
     }
-    private UsuarioEntity toEntity(Usuario usuario) {  // se espera que ya venga encriptada
-        //encripta al crear UsuarioEntity
-      
-        return new UsuarioEntity(
-            usuario.getIdUsuario(),
-            usuario.getNombre(),  // Suponiendo que la clase Usuario tiene el campo nombre
-            usuario.getCorreoElectronico(),
-            usuario.getContraseña(), // Aquí ya viene la contraseña encriptada por el servicio // separa persistencia de logica cript
-            usuario.getEdad(),  // Suponiendo que la clase Usuario tiene estos campos
-            usuario.getPeso(),
-            usuario.getAltura(),
-            usuario.getNivelActividad(),
-            usuario.getMetaSalud(),
-            usuario.getTipoDieta(),
-            usuario.getTipoUsuario()
-        );
+
+    @Override
+    public Set<Despensa> obtenerDespensa(String correo) {
+        UsuarioEntity usuario = jpaRepo.findWithDespensaByCorreoElectronico(correo)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        return usuario.getDespensa().stream()
+                .map(this::toDomainDespensa)
+                .collect(Collectors.toSet());
     }
-    
-    //HYA QUE ENCRIPTAR LA CONTRASEÑA
+
     @Override
     public void guardar(Usuario usuario) {
-        UsuarioEntity entity = toEntity(usuario);  // convertimos dominio MODELO a ENTIDAD JPA
-        jpaRepo.save(entity);  // lo GUARDA con Spring Data (persistencia)
+        UsuarioEntity entity = toEntity(usuario); // convertimos dominio MODELO a ENTIDAD JPA
+        jpaRepo.save(entity); // lo GUARDA con Spring Data (persistencia)
     }
+
     @Override
     public boolean existeEmail(String email) {
         return jpaRepo.existsByCorreoElectronico(email);
     }
+
+    // Métodos auxiliares de mapeo
+    private Set<Consumo> toDomainConsumo(Set<ConsumoEntity> entidades) {
+        return entidades.stream()
+                .map(this::toDomainConsumo) // usa el método individual
+                .collect(Collectors.toSet());
+    }
+
+    private Despensa toDomainDespensa(DespensaEntity entity) {
+        Producto producto = toDomainProducto(entity.getProducto());
+        Integer idUsuario = entity.getIdUsuario().getId();
+        return new Despensa(entity.getId(), idUsuario, producto, entity.getCantidad(), entity.getFechaCompra());
+    }
+
+    private Consumo toDomainConsumo(ConsumoEntity entity) {
+        Producto producto = toDomainProducto(entity.getProducto());
+        Integer idUsuario = entity.getIdUsuario().getId(); // Asegúrate que getUsuario() existe en la entidad
+        return new Consumo(producto, idUsuario, entity.getCantidad(), entity.getFechaConsumo());
+    }
+
+    private Producto toDomainProducto(ProductoEntity entity) {
+        return new Producto(entity.getId(), entity.getNombreProducto());
+    }
+
+    // convierte userEntity infra a usuario dominio, perfecto
+    private Usuario toDomain(UsuarioEntity entity) {
+        return new Usuario(
+                entity.getId(),
+                entity.getNombre(),
+                entity.getCorreoElectronico(),
+                entity.getContraseña(),
+                entity.getEdad(), 
+                entity.getSexo(),
+                entity.getPeso(),
+                entity.getAltura(),
+                entity.getNivelActividad(),
+                entity.getMetaSalud(),
+                entity.getTipoDieta(),
+                entity.getTipoUsuario())
+        ;
+    }
+
+    private UsuarioEntity toEntity(Usuario usuario) {
+        // encripta al crear UsuarioEntity
+
+        return new UsuarioEntity(
+                usuario.getId(),
+                usuario.getNombre(), 
+                usuario.getCorreoElectronico(),
+                usuario.getContraseña(), // viene encriptada por el servicio // separa persistencia de logica encript
+                usuario.getEdad(), 
+                usuario.getSexo(),
+                usuario.getPeso(),
+                usuario.getAltura(),
+                usuario.getNivelActividad(),
+                usuario.getMetaSalud(),
+                usuario.getTipoDieta(),
+                usuario.getTipoUsuario());
+    }
+
 }

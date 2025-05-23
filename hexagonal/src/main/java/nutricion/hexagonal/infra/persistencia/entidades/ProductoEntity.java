@@ -1,15 +1,21 @@
 package nutricion.hexagonal.infra.persistencia.entidades;
 
+import java.util.Set;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Productos")
 public class ProductoEntity {
+
+     @OneToMany(mappedBy = "producto")
+     private Set<ConsumoEntity> consumos;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_producto")
@@ -18,25 +24,38 @@ public class ProductoEntity {
     @Column(name = "nombre_producto")
     private String nombreProducto;
 
-    @Column(name = "descripcion")
-    private String descripcion;
-
     public ProductoEntity() {
     }
 
-    public ProductoEntity(Integer id_producto, String nombreProducto, String descripcion) {
+    public ProductoEntity(Integer id_producto, String nombreProducto) {
         this.id = id_producto;
         this.nombreProducto = nombreProducto;
-        this.descripcion = descripcion;
-    }    
 
-    public Integer getId_producto() {
+    }
+
+    public ProductoEntity(Set<ConsumoEntity> consumos, Integer id, String nombreProducto) {
+        this.consumos = consumos;
+        this.id = id;
+        this.nombreProducto = nombreProducto;
+ 
+    }
+
+    public Set<ConsumoEntity> getConsumos() {
+        return consumos;
+    }
+
+    public void setConsumos(Set<ConsumoEntity> consumos) {
+        this.consumos = consumos;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId_producto(Integer id_producto) {
-        this.id = id_producto;
+    public void setId(Integer id) {
+        this.id = id;
     }
+
 
     public String getNombreProducto() {
         return nombreProducto;
@@ -46,15 +65,7 @@ public class ProductoEntity {
         this.nombreProducto = nombreProducto;
     }
 
-    public String getDescripcion() {
-        return descripcion;
-    }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    // Getters, setters
 
     
 }

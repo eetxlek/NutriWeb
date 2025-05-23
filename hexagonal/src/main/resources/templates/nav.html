@@ -1,11 +1,12 @@
 <!--Fragmento nav -->
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <!-- Favicon -->
-     <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <title>Nutrición inteligente, decisiones saludables</title>
     <!-- Bootstrap CSS NECESARIO DEBE IR EN TODAS LAS PAGINAS CON NAV Y TAMBIEN LO DEL FINAL DEL BODY-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -18,105 +19,95 @@
             --light-color: #f8f9fa;
             --dark-color: #212529;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         .navbar {
             background-color: var(--secondary-color);
         }
-        
+
         .navbar-brand {
             font-weight: 700;
             color: var(--primary-color) !important;
         }
-        
+
         .btn-primary {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
         }
-        
+
         .btn-primary:hover {
             background-color: #5a9e34;
             border-color: #5a9e34;
         }
-        
+
         .hero-section {
             background: linear-gradient(135deg, var(--secondary-color) 0%, var(--dark-color) 100%);
             color: white;
             padding: 5rem 0;
         }
-        
+
         .feature-icon {
             font-size: 2.5rem;
             color: var(--primary-color);
             margin-bottom: 1rem;
         }
-        
+
         .feature-card {
             transition: transform 0.3s;
             height: 100%;
         }
-        
+
         .feature-card:hover {
             transform: translateY(-10px);
         }
-        
+
         .cta-section {
             background-color: var(--primary-color);
             color: white;
             padding: 4rem 0;
         }
-        
+
         footer {
             background-color: var(--secondary-color);
             color: white;
         }
-        
+
         .tech-logo {
             height: 50px;
             margin: 15px;
             opacity: 0.7;
             transition: opacity 0.3s;
         }
-        
+
         .tech-logo:hover {
             opacity: 1;
         }
-     
     </style>
 </head>
+
 <body>
-    <!-- Navbar // Lo más importante es MARCAR th:fragment="navbar" en la etiqueta que quieres REUSAR (en este caso, <nav> -->
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top" th:fragment="navbar">
         <div class="container d-flex justify-content-between">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <i class="fas fa-leaf me-2"></i>Nutrición inteligente, decisiones saludables
+            <a class="navbar-brand d-flex align-items-center" th:href="@{/}">
+                <i class="fas fa-leaf me-2"></i> Nutrición inteligente, decisiones saludables
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse d-flex justify-content-end" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                     <!-- Enlaces visibles para todos -->
+
                     <li class="nav-item">
-                        <a class="nav-link" href="/#features">Como usar</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/#pricing">Precios</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/#contact">Contacto</a>
-                    </li>
-                    <li class="nav-item" >
                         <a class="nav-link" th:href="@{/productos}">Productos frescos</a>
                     </li>
-                    <li class="nav-item" >
-                        <a class="nav-link" th:href="@{/productosapi}">Productos de api</a>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/productosapi}">Productos API</a>
                     </li>
-                      <!-- Solo autenticados -->
-                      <li class="nav-item auth-only">
+                    <!-- Solo autenticados -->
+                    <li class="nav-item auth-only">
                         <a class="nav-link" th:href="@{/perfil}">Perfil</a>
                     </li>
                     <li class="nav-item auth-only">
@@ -124,23 +115,24 @@
                     </li>
                     <li class="nav-item auth-only">
                         <a class="nav-link" th:href="@{/consumo}">Consumo</a>
-        			</li>
+                    </li>
+                    <!-- Salir (autenticado) -->
                     <li class="nav-item auth-only">
-                        <a class="nav-link" href="#" id="logout-button">Cerrar sesión</a>
+                        <a th:href="@{/login}" id="logout-button" class="btn btn-primary ms-lg-3" onclick="auth.cerrarSesion()">
+                            <i class="fa fa-sign-out fa-fw" aria-hidden="true"></i>&nbsp; Salir
+                        </a>
+                    </li>
+                    <!-- Entrar (invitado) -->
+                    <li class="nav-item guest-only">
+                        <a th:href="@{/login}" id="login-button" class="btn btn-primary ms-lg-3">
+                            <i class="fa fa-sign-in fa-fw" aria-hidden="true"></i>&nbsp; Entrar
+                        </a>
                     </li>
                 </ul>
-                <div class="nav-item guest-only">
-        			<a href="#cta" th:href="@{/login}" class="btn btn-primary ms-lg-3">
-            			<i class="fa fa-home fa-fw" aria-hidden="true"></i>&nbsp; Entrar
-        			</a>
-    			</div>
-   				 <!-- <div sec:authorize="isAuthenticated()">
-        			<form th:action="@{/logout}" method="post">
-			            <button onclick="auth.cerrarSesion()" class="btn btn-outline-danger">Salir</button>
-			        </form>
-    			</div>                -->
+
             </div>
         </div>
-    </nav>    
+    </nav>
 </body>
+
 </html>

@@ -20,6 +20,7 @@
         }
 
         .navbar-brand {
+            font-weight: 700;
             color: var(--primary-color) !important;
         }
 
@@ -35,13 +36,11 @@
             border-color: #5a9e34;
         }
 
-        .card {
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border: none;
-        }
-
-        .form-control {
-            border-radius: 5px;
+        .section-header {
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 1.5rem;
+            /* Tamaño equivalente a h4 */
         }
 
         h2 {
@@ -50,37 +49,55 @@
             margin-top: 1rem;
         }
 
-        /* Estilos para el modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
+        .custom-container {
+            max-width: 1400px;
+            /* o el valor que prefieras */
+            margin: 0 auto;
+            /* para centrarlo */
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        html,
+        body {
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
+            margin: 0;
         }
 
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            width: 400px;
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        .close-btn {
-            background-color: #e74c3c;
+        .container-fluid.custom-container {
+            flex: 1;
+            /* Esto hace que el contenido crezca y empuje el footer hacia abajo */
+        }
+
+        #editarPerfilForm {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+        }
+
+        #editarPerfilForm h2 {
+            grid-column: 1 / -1;
+            /* Hace que los títulos ocupen ambas columnas */
+        }
+
+        #editarPerfilForm button {
+            grid-column: 1 / -1;
+            /* Botón también ocupa ambas columnas */
+            justify-self: end;
+            /* Alinea el botón a la derecha */
+        }
+
+        footer {
+            background-color: var(--secondary-color);
             color: white;
-            padding: 10px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        .close-btn:hover {
-            background-color: #c0392b;
+            text-align: center;
+            padding: 1rem;
         }
     </style>
 </head>
@@ -89,71 +106,110 @@
     <div id="navbar-container">
         <!-- Este se actualizará con JavaScript después del login -->
     </div>
-    <div class="container mt-5">
-        <div class="card p-4">
-            <h1 class="mb-4">Editar Perfil</h1>
+    <div
+        class="container-fluid mt-5 mb-5 custom-container d-flex flex-wrap gap-5 justify-content-start align-items-start">
+        <div class="p-2" style="flex: 0 0 150px;">
+            <img th:src="@{/images/usuario.png}" alt="Cliente" class="rounded-circle mb-3" width="120">
+            <h1 class="mb-0">Editar </h1>
+        </div>
+        <div class="card p-2" style="flex: 1; min-width: 300px;">
             <form id="editarPerfilForm">
-                <h2>Información Personal</h2>
-                <div class="mb-3">
-                    <label for="nombre" class="form-label">Nombre:</label>
+                <h2 class="section-header"> Información Personal</h2>
+                <div class="mb-2">
+                    <label for="nombre" class="form-label fw-bold">Nombre:</label>
                     <input type="text" id="nombre" name="nombre" class="form-control" required />
                 </div>
-                <div class="mb-3">
-                    <label for="correoElectronico" class="form-label">Correo electrónico:</label>
+                <div class="mb-2">
+                    <label for="correoElectronico" class="form-label fw-bold">Correo electrónico:</label>
                     <input type="email" id="correoElectronico" name="correoElectronico" class="form-control" required />
                 </div>
-                <div class="mb-3">
-                    <label for="edad" class="form-label">Edad:</label>
+                <div class="mb-2">
+                    <label for="edad" class="form-label fw-bold">Edad:</label>
                     <input type="number" name="edad" id="edad" class="form-control" required />
                 </div>
-
-
-                <h2>Medidas Corporales</h2>
-                <div class="mb-3">
-                    <label for="peso" class="form-label">Peso:</label>
+                <h2 class="section-header"> Medidas Corporales</h2>
+                <div class="mb-2">
+                    <label for="peso" class="form-label fw-bold">Peso:</label>
                     <input type="number" name="peso" id="peso" class="form-control" required />
                 </div>
-                <div class="mb-3">
-                    <label for="altura" class="form-label">Altura:</label>
+                <div class="mb-2">
+                    <label for="altura" class="form-label fw-bold">Altura:</label>
                     <input type="number" name="altura" id="altura" class="form-control" required />
                 </div>
-
-                <h2>Preferencias de Salud</h2>
-                <div class="mb-3">
-                    <label for="nivelActividad" class="form-label">Nivel de actividad:</label>
-                    <input type="text" name="nivelActividad" id="nivelActividad" class="form-control" required />
+                <h2 class="section-header"> Preferencias de Salud</h2>
+                <div class="mb-2">
+                    <label for="nivelActividad" class="form-label fw-bold">Nivel de actividad:</label>
+                    <select id="nivelActividad" name="nivelActividad" class="form-control" required>
+                        <option value="">-- Selecciona --</option>
+                        <option value="Sedentaria">Sedentaria</option>
+                        <option value="Ligera">Ligera</option>
+                        <option value="Moderada">Moderada</option>
+                        <option value="Intensa">Intensa</option>
+                        <option value="Muy Intensa">Muy Intensa</option>
+                    </select>
                 </div>
-                <div class="mb-3">
-                    <label for="metaSalud" class="form-label">Meta de salud:</label>
-                    <input type="text" name="metaSalud" id="metaSalud" class="form-control" required />
+                <div class="mb-2">
+                    <label for="metaSalud" class="form-label fw-bold">Meta de salud:</label>
+                    <select id="metaSalud" name="metaSalud" class="form-control" required>
+                        <option value="">-- Selecciona --</option>
+                        <option value="Perder peso">Perder peso</option>
+                        <option value="Ganar masa muscular">Ganar masa muscular</option>
+                        <option value="Mantener peso">Mantener peso</option>
+                        <option value="Mejorar salud general">Mejorar salud general</option>
+                    </select>
                 </div>
-                <div class="mb-3">
+                <div class="mb-2">
                     <label for="tipoDieta" class="form-label">Tipo de dieta:</label>
-                    <input type="text" name="tipoDieta" id="tipoDieta" class="form-control" required />
+                    <select id="tipoDieta" name="tipoDieta" class="form-control" required>
+                        <option value="">-- Selecciona --</option>
+                        <option value="Omnívora">Omnívora</option>
+                        <option value="Vegetariana">Vegetariana</option>
+                        <option value="Vegana">Vegana</option>
+                        <option value="Keto">Keto</option>
+                        <option value="Otro">Otro</option>
+                    </select>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Actualizar Perfil</button>
             </form>
         </div>
     </div>
-
+    <footer>
+        <p>&copy; 2025 Nutrición inteligente, decisiones saludables. Todos los derechos reservados.</p>
+    </footer>
     <script type="module">
         import { auth } from '/auth.js';
 
         window.addEventListener("DOMContentLoaded", async () => {
-            const token = auth.obtenerToken();  // Obtener el token del almacenamiento local
-
+            // Obtenemos el token de la sesión local
+            const token = auth.obtenerToken();
 
             if (!token) {
-                console.error("No hay token o el token no es válido, redirigiendo a login...");
-                window.location.href = "/login";  // Redirigir al login si no está autenticado
+                console.error("No hay token, redirigiendo a login...");
+                window.location.href = "/login"; // Redirige si no hay token
                 return;
             }
+
+            // Cargar el navbar
+            fetch('/navbar-fragment')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('navbar-container').innerHTML = html;
+                    updateNav();
+                    // Ahora que el navbar ya está en el DOM, agregamos el event listener
+                    const logoutBtn = document.getElementById('logout-button');
+                    if (logoutBtn) {
+                        logoutBtn.addEventListener('click', (e) => {
+                            e.preventDefault(); // Previene comportamiento por defecto si es un <a>
+                            auth.cerrarSesion();  // Borra token, etc.
+                            updateNav();
+                            window.location.href = "/login";
+                        });
+                    }
+
+                });
             try {
-                // Obtener los datos del perfil actual
-                //const res = await auth.fetchConAutenticacion('/api/usuario/perfil');
-                // if (res && res.ok) {
-                //     const usuario = await res.json();
+
                 const response = await auth.fetchConAutenticacion('/api/usuario/perfil', {
                     method: 'GET',
                     headers: {
@@ -225,21 +281,14 @@
         });
 
         function updateNav() {
-            fetch('/navbar-fragment')
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('navbar-container').innerHTML = html;
+            const isAuthenticated = !!auth.obtenerToken() && auth.estaAutenticado();
+            document.querySelectorAll('.auth-only').forEach(el => {
+                el.style.display = isAuthenticated ? '' : 'none';
+            });
+            document.querySelectorAll('.guest-only').forEach(el => {
+                el.style.display = isAuthenticated ? 'none' : '';
+            });
 
-                    const isAuthenticated = !!auth.obtenerToken() && auth.estaAutenticado();
-                    // Mostrar/ocultar enlaces
-                    document.querySelectorAll('.auth-only').forEach(el => {
-                        el.style.display = isAuthenticated ? '' : 'none';
-                    });
-                    document.querySelectorAll('.guest-only').forEach(el => {
-                        el.style.display = isAuthenticated ? 'none' : '';
-                    });
-                })
-                .catch(error => console.error('Error al cargar el navbar:', error));
         }
         // Llamada inicial para actualizar el navbar cuando se carga la página
         window.addEventListener('DOMContentLoaded', updateNav);

@@ -3,7 +3,7 @@ package nutricion.hexagonal.infra.adaptadores.entrada.dto;
 public class ProductoDTO {
     private Integer id;
     private String nombre;
-    private String descripcion;
+    //private String descripcion;
 
     private Double calorias;
     private Double proteinas;
@@ -18,13 +18,13 @@ public class ProductoDTO {
     private Double hierro;
 
     // Constructor
-    public ProductoDTO(Integer id, String nombre, String descripcion,
+    public ProductoDTO(Integer id, String nombre,
                        Double calorias, Double proteinas, Double grasas, Double carbohidratos,
                        Double fibra, Double azucares, Double vitaminaC, Double potasio,
                        Double calcio, Double magnesio, Double hierro) {
         this.id = id;
         this.nombre = nombre;
-        this.descripcion = descripcion;
+       // this.descripcion = descripcion;
         this.calorias = calorias;
         this.proteinas = proteinas;
         this.grasas = grasas;
@@ -38,8 +38,6 @@ public class ProductoDTO {
         this.hierro = hierro;
     }
 
-    // Getters y Setters
-
     public ProductoDTO() {
     }
 
@@ -49,14 +47,6 @@ public class ProductoDTO {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
     }
 
     public Double getCalorias() {

@@ -1,73 +1,288 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Nutrición inteligente, decisiones saludables</title>
+
+    <style>
+        :root {
+            --primary-color: #6db33f;
+            --primary-dark: #5a9e34;
+            --secondary-color: #343a40;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+        }
+
+        .navbar {
+            background-color: var(--secondary-color);
+        }
+
+        .navbar a {
+            color: var(--light-color);
+            /* Para asegurarse de que los enlaces sean visibles en el navbar */
+        }
+
+        .navbar a:hover {
+            color: var(--primary-color);
+            /* Color de los enlaces al pasar el ratón */
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #5a9e34;
+            border-color: #5a9e34;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        #registro-consumo-form {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+
+        #registro-consumo-form h1 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        #registro-consumo-form .form-control {
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        #registro-consumo-form button[type="submit"] {
+            background-color: var(--primary-color);
+            color: black;
+            font-size: 1.1rem;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        #registro-consumo-form button[type="submit"]:hover {
+            background-color: #5a9e34;
+        }
+
+        #registro-consumo-form .form-label {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            background-color: var(--secondary-color);
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+        }
+    </style>
 </head>
-<body>
+
+<body class="d-flex flex-column min-vh-100">
     <div id="navbar-container">
         <!-- Este se actualizará con JavaScript después del login -->
     </div>
-    <h2>Registrar Consumo</h2>
+    <div class="container flex-grow-1">
+        <h2>Historial de Consumos</h2>
 
-    <form action="http://localhost:8080/apinutricion/api/consumo" method="POST">
+        <table id="consumos-table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Fecha de Consumo</th>
+                    <th>Calorías</th> <!-- Nueva columna -->
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Los consumos se cargarán aquí -->
+            </tbody>
+        </table>
+    </div>
 
-        <!-- Selección de usuario -->
-        <label for="usuario">Usuario:</label>
-        <select id="usuario" name="id_usuario" required>
-            <!-- Aquí se deben cargar los usuarios desde la base de datos -->
-            <option value="1">Usuario 1</option>
-            <option value="2">Usuario 2</option>
-            <option value="3">Usuario 3</option>
-        </select>
-        <br><br>
 
-        <!-- Selección de producto -->
-        <label for="producto">Producto:</label>
-        <select id="producto" name="nombre_producto" required>
-            <!-- Aquí se deben cargar los productos desde la base de datos -->
-            <option value="1">Producto A</option>
-            <option value="2">Producto B</option>
-            <option value="3">Producto C</option>
-        </select>
-        <br><br>
+    <footer>
+        <p>&copy; 2025 Nutrición inteligente, decisiones saludables. Todos los derechos reservados.</p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-        <!-- Campo de cantidad -->
-        <label for="cantidad">Cantidad:</label>
-        <input type="number" id="cantidad" name="cantidad" min="1" required>
-        <br><br>
+    <script type="module">
+        import { auth } from '/auth.js';
 
-        <!-- Campo de fecha de consumo -->
-        <label for="fecha_consumo">Fecha de Consumo:</label>
-        <input type="date" id="fecha_consumo" name="fecha_consumo" required>
-        <br><br>
 
-        <button type="submit">Registrar Consumo</button>
-        
-    </form>
-<script>
-     function updateNav() {
-            fetch('/navbar-fragment')
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('navbar-container').innerHTML = html;
+        window.addEventListener('DOMContentLoaded', async function () {
 
-                    const isAuthenticated = !!auth.obtenerToken() && auth.estaAutenticado();
-                    // Mostrar/ocultar enlaces
-                    document.querySelectorAll('.auth-only').forEach(el => {
-                        el.style.display = isAuthenticated ? '' : 'none';
+            // Verificar autenticación
+            const token = auth.obtenerToken();
+            if (!token || !auth.estaAutenticado()) {
+                console.error("No autenticado, redirigiendo...");
+                window.location.href = "/login";
+                return;
+            }
+            // Cargar navbar
+            try {
+                const navbarHtml = await fetch('/navbar-fragment').then(res => res.text());
+                document.getElementById('navbar-container').innerHTML = navbarHtml;
+                updateNav();
+
+                // Event listener logout
+                const logoutBtn = document.getElementById('logout-button');
+                if (logoutBtn) {
+                    logoutBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        auth.cerrarSesion();
+                        updateNav();
+                        window.location.href = "/login";
                     });
-                    document.querySelectorAll('.guest-only').forEach(el => {
-                        el.style.display = isAuthenticated ? 'none' : '';
+                }
+            } catch (e) {
+                console.error("Error cargando navbar:", e);
+            }
+
+            await cargarConsumos();
+
+        });
+
+        async function cargarConsumos() {
+            try {
+                const response = await auth.fetchConAutenticacion('/api/usuario/consumos');
+                if (response.ok) {
+                    const consumos = await response.json();
+                    const tableBody = document.querySelector('#consumos-table tbody');
+                    tableBody.innerHTML = '';
+
+                    const consumosAgrupados = agruparPorFecha(consumos);
+                    let sumaCalorias = 0;
+
+                    Object.entries(consumosAgrupados).forEach(([fecha, lista]) => {
+                        // Fila de título por fecha
+                        const tituloFila = document.createElement('tr');
+                        tituloFila.innerHTML = `<td colspan="5" class="fw-bold bg-light text-primary">${fecha}</td>`;
+                        tableBody.appendChild(tituloFila);
+
+                        lista.forEach(consumo => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${consumo.nombreProducto}</td>
+                                <td>${consumo.cantidad}</td>
+                                <td>${formatearFecha(consumo.fecha)}</td>
+                                <td>${consumo.calorias !== undefined ? consumo.calorias.toFixed(2) : '—'}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-secondary editar-btn"
+                                        data-id-consumo="${consumo.idConsumo}"
+                                        data-nombre="${consumo.nombreProducto}"
+                                        data-cantidad="${consumo.cantidad}"
+                                        data-fecha="${consumo.fecha}">
+                                        Editar
+                                    </button>
+                                    <button class="btn btn-sm btn-danger eliminar-btn"
+                                        data-id-consumo="${consumo.idConsumo}">
+                                        Eliminar
+                                    </button>
+                                </td>
+                         `;
+                            tableBody.appendChild(row);
+                            // Sumar las calorías
+                            if (consumo.calorias !== undefined && !isNaN(consumo.calorias)) {
+                                sumaCalorias += consumo.calorias;
+                            }
+                        });
                     });
-                })
-                .catch(error => console.error('Error al cargar el navbar:', error));
+                    // Añadir fila con la suma total de calorías
+                    const totalRow = document.createElement('tr');
+                    totalRow.innerHTML = `
+                        <td colspan="3" class="fw-bold text-end">Total Calorías:</td>
+                        <td class="fw-bold">${sumaCalorias.toFixed(2)}</td>
+                        <td></td>
+                    `;
+                    tableBody.appendChild(totalRow);
+                } else {
+                    console.error("Error al cargar consumos:", response.status);
+                }
+            } catch (error) {
+                console.error('Error al cargar consumos:', error);
+            }
         }
-        // Llamada inicial para actualizar el navbar cuando se carga la página
-        window.addEventListener('DOMContentLoaded', updateNav);
-</script>
+
+        function agruparPorFecha(consumos) {
+            const grupos = {};
+            consumos.forEach(consumo => {
+                const fecha = new Date(consumo.fecha);
+                const fechaStr = fecha.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+                if (!grupos[fechaStr]) {
+                    grupos[fechaStr] = [];
+                }
+                grupos[fechaStr].push(consumo);
+            });
+            return grupos;
+        }
+        function formatearFecha(fechaISO) {
+            const fecha = new Date(fechaISO);
+            if (isNaN(fecha)) return fechaISO; // por si algo falla, muestra original
+            const año = fecha.getFullYear();
+            const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+            const dia = String(fecha.getDate()).padStart(2, '0');
+            const horas = String(fecha.getHours()).padStart(2, '0');
+            const minutos = String(fecha.getMinutes()).padStart(2, '0');
+            return `${año}-${mes}-${dia} ${horas}:${minutos}`;
+        }
+        function updateNav() {
+            const isAuthenticated = !!auth.obtenerToken() && auth.estaAutenticado(); // Basado en JWT
+
+            // Mostrar/ocultar elementos de autenticados
+            document.querySelectorAll('.auth-only').forEach(el => {
+                el.style.display = isAuthenticated ? '' : 'none';
+            });
+
+            // Mostrar/ocultar elementos de no autenticados
+            document.querySelectorAll('.guest-only').forEach(el => {
+                el.style.display = isAuthenticated ? 'none' : '';
+            });
+        }
+    </script>
 </body>
+
 </html>

@@ -1,20 +1,27 @@
-Este proyecto implementa una API REST segura utilizando: ✅ Arquitectura Hexagonal (Ports & Adapters) ✅ Spring Security + JWT para autenticación ✅ MySQL como base de datos ✅ Spring Data JPA para persistencia
+Aplicación Web de Gestión Nutricional
+Una aplicación web que facilita el control de tu alimentación diaria, ayudándote a gestionar tu despensa, consultar datos nutricionales de productos, registrar consumos y recibir recomendaciones nutricionales personalizadas.
 
-Características clave:
+Funcionalidades principales
+📊 Recomendación nutricional personalizada basada en tus consumos y perfil.
+🥫 Gestión de despensa: añade, actualiza y consulta los productos disponibles.
+🍽️ Registro y consulta de consumos diarios para un seguimiento fácil y detallado.
+🔍 Consulta de datos nutricionales de productos para tomar decisiones informadas.
 
-Dominio Aislado (Hexagonal) Usuario.java: Entidad de negocio sin anotaciones JPA.
-UsuarioRepository: Puerto (interfaz) para persistencia.
-Infraestructura UsuarioRepositoryJpa: Adaptador de MySQL usando Spring Data JPA.
-JwtTokenProvider: Generación/validación de tokens JWT.
-UserPrincipalAdapter: Adapta Usuario → UserDetails para Spring Security.
-Spring Security Stateless JWT: Sin sesiones.
+Tecnologías y arquitectura
+✅ Arquitectura Hexagonal (Ports & Adapters) para mantener el dominio aislado y facilitar mantenimiento y escalabilidad.
+✅ Spring Security + JWT para autenticación segura y stateless.
+✅ MySQL como base de datos relacional.
+✅ Spring Data JPA para la persistencia de datos.
+✅ Java, Spring Boot, Thymeleaf y JavaScript en el desarrollo backend y frontend.
 
-Servicios:
-AuthService: Lógica de autenticación (registro, login).
-DespensaService: Si producto existe en la despensa, agregar producto a despensa, actualizar producto en despensa, obtener despensa de usuario.
-ProductoService: obtener composicion de producto, guardar en consumos.
-RecomendacionNutriService: obtener por usuario, calcular recomendacion.
-UsuarioService: regustrar usuario, registrar recomendacion.
+Detalles técnicos (para desarrolladores)
+Dominio aislado: Entidades del negocio sin dependencias directas a frameworks (ej. Usuario.java).
+Persistencia: Puerto UsuarioRepository con adaptador UsuarioRepositoryJpa usando Spring Data JPA.
+Seguridad: Generación y validación de tokens JWT mediante JwtTokenProvider. Adaptación de usuario para Spring Security con UserPrincipalAdapter.
 
-
-
+Servicios clave:
+AuthService: Registro y login de usuarios.
+DespensaService: Gestión de productos en la despensa.
+ProductoService: Consulta y registro de productos y consumos.
+RecomendacionNutriService: Cálculo de recomendaciones nutricionales personalizadas.
+UsuarioService: Gestión general de usuarios y recomendaciones.

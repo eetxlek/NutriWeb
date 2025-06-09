@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: smart-diet
+    env: docker
+    plan: free
+    autoDeploy: true
+    region: frankfurt
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:mysql://nozomi.proxy.rlwy.net:24464/railway?useSSL=false&serverTimezone=Europe/Madrid
+      - key: SPRING_DATASOURCE_USERNAME
+        value: root
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: hqqAbInJjJlNXvWRpJCbgggzvFHYgjYg
+      - key: SPRING_SECURITY_USER_NAME
+        value: testuser
+      - key: SPRING_SECURITY_USER_PASSWORD
+        value: testpassword
+      - key: JWT_JWT_SECRET
+        value: TU_CLAVE_SUPER_LARGA_Y_SEGURA_DE_AL_MENOS_64_CARACTERES1234567890
+      - key: JWT_EXPIRATION_MS
+        value: 86400000
